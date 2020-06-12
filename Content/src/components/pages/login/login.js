@@ -2,9 +2,6 @@
 import React from 'react';
 import { View, Image, Text, Dimensions } from 'react-native';
 import { GoogleSignin, GoogleSigninButton } from 'react-native-google-signin';
-/*import ContainerGradient from '../../../widgets/Theme/containerGradient';
-import LinearGradient from 'react-native-linear-gradient';
-import PButton from '../../../widgets/Button/pButton';*/
 import LoginBackground from './loginBackground';
 import * as Constants from '../../../constants/constants';
 
