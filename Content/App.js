@@ -16,9 +16,9 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-import TopicList from './src/components/pages/login/topicList';
+import StateList from './src/components/pages/login/stateList';
 const App = () => {
-  return <TopicList />;
+  return <StateList />;
 };
 
 export default App;
