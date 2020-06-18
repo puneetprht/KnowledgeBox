@@ -8,21 +8,17 @@
 
 import React from 'react';
 import {
-  SafeAreaView,
   StyleSheet,
   ScrollView,
   View,
   Text,
   StatusBar,
+  TouchableOpacity,
 } from 'react-native';
 
-import ContainerList from './src/widgets/List/containerList';
+import TopicList from './src/components/pages/login/topicList';
 const App = () => {
-  return (
-    <ContainerList title="Title">
-      <Text>This will be child</Text>
-    </ContainerList>
-  );
+  return <TopicList />;
 };
 
 export default App;
