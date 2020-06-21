@@ -130,7 +130,7 @@ const StateList = () => {
   };
 
   return (
-    <ContainerList title="Title">
+    <ContainerList title="Select State(s)">
       <ScrollView style={{marginBottom: 50}}>
         <View style={styles.container}>
           {states.map(state => {

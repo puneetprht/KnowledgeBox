@@ -1,5 +1,6 @@
 const express = require('./node_modules/express');
 const bodyParser = require('./node_modules/body-parser');
+const router = require('./app/controllers/router')
 const port = 3000;
 
 const app = express();
@@ -10,10 +11,8 @@ app.use(bodyParser.json());
 // parse requests of content-type: application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// simple route
-app.get('/', (req, res) => {
-	res.json({ message: 'This is Express people.' });
-});
+//redirecting all the route to a common router.
+app.use('',router);
 
 // set port, listen for requests
 app.listen(port, () => {
