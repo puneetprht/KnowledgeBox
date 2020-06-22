@@ -39,11 +39,8 @@ const QuizList = () => {
 									<PButton
 										title="Start"
 										onPress={() => Alert.alert('Quiz will start')}
-										viewStyle={{
-											width: '70%',
-											flexDirection: 'row',
-											justifyContent: 'center'
-										}}
+										viewStyle={styles.button}
+										textStyle={{ fontSize: 17 }}
 										elementStyle={{ flexDirection: 'row', justifyContent: 'center' }}
 									/>
 								</View>
@@ -96,6 +93,14 @@ const styles = StyleSheet.create({
 		color: Constants.textColor1,
 		fontSize: 20,
 		fontWeight: 'bold'
+	},
+	button: {
+		paddingVertical: 6,
+		paddingHorizontal: 15,
+		borderRadius: 12,
+		width: '60%',
+		flexDirection: 'row',
+		justifyContent: 'center'
 	}
 });
 
