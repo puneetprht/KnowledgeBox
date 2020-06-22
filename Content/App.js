@@ -7,18 +7,14 @@
  */
 
 import React from 'react';
-import {
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-  TouchableOpacity,
-} from 'react-native';
+import { StyleSheet, ScrollView, View, Text, StatusBar, TouchableOpacity } from 'react-native';
 
-import StateList from './src/components/pages/login/stateList';
+import QuizHome from './src/components/pages/quiz/quizHome';
+import QuizTopicList from './src/components/pages/quiz/quizTopicList';
+import QuizList from './src/components/pages/quiz/quizList';
+
 const App = () => {
-  return <StateList />;
+	return <QuizList />;
 };
 
 export default App;
