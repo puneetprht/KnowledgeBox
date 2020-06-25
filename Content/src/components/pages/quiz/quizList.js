@@ -96,9 +96,9 @@ const styles = StyleSheet.create({
 	},
 	button: {
 		paddingVertical: 6,
-		paddingHorizontal: 15,
-		borderRadius: 12,
-		width: '60%',
+		paddingHorizontal: 10,
+		borderRadius: 25,
+		width: '50%',
 		flexDirection: 'row',
 		justifyContent: 'center'
 	}

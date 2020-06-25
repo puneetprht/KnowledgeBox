@@ -12,9 +12,10 @@ import { StyleSheet, ScrollView, View, Text, StatusBar, TouchableOpacity } from 
 import QuizHome from './src/components/pages/quiz/quizHome';
 import QuizTopicList from './src/components/pages/quiz/quizTopicList';
 import QuizList from './src/components/pages/quiz/quizList';
+import QuizQuestionnaire from './src/components/pages/quiz/quizQuestions';
 
 const App = () => {
-	return <QuizList />;
+	return <QuizQuestionnaire />;
 };
 
 export default App;
