@@ -1,32 +1,31 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react-native/no-inline-styles */
 import React, { useState } from 'react';
-import { View, ScrollView, StyleSheet, Text, Alert, TouchableOpacity } from 'react-native';
+import { View, ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import ContainerList from '../../../widgets/List/containerList';
 import * as Constants from '../../../constants/constants';
-import PButton from '../../../widgets/Button/pButton';
 
-const VideoList = (props) => {
+const VideoTopicList = (props) => {
 	const [ list, setList ] = useState([
-		{ id: 1, subject: 'Algebra 1', count: 12 },
-		{ id: 2, subject: 'Algebra 2', count: 15 },
-		{ id: 3, subject: 'Algebra 3', count: 43 },
-		{ id: 4, subject: 'Algebra 4', count: 1 },
-		{ id: 5, subject: 'Algebra 5', count: 8 },
-		{ id: 6, subject: 'Algebra 6', count: 4 },
-		{ id: 7, subject: 'Algebra 7', count: 7 },
-		{ id: 8, subject: 'Algebra 8', count: 9 },
-		{ id: 9, subject: 'Algebra 9', count: 10 },
-		{ id: 10, subject: 'Algebra 10', count: 0 },
-		{ id: 11, subject: 'Algebra 11', count: 3 }
+		{ id: 1, subject: 'Algebra', count: 12 },
+		{ id: 2, subject: 'Calculus', count: 15 },
+		{ id: 3, subject: 'Geometry', count: 43 },
+		{ id: 4, subject: 'Number Theory', count: 1 },
+		{ id: 5, subject: 'Topolody', count: 8 },
+		{ id: 6, subject: 'Permutations', count: 4 },
+		{ id: 7, subject: 'Combinations', count: 7 },
+		{ id: 8, subject: 'Probability', count: 9 },
+		{ id: 9, subject: 'Set theory', count: 10 },
+		{ id: 10, subject: 'Game Theory', count: 0 },
+		{ id: 11, subject: 'Airthmatic', count: 3 }
 	]);
 
-	const openDetailList = (index, evt) => {
-		props.navigation.navigate('videoPlayback');
+	const openTopic = (index, evt) => {
+		props.navigation.navigate('VideoList');
 	};
 
 	return (
-		<ContainerList title="Algebra Videos" onPress={() => props.navigation.goBack()}>
+		<ContainerList title="Math topics" onPress={() => props.navigation.goBack()}>
 			<ScrollView style={{ marginBottom: 30 }}>
 				<View style={styles.Container}>
 					{list.map((l) => {
@@ -36,13 +35,11 @@ const VideoList = (props) => {
 									<Text style={styles.textLeft}>{l.subject}</Text>
 								</View>
 								<View style={styles.boxRight}>
-									<PButton
-										title="Start"
-										onPress={openDetailList.bind(this, l.id)}
-										viewStyle={styles.button}
-										textStyle={{ fontSize: 17 }}
-										elementStyle={{ flexDirection: 'row', justifyContent: 'center' }}
-									/>
+									<TouchableOpacity onPress={openTopic.bind(this, l.id)}>
+										<Text style={styles.textRight}>
+											{l.count > 1 ? l.count + ' Videos' : l.count + ' Video'}
+										</Text>
+									</TouchableOpacity>
 								</View>
 							</View>
 						);
@@ -93,15 +90,7 @@ const styles = StyleSheet.create({
 		color: Constants.textColor1,
 		fontSize: 20,
 		fontWeight: 'bold'
-	},
-	button: {
-		paddingVertical: 6,
-		paddingHorizontal: 10,
-		borderRadius: 25,
-		width: '50%',
-		flexDirection: 'row',
-		justifyContent: 'center'
 	}
 });
 
-export default VideoList;
+export default VideoTopicList;

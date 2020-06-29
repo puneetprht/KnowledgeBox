@@ -6,7 +6,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import DropDownPicker from 'react-native-dropdown-picker';
 import * as Constants from '../../../constants/constants';
 
-const QuizHome = () => {
+const QuizHome = (props) => {
 	const [ category, setCategory ] = useState(1);
 	const [ list, setList ] = useState([
 		{ id: 1, subject: 'English', count: 12 },
@@ -23,7 +23,7 @@ const QuizHome = () => {
 	]);
 
 	const openTopic = (index, evt) => {
-		Alert.alert('I love you Roru');
+		props.navigation.navigate('QuizTopicList');
 	};
 
 	return (

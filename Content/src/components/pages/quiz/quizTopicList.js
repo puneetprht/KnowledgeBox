@@ -5,7 +5,7 @@ import { View, ScrollView, StyleSheet, Text, Alert, TouchableOpacity } from 'rea
 import ContainerList from '../../../widgets/List/containerList';
 import * as Constants from '../../../constants/constants';
 
-const QuizTopicList = () => {
+const QuizTopicList = (props) => {
 	const [ list, setList ] = useState([
 		{ id: 1, subject: 'Algebra', count: 12 },
 		{ id: 2, subject: 'Calculus', count: 15 },
@@ -21,11 +21,11 @@ const QuizTopicList = () => {
 	]);
 
 	const openTopic = (index, evt) => {
-		Alert.alert('I love you Roru');
+		props.navigation.navigate('QuizList');
 	};
 
 	return (
-		<ContainerList title="Math topics">
+		<ContainerList title="Math topics" onPress={() => props.navigation.goBack()}>
 			<ScrollView style={{ marginBottom: 30 }}>
 				<View style={styles.Container}>
 					{list.map((l) => {

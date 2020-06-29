@@ -6,7 +6,7 @@ import ContainerList from '../../../widgets/List/containerList';
 import * as Constants from '../../../constants/constants';
 import PButton from '../../../widgets/Button/pButton';
 
-const QuizList = () => {
+const QuizList = (props) => {
 	const [ list, setList ] = useState([
 		{ id: 1, subject: 'Algebra 1', count: 12 },
 		{ id: 2, subject: 'Algebra 2', count: 15 },
@@ -21,12 +21,12 @@ const QuizList = () => {
 		{ id: 11, subject: 'Algebra 11', count: 3 }
 	]);
 
-	const openTopic = (index, evt) => {
-		Alert.alert('I love you Roru');
+	const openDetailList = (index, evt) => {
+		props.navigation.navigate('QuizQuestionnaire');
 	};
 
 	return (
-		<ContainerList title="Algebra Quizes">
+		<ContainerList title="Algebra Quizes" onPress={() => props.navigation.goBack()}>
 			<ScrollView style={{ marginBottom: 30 }}>
 				<View style={styles.Container}>
 					{list.map((l) => {
@@ -38,7 +38,7 @@ const QuizList = () => {
 								<View style={styles.boxRight}>
 									<PButton
 										title="Start"
-										onPress={() => Alert.alert('Quiz will start')}
+										onPress={openDetailList.bind(this, l.id)}
 										viewStyle={styles.button}
 										textStyle={{ fontSize: 17 }}
 										elementStyle={{ flexDirection: 'row', justifyContent: 'center' }}

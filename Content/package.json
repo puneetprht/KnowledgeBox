@@ -10,14 +10,23 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@react-native-community/masked-view": "^0.1.10",
+    "@react-navigation/bottom-tabs": "^5.6.1",
+    "@react-navigation/drawer": "^5.8.4",
+    "@react-navigation/native": "^5.6.1",
+    "@react-navigation/stack": "^5.6.2",
     "babel-plugin-module-resolver": "^4.0.0",
     "react": "16.11.0",
     "react-native": "0.62.2",
     "react-native-dropdown-picker": "^3.0.5",
     "react-native-elevated-view": "0.0.6",
     "react-native-facebook-login": "^1.6.2",
+    "react-native-gesture-handler": "^1.6.1",
     "react-native-google-signin": "^2.1.1",
     "react-native-linear-gradient": "^2.5.6",
+    "react-native-reanimated": "^1.9.0",
+    "react-native-safe-area-context": "^3.0.7",
+    "react-native-screens": "^2.9.0",
     "react-native-vector-icons": "^6.6.0"
   },
   "devDependencies": {
