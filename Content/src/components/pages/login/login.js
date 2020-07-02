@@ -1,12 +1,13 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {View, Image, Dimensions} from 'react-native';
+import { View, Image, Dimensions } from 'react-native';
 import { GoogleSignin, GoogleSigninButton } from 'react-native-google-signin';
 import LoginBackground from './loginBackground';
 import * as Constants from '../../../constants/constants';
+import PButton from '../../../widgets/Button/pButton';
 
-const Login = () => {
+const Login = (props) => {
 	var icon = require('../../../assets/iconLogin.png');
 	return (
 		<>
@@ -35,12 +36,24 @@ const Login = () => {
 					alignItems: 'center'
 				}}
 			>
-        <GoogleSigninButton
-          style={{ width: 250, height: 48 }}
-          size={GoogleSigninButton.Size.Wide}
-          color={GoogleSigninButton.Color.Dark}
-         />
-      </View>
+				{/*<GoogleSigninButton
+					style={{ width: 250, height: 48 }}
+					size={GoogleSigninButton.Size.Wide}
+					color={GoogleSigninButton.Color.Dark}
+				/>*/}
+				<PButton
+					title="Let's get started"
+					onPress={() => props.navigation.navigate('StateList')}
+					viewStyle={{
+						backgroundColor: '#ffffff',
+						width: '75%',
+						flexDirection: 'row',
+						justifyContent: 'center'
+					}}
+					textStyle={{ color: Constants.textColor1, fontFamily: 'Roboto' }}
+					elementStyle={{ flexDirection: 'row', justifyContent: 'center' }}
+				/>
+			</View>
 			<Image
 				source={icon}
 				style={{
