@@ -21,6 +21,20 @@ user.create = (newuser, result) => {
 	});
 };
 
+user.getUserState = (userId, result) => {
+	var query = 'select s.stateId from state s inner join statexref sx on sx.fstate = s.hmy';
+	(query += ' inner join user u on u.hmy = sx.fuser where sx.fuser = ' + userId),
+		sql.query(query, (err, res) => {
+			if (err) {
+				console.log('error: ', err);
+				result(null, err);
+				return;
+			}
+
+			result(null, res);
+		});
+};
+
 //GetUser should fetch details for the logged in user.
 user.getUser = (userId, result) => {
 	sql.query(`SELECT * FROM user WHERE hmy = ${userId}`, (err, res) => {
