@@ -2,7 +2,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {View, Image, Dimensions} from 'react-native';
-import {GoogleSignin, GoogleSigninButton} from 'react-native-google-signin';
 import LoginBackground from './loginBackground';
 import * as Constants from '../../../constants/constants';
 import PButton from '../../../widgets/Button/pButton';
@@ -35,11 +34,6 @@ const Login = props => {
           justifyContent: 'center',
           alignItems: 'center',
         }}>
-        {/*<GoogleSigninButton
-					style={{ width: 250, height: 48 }}
-					size={GoogleSigninButton.Size.Wide}
-					color={GoogleSigninButton.Color.Dark}
-				/>*/}
         <PButton
           title="As Admin"
           onPress={() => {
