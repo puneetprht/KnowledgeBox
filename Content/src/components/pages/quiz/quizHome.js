@@ -7,13 +7,17 @@ import {
   StyleSheet,
   Text,
   Dimensions,
-  Alert,
+  TextInput,
   Image,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import DropDownPicker from 'react-native-dropdown-picker';
 import * as Constants from '../../../constants/constants';
+import PButton from '../../../widgets/Button/pButton';
+import Icon from 'react-native-vector-icons/Feather';
+import Icon2 from 'react-native-vector-icons/AntDesign';
 import axios from 'axios';
 
 const QuizHome = props => {
@@ -24,10 +28,12 @@ const QuizHome = props => {
   ]);
   const [user, setUser] = useState({id: 1, isAdmin: 1});
   const [state, setState] = useState(1);
+  const [editMode, setEditMode] = useState(false);
+  const [newSubject, setNewSubject] = useState('');
 
   useEffect(() => {
     axios
-      .get('http://10.0.2.2:3000/quiz/getDropdown', {
+      .get('http://10.0.2.2:3000/common/getDropdown', {
         params: {
           userId: user.id,
           stateId: state,
@@ -46,7 +52,7 @@ const QuizHome = props => {
 
   const fetchAllSubjects = () => {
     axios
-      .get('http://10.0.2.2:3000/quiz/getAllSubjectForUser', {
+      .get('http://10.0.2.2:3000/common/getAllSubjectForUser', {
         params: {
           userId: user.id,
           stateId: state,
@@ -65,27 +71,31 @@ const QuizHome = props => {
       });
   };
 
+  const fetchSubjectList = categoryId => {
+    axios
+      .get('http://10.0.2.2:3000/common/getSubjectList', {
+        params: {
+          id: categoryId,
+        },
+      })
+      .then(response => {
+        //console.log(response);
+        if (response.data) {
+          setList(response.data);
+        } else {
+          setList([]);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
   const onDropdownChange = index => {
-    if (index < 0) {
-      fetchAllSubjects();
+    if (index > 0) {
+      fetchSubjectList(index);
     } else {
-      axios
-        .get('http://10.0.2.2:3000/quiz/getSubjectList', {
-          params: {
-            id: index,
-          },
-        })
-        .then(response => {
-          //console.log(response);
-          if (response.data) {
-            setList(response.data);
-          } else {
-            setList([]);
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      fetchAllSubjects();
     }
   };
 
@@ -95,7 +105,44 @@ const QuizHome = props => {
       title: index.subject,
       user: user,
       stateId: state,
+      catergoryId: index.category,
     });
+  };
+
+  const saveSubject = value => {
+    if (value) {
+      axios
+        .post('http://10.0.2.2:3000/common/addSubject', {
+          subjectName: value,
+          categoryId: category,
+          stateId: state,
+        })
+        .then(response => {
+          setNewSubject('');
+          onDropdownChange(category);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
+    setEditMode(false);
+  };
+  const deleteSubject = id => {
+    if (id) {
+      axios
+        .delete('http://10.0.2.2:3000/common/deleteSubject', {
+          data: {
+            id: id,
+          },
+        })
+        .then(response => {
+          onDropdownChange(category);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
+    setEditMode(false);
   };
 
   return (
@@ -142,6 +189,7 @@ const QuizHome = props => {
             }}
             dropDownStyle={{backgroundColor: Constants.textColor1, zindex: 10}}
             onChangeItem={item => {
+              setCategory(item.value);
               onDropdownChange(item.value);
             }}
           />
@@ -153,7 +201,7 @@ const QuizHome = props => {
                     <View style={styles.boxLeft}>
                       <Text style={styles.textLeft}>{l.subject}</Text>
                     </View>
-                    <View style={styles.boxRight}>
+                    <View style={styles.boxRight} flexDirection="row">
                       <TouchableOpacity onPress={openTopic.bind(this, l)}>
                         <Text style={styles.textRight}>
                           {l.count > 1
@@ -162,6 +210,24 @@ const QuizHome = props => {
                         </Text>
                       </TouchableOpacity>
                     </View>
+                    {user.isAdmin ? (
+                      <TouchableOpacity
+                        onPress={deleteSubject.bind(this, l.id)}
+                        style={{
+                          ...styles.icon,
+                          position: 'absolute',
+                          //justifyContent: 'flex-end',
+                          backgroundColor: '#de3500',
+                        }}>
+                        <Icon2
+                          name="delete"
+                          style={{color: 'white'}}
+                          size={15}
+                        />
+                      </TouchableOpacity>
+                    ) : (
+                      <View />
+                    )}
                   </View>
                 );
               })
@@ -171,6 +237,53 @@ const QuizHome = props => {
               </View>
             )}
           </View>
+          {category > 0 && user.isAdmin ? (
+            <View style={{padding: 5}}>
+              {editMode ? (
+                <View style={styles.boxSimple}>
+                  <View style={styles.boxLeft}>
+                    <TextInput
+                      textAlign="center"
+                      style={styles.textArea}
+                      placeholder="Enter Subject"
+                      onChangeText={val => setNewSubject(val)}
+                    />
+                  </View>
+                  <View flexDirection="row" style={styles.boxRightOptions}>
+                    <TouchableOpacity
+                      onPress={saveSubject.bind(this, newSubject)}
+                      style={{...styles.icon, backgroundColor: '#1fc281'}}>
+                      <Icon name="check" style={{color: 'white'}} size={25} />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => setEditMode(false)}
+                      style={{
+                        ...styles.icon,
+                        backgroundColor: '#de3500',
+                      }}>
+                      <Icon2 name="close" style={{color: 'white'}} size={25} />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              ) : (
+                <PButton
+                  title="Add"
+                  onPress={() => setEditMode(true)}
+                  viewStyle={{
+                    width: '55%',
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                  }}
+                  elementStyle={{
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                  }}
+                />
+              )}
+            </View>
+          ) : (
+            <View />
+          )}
         </View>
       </ScrollView>
     </View>
@@ -210,6 +323,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  boxRightOptions: {
+    flex: 1,
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
   textLeft: {
     fontSize: 20,
     fontWeight: 'bold',
@@ -218,6 +336,16 @@ const styles = StyleSheet.create({
     color: Constants.textColor1,
     fontSize: 20,
     fontWeight: 'bold',
+  },
+  textArea: {
+    borderWidth: 1,
+    borderColor: Constants.textColor1,
+    width: '90%',
+    fontSize: 20,
+  },
+  icon: {
+    padding: 10,
+    borderRadius: 100,
   },
 });
 

@@ -23,6 +23,7 @@ import QuizTopicList from './src/components/pages/quiz/quizTopicList';
 import QuizList from './src/components/pages/quiz/quizList';
 import QuizQuestionnaire from './src/components/pages/quiz/quizQuestions';
 import QuizStackScreen from './src/components/navigation/QuizNavigator';
+import VideoStackScreen from './src/components/navigation/VideoNavigator';
 import TestStackScreen from './src/components/navigation/TestNavigator';
 import StateStackScreen from './src/components/navigation/StateNavigator';
 import RootStackScreen from './src/components/navigation/MainNavigator';
@@ -30,7 +31,7 @@ import RootStackScreen from './src/components/navigation/MainNavigator';
 const App = () => {
   return (
     <NavigationContainer>
-      <QuizStackScreen />
+      <TestStackScreen />
     </NavigationContainer>
   );
 };
