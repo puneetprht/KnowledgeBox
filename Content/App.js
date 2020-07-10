@@ -8,15 +8,8 @@
  */
 
 import React from 'react';
-import {
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-  TouchableOpacity,
-} from 'react-native';
-import {NavigationContainer} from '@react-navigation/native';
+import { StyleSheet, ScrollView, View, Text, StatusBar, KeyboardAvoidingView } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
 
 import Home from './src/components/pages/home/home';
 import QuizTopicList from './src/components/pages/quiz/quizTopicList';
@@ -29,11 +22,12 @@ import StateStackScreen from './src/components/navigation/StateNavigator';
 import RootStackScreen from './src/components/navigation/MainNavigator';
 
 const App = () => {
-  return (
-    <NavigationContainer>
-      <TestStackScreen />
-    </NavigationContainer>
-  );
+	return (
+		<NavigationContainer>
+			<StatusBar backgroundColor="blue" barStyle="light-content" />
+			<QuizStackScreen />
+		</NavigationContainer>
+	);
 };
 
 export default App;

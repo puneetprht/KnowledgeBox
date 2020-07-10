@@ -28,7 +28,7 @@ Video.getSubTopicList = (id, result) => {
 
 Video.getVideoList = (id, result) => {
 	sql.query(
-		`select v.hmy as id,videoname as value from video v
+		`select v.hmy as id,videoname as value, url as url, urlVideoId from video v
 		inner join subtopic st on st.hmy = v.fsubtopic
 		where st.hmy = ${id} `,
 		(err, res) => {

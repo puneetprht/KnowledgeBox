@@ -33,6 +33,17 @@ app.get('/getQuizList', (req, res) => {
 	});
 });
 
+app.get('/getQuizDetail', (req, res) => {
+	//console.log(req);
+	model.getQuizDetail(req.query.id, (err, data) => {
+		if (err)
+			res.status(500).send({
+				message: err.message || 'Error processing request..'
+			});
+		else res.send(data);
+	});
+});
+
 app.post('/addQuiz', (req, res) => {
 	model.addQuiz(req.body, (err, data) => {
 		if (err)

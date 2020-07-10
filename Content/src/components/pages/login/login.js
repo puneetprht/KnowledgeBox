@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react';
-import {View, Image, Dimensions} from 'react-native';
+import React, {useState} from 'react';
+import {View, Image, Dimensions, Text, TextInput,Alert, AsyncStorage, KeyboardAvoidingView} from 'react-native';
 import LoginBackground from './loginBackground';
 import * as Constants from '../../../constants/constants';
 import PButton from '../../../widgets/Button/pButton';
@@ -9,6 +9,10 @@ import PButton from '../../../widgets/Button/pButton';
 const Login = props => {
   var icon = require('../../../assets/iconLogin.png');
   global.isAdmin = false;
+  const [editMode, setEditMode] = useState(0);
+  const [email, setEmail] = useState(0);
+  const [password, setPassword] = useState(0);
+
   return (
     <>
       <View style={{flex: 46}}>
@@ -35,31 +39,30 @@ const Login = props => {
           alignItems: 'center',
         }}>
         <PButton
-          title="As Admin"
+          title="Sign In"
           onPress={() => {
-            props.navigation.navigate('StateList');
-            global.isAdmin = true;
+            props.navigation.navigate('SignIn');
+            //global.isAdmin = true;
           }}
           viewStyle={{
-            backgroundColor: '#ffffff',
+
             width: '75%',
             flexDirection: 'row',
             justifyContent: 'center',
           }}
-          textStyle={{color: Constants.textColor1, fontFamily: 'Roboto'}}
-          elementStyle={{flexDirection: 'row', justifyContent: 'center'}}
+          textStyle={{fontFamily: 'Roboto'}}
+          elementStyle={{flexDirection: 'row', justifyContent: 'center', margin: 20}}
         />
         <PButton
-          title="As User"
-          onPress={() => props.navigation.navigate('StateList')}
+          title="Sign up"
+          onPress={() => props.navigation.navigate('SignUp')}
           viewStyle={{
-            backgroundColor: '#ffffff',
             width: '75%',
             flexDirection: 'row',
             justifyContent: 'center',
           }}
-          textStyle={{color: Constants.textColor1, fontFamily: 'Roboto'}}
-          elementStyle={{flexDirection: 'row', justifyContent: 'center'}}
+          textStyle={{fontFamily: 'Roboto'}}
+          elementStyle={{flexDirection: 'row', justifyContent: 'center',margin: 20}}
         />
       </View>
       <Image
