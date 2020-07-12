@@ -32,7 +32,7 @@ const App = () => {
   return (
     <NavigationContainer>
       <StatusBar backgroundColor="blue" barStyle="light-content" />
-      <QuizStackScreen />
+      <VideoStackScreen />
     </NavigationContainer>
   );
 };

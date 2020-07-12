@@ -31,8 +31,9 @@ app.get('/getVideoList', (req, res) => {
 	});
 });
 
-app.post('/addVideo', (req, res) => {
-	model.addVideo(req.body, (err, data) => {
+app.post('/postVideo', (req, res) => {
+	model.postVideo(req.body, (err, data) => {
+		console.log('Error:', err);
 		if (err)
 			res.status(500).send({
 				message: err.message || 'Error processing request..'

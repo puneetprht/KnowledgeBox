@@ -53,6 +53,7 @@ const VideoTopicList = props => {
       user: user,
       stateId: stateId,
       catergoryId: catergoryId,
+      subjectId: subjectId,
     });
   };
 

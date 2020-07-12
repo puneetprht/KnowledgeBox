@@ -6,6 +6,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   Alert,
 } from 'react-native';
@@ -14,10 +15,21 @@ import * as Constants from '../../../constants/constants';
 import PButton from '../../../widgets/Button/pButton';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/AntDesign';
+import Icon2 from 'react-native-vector-icons/Feather';
 
 const VideoList = props => {
   const [list, setList] = useState([]);
-  const {SubTopicId, title, user, stateId, catergoryId} = props.route.params;
+  const {
+    SubTopicId,
+    title,
+    user,
+    stateId,
+    catergoryId,
+    subjectId,
+  } = props.route.params;
+  const [editMode, setEditMode] = useState(false);
+  const [videoName, setVideoName] = useState('');
+  const [videoUrl, setVideoUrl] = useState('');
 
   const fetchAllTopics = () => {
     axios
@@ -43,7 +55,7 @@ const VideoList = props => {
 
   const openDetail = (index, evt) => {
     props.navigation.navigate('VideoPlayback', {
-      videoId: index.id,
+      videoId: index.urlVideoId,
       title: index.value,
       user: user,
       stateId: stateId,
@@ -68,6 +80,34 @@ const VideoList = props => {
     }
   };
 
+  const postVideo = () => {
+    if (!videoName) {
+      Alert.alert('Please add a Video Name!');
+      return;
+    } else if (!videoUrl) {
+      Alert.alert('Please add a Video URL!');
+      return;
+    }
+    setEditMode(true);
+    axios
+      .post('http://10.0.2.2:3000/video/postVideo', {
+        subTopicId: SubTopicId,
+        subjectId: subjectId,
+        categoryId: catergoryId,
+        stateId: stateId,
+        videoName: videoName,
+        videoUrl: videoUrl,
+      })
+      .then(response => {
+        setEditMode(false);
+        fetchAllTopics();
+      })
+      .catch(err => {
+        setEditMode(false);
+        Alert.alert('No Video Id detected.');
+      });
+  };
+
   return (
     <ContainerList
       title={title + ' videos'}
@@ -82,7 +122,7 @@ const VideoList = props => {
                 </View>
                 <View style={styles.boxRight}>
                   <PButton
-                    title="Start"
+                    title="Watch"
                     onPress={openDetail.bind(this, l)}
                     viewStyle={styles.button}
                     textStyle={{fontSize: 17}}
@@ -109,21 +149,72 @@ const VideoList = props => {
             );
           })}
           {user.isAdmin ? (
-            <View style={{marginTop: 10}}>
-              <PButton
-                title="Add Video"
-                onPress={() => Alert.alert('add new video')}
-                viewStyle={{
-                  width: '55%',
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                }}
-                elementStyle={{
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                }}
-              />
-            </View>
+            editMode ? (
+              <View>
+                <View
+                  style={{
+                    ...styles.boxLeft,
+                    borderRightWidth: 0,
+                    marginTop: 10,
+                    marginHorizontal: 10,
+                  }}>
+                  <TextInput
+                    textAlign="center"
+                    style={{
+                      ...styles.textArea,
+                      width: '100%',
+                    }}
+                    placeholder="Enter Video URL"
+                    onChangeText={val => setVideoUrl(val)}
+                  />
+                </View>
+                <View style={styles.boxSimple}>
+                  <View style={styles.boxLeft}>
+                    <TextInput
+                      textAlign="center"
+                      style={styles.textArea}
+                      placeholder="Enter Video Name"
+                      onChangeText={val => setVideoName(val)}
+                    />
+                  </View>
+                  <View flexDirection="row" style={styles.boxRightOptions}>
+                    <TouchableOpacity
+                      onPress={postVideo.bind(this)}
+                      style={{...styles.icon, backgroundColor: '#1fc281'}}>
+                      <Icon2 name="check" style={{color: 'white'}} size={25} />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => {
+                        setEditMode(false);
+                        setVideoName('');
+                        setVideoUrl('');
+                      }}
+                      style={{
+                        ...styles.icon,
+                        backgroundColor: '#de3500',
+                      }}>
+                      <Icon name="close" style={{color: 'white'}} size={25} />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+            ) : (
+              <View style={{marginTop: 10}}>
+                <PButton
+                  title="Add Video"
+                  onPress={() => setEditMode(true)}
+                  viewStyle={{
+                    width: '55%',
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                  }}
+                  elementStyle={{
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                  }}
+                />
+              </View>
+            )
           ) : (
             <View />
           )}
@@ -184,6 +275,7 @@ const styles = StyleSheet.create({
     borderColor: Constants.textColor1,
     width: '90%',
     fontSize: 20,
+    borderRadius: 5,
   },
   icon: {
     padding: 10,

@@ -48,20 +48,29 @@ Video.getVideoList = (id, result) => {
 	);
 };
 
-Video.addVideo = (body, result) => {
+Video.postVideo = (body, result) => {
 	console.log(body);
-	sql.query(
-		`insert into video (videoname,url,fsubtopic,fsubject,fcategory,fstate)
-        value ('First Video', 'https://www.youtube.com/watch?v=8NyP_XzqgGA', 1,1,1,1)`,
-		(err, res) => {
-			if (err) {
-				console.log('error: ', err);
-				result(err, null);
+	let urlVideoId = getQueryParams('v', body.videoUrl);
+	console.log(urlVideoId);
+	if (urlVideoId) {
+		console.log('posting video data');
+		sql.query(
+			`insert into video (videoname,url,fsubtopic,fsubject,fcategory,fstate,urlVideoId)
+        value ('${body.videoName}', '${body.videoUrl}', ${body.subTopicId},${body.subjectId},${body.categoryId},${body.stateId},'${urlVideoId}')`,
+			(err, res) => {
+				if (err) {
+					console.log('error: ', err);
+					result(err, null);
+					return;
+				}
+				result(null, null);
 				return;
 			}
-			result(null, null);
-		}
-	);
+		);
+	} else {
+		result('No Video Id detected.', null);
+		return;
+	}
 };
 
 Video.deleteVideo = (body, result) => {
@@ -78,6 +87,14 @@ Video.deleteVideo = (body, result) => {
 			result(null, null);
 		}
 	);
+};
+
+const getQueryParams = (params, url) => {
+	let href = url;
+	//this expression is to get the query strings
+	let reg = new RegExp('[?&]' + params + '=([^&#]*)', 'i');
+	let queryString = reg.exec(href);
+	return queryString ? queryString[1] : null;
 };
 
 module.exports = Video;
