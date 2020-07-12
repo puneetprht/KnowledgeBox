@@ -20,6 +20,7 @@ import axios from 'axios';
 const QuizQuestionnaire = props => {
   const [key, setKey] = useState(0);
   const {quizId, title, user, stateId, catergoryId} = props.route.params;
+  const [isSubmit, setIsSubmit] = useState(false);
 
   const [questionsList, setQuestionsList] = useState([]);
   const fetchQuizDetail = quizId => {
@@ -45,27 +46,92 @@ const QuizQuestionnaire = props => {
     fetchQuizDetail(quizId);
   }, []);
 
-  const [chosen, setChosen] = useState([[], [], [], []]);
-  const checkAnswer = (index, evt) => {
-    var list = Array.from(chosen);
-    if (!list[key].includes(index)) {
-      list[key].push(index);
+  const onOptionPress = index => {
+    const questions = JSON.parse(JSON.stringify(questionsList));
+    if (
+      questions[key].selectedAnswer.includes(index) &&
+      questions[key].isMultiple
+    ) {
+      questions[key].selectedAnswer.splice(
+        questions[key].selectedAnswer.indexOf(index),
+        1,
+      );
+      questions[key].options[index - 1].isSelected = false;
+    } else if (
+      questions[key].selectedAnswer.includes(index) &&
+      !questions[key].isMultiple
+    ) {
+      questions[key].selectedAnswer = [];
+      questions[key].options[index - 1].isSelected = false;
+    } else {
+      if (questions[key].isMultiple) {
+        questions[key].selectedAnswer.push(index);
+        questions[key].selectedAnswer.sort();
+        questions[key].options[index - 1].isSelected = true;
+      } else {
+        questions[key].selectedAnswer = [];
+        questions[key].selectedAnswer.push(index);
+        questions[key].options.forEach(element => {
+          element.isSelected = false;
+        });
+        questions[key].options[index - 1].isSelected = true;
+      }
     }
-    setChosen(list);
+    setQuestionsList(questions);
+  };
+
+  const calculateScore = () => {
+    let correct = 0;
+    questionsList.forEach(element => {
+      if (element.selectedAnswer.toString() === element.correctOption) {
+        correct++;
+      }
+    });
+    return parseFloat(((correct / questionsList.length) * 100).toFixed(2));
+  };
+
+  const submitAnswers = () => {
+    setIsSubmit(true);
+    const submitAnswers = [];
+    for (let i = 0; i < questionsList.length; i++) {
+      let answer = {};
+      answer.selectedAnswer = questionsList[i].selectedAnswer.toString();
+      answer.quizDetailId = questionsList[i].id;
+      answer.isCorrect =
+        questionsList[i].selectedAnswer.toString() ===
+        questionsList[i].correctOption;
+      submitAnswers.push(answer);
+    }
+    axios
+      .post('http://10.0.2.2:3000/quiz/postQuizAnswers', {
+        quizId: quizId,
+        userId: user.id,
+        score: calculateScore(),
+        answers: submitAnswers,
+      })
+      .then(response => {
+        setIsSubmit(false);
+        props.navigation.navigate('QuizResult', {
+          questionsList: questionsList,
+        });
+      })
+      .catch(err => {
+        setIsSubmit(false);
+        console.log(err);
+      });
   };
 
   const nextQuestion = (index, evt) => {
     if (index < questionsList.length - 1) {
       setKey(index + 1);
     } else {
-      Alert.alert('Call backend');
+      submitAnswers();
     }
   };
 
   const prevQuestion = (index, evt) => {
-    //if (index < questionsList.length - 1) {
     setKey(index - 1);
-    //}
+    setIsSubmit(false);
   };
 
   return (
@@ -105,18 +171,45 @@ const QuizQuestionnaire = props => {
               </View>
             </View>
             <View style={{alignItems: 'center'}}>
-              {renderProgressBar(questionsList.length, questionsList[key].id)}
+              {renderProgressBar(
+                questionsList.length,
+                questionsList[key].count,
+              )}
             </View>
             <View style={{alignItems: 'center', justifyContent: 'center'}}>
               <Text style={{fontSize: 20, marginTop: 10, color: 'white'}}>
-                Question {questionsList[key].id}
+                Question {questionsList[key].count}
               </Text>
               <Text style={{fontSize: 18, margin: 10, color: 'white'}}>
                 Question {questionsList[key].question}
               </Text>
             </View>
           </LinearGradient>
-          <View style={{alignItems: 'center', margin: 20}}>
+          <View
+            style={{
+              alignItems: 'center',
+            }}>
+            <View
+              style={{
+                width: '80%',
+                backgroundColor: 'orange',
+                borderBottomRightRadius: 15,
+                borderBottomLeftRadius: 15,
+              }}>
+              <Text
+                style={{
+                  color: 'white',
+                  textAlign: 'center',
+                  fontSize: 20,
+                  margin: 3,
+                }}>
+                {!questionsList[key].isMultiple
+                  ? 'Single Choice'
+                  : 'Multiple Choice'}
+              </Text>
+            </View>
+          </View>
+          <View style={{alignItems: 'center', margin: 10, marginTop: 15}}>
             {questionsList[key].options.map(option => {
               return (
                 <View
@@ -124,11 +217,12 @@ const QuizQuestionnaire = props => {
                   style={{
                     ...styles.stayElevated,
                     borderWidth: 3,
-                    borderColor: chosen[key].includes(option.id)
+                    borderColor: option.isSelected
                       ? Constants.textColor1
                       : 'white',
                   }}>
-                  <TouchableOpacity onPress={checkAnswer.bind(this, option.id)}>
+                  <TouchableOpacity
+                    onPress={onOptionPress.bind(this, option.id)}>
                     <ElevatedView elevation={5} style={{borderRadius: 10}}>
                       <Text
                         style={{
@@ -168,15 +262,21 @@ const QuizQuestionnaire = props => {
                 <View />
               )}
             </View>
-            <PButton
-              title={key == questionsList.length - 1 ? 'Submit' : 'Next'}
-              onPress={nextQuestion.bind(this, key)}
-              viewStyle={{
-                flexDirection: 'row',
-                justifyContent: 'center',
-              }}
-              elementStyle={{flexDirection: 'row', justifyContent: 'center'}}
-            />
+            {isSubmit ? (
+              <View style={{justifyContent: 'center', alignContent: 'center'}}>
+                <ActivityIndicator size="large" color="#0000ff" />
+              </View>
+            ) : (
+              <PButton
+                title={key == questionsList.length - 1 ? 'Submit' : 'Next'}
+                onPress={nextQuestion.bind(this, key)}
+                viewStyle={{
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                }}
+                elementStyle={{flexDirection: 'row', justifyContent: 'center'}}
+              />
+            )}
           </View>
         </ScrollView>
       ) : (

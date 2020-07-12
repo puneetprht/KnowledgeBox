@@ -17,7 +17,15 @@ import Icon from 'react-native-vector-icons/AntDesign';
 
 const QuizList = props => {
   const [list, setList] = useState([]);
-  const {SubTopicId, title, user, stateId, catergoryId} = props.route.params;
+  const {
+    SubTopicId,
+    title,
+    user,
+    stateId,
+    catergoryId,
+    subjectId,
+  } = props.route.params;
+  let {refresh} = props.route.params;
 
   const fetchAllTopics = () => {
     axios
@@ -39,7 +47,8 @@ const QuizList = props => {
   };
   useEffect(() => {
     fetchAllTopics();
-  }, []);
+    refresh = false;
+  }, [refresh]);
 
   const openDetail = (index, evt) => {
     props.navigation.navigate('QuizQuestionnaire', {
@@ -66,6 +75,17 @@ const QuizList = props => {
           console.log(err);
         });
     }
+  };
+
+  const addQuiz = () => {
+    props.navigation.navigate('QuizAdmin', {
+      user: user,
+      stateId: stateId,
+      catergoryId: catergoryId,
+      subjectId: subjectId,
+      subTopicId: SubTopicId,
+      title: title,
+    });
   };
 
   return (
@@ -112,7 +132,7 @@ const QuizList = props => {
             <View style={{marginTop: 10}}>
               <PButton
                 title="Add Quiz"
-                onPress={() => Alert.alert('add new quiz')}
+                onPress={() => addQuiz()}
                 viewStyle={{
                   width: '55%',
                   flexDirection: 'row',

@@ -43,7 +43,7 @@ app.get('/getQuizDetail', (req, res) => {
 		else res.send(data);
 	});
 });
-
+/*
 app.post('/addQuiz', (req, res) => {
 	model.addQuiz(req.body, (err, data) => {
 		if (err)
@@ -53,9 +53,29 @@ app.post('/addQuiz', (req, res) => {
 		else res.status(200).send();
 	});
 });
-
+*/
 app.delete('/deleteQuiz', (req, res) => {
 	model.deleteQuiz(req.body, (err, data) => {
+		if (err)
+			res.status(500).send({
+				message: err.message || 'Error processing request..'
+			});
+		else res.status(200).send();
+	});
+});
+
+app.post('/postQuizAnswers', (req, res) => {
+	model.postQuizAnswers(req.body, (err, data) => {
+		if (err)
+			res.status(500).send({
+				message: err.message || 'Error processing request..'
+			});
+		else res.status(200).send();
+	});
+});
+
+app.post('/postQuiz', (req, res) => {
+	model.postQuiz(req.body, (err, data) => {
 		if (err)
 			res.status(500).send({
 				message: err.message || 'Error processing request..'

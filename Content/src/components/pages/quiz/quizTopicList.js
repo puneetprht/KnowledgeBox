@@ -53,6 +53,8 @@ const QuizTopicList = props => {
       user: user,
       stateId: stateId,
       catergoryId: catergoryId,
+      subjectId: subjectId,
+      refresh: true,
     });
   };
 

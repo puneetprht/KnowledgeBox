@@ -4,7 +4,10 @@ import * as Constants from '../../constants/constants';
 
 const PButton = props => {
   return (
-    <TouchableOpacity onPress={props.onPress} style={{...props.elementStyle}}>
+    <TouchableOpacity
+      onPress={props.onPress}
+      style={{...props.elementStyle}}
+      disabled={props.disable}>
       <View style={{...styles.button, ...props.viewStyle}}>
         <Text style={{...styles.buttonText, ...props.textStyle}}>
           {props.title}
