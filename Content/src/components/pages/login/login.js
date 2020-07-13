@@ -13,6 +13,21 @@ const Login = props => {
   const [email, setEmail] = useState(0);
   const [password, setPassword] = useState(0);
 
+  const storeCookieData = async (isAdmin) => {
+    try {
+      await AsyncStorage.setItem(
+        'userId',
+        1
+      );
+      await AsyncStorage.setItem(
+        'userAdmin',
+        isAdmin
+      );
+    } catch (error) {
+      // Error saving data
+    }
+  };
+
   return (
     <>
       <View style={{flex: 46}}>
@@ -39,9 +54,10 @@ const Login = props => {
           alignItems: 'center',
         }}>
         <PButton
-          title="Sign In"
+          title="Login as Admin"
           onPress={() => {
-            props.navigation.navigate('SignIn');
+            //storeCookieData(0);
+            props.navigation.navigate('StateList',{user:{id:1, isAdmin: 1}});
             //global.isAdmin = true;
           }}
           viewStyle={{
@@ -54,8 +70,11 @@ const Login = props => {
           elementStyle={{flexDirection: 'row', justifyContent: 'center', margin: 20}}
         />
         <PButton
-          title="Sign up"
-          onPress={() => props.navigation.navigate('SignUp')}
+          title="Login as User"
+          onPress={() => {
+            //storeCookieData(0);
+            props.navigation.navigate('StateList',{user:{id:1, isAdmin: 0}}
+            );}}
           viewStyle={{
             width: '75%',
             flexDirection: 'row',

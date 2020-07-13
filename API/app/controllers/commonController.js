@@ -83,4 +83,44 @@ app.delete('/deleteSubTopic', (req, res) => {
 	});
 });
 
+app.get('/getCategoryList', (req, res) => {
+	model.getCategoryList(req.query.id, (err, data) => {
+		if (err)
+			res.status(500).send({
+				message: err.message || 'Error processing request..'
+			});
+		else res.send(data);
+	});
+});
+
+app.post('/postCategoryForUser', (req, res) => {
+	model.postCategoryForUser(req.body, (err, data) => {
+		if (err)
+			res.status(500).send({
+				message: err.message || 'Error processing request..'
+			});
+		else res.status(200).send();
+	});
+});
+
+app.post('/postCategory', (req, res) => {
+	model.postCategory(req.body, (err, data) => {
+		if (err)
+			res.status(500).send({
+				message: err.message || 'Error processing request..'
+			});
+		else res.status(200).send();
+	});
+});
+
+app.delete('/deleteCategory', (req, res) => {
+	model.deleteCategory(req.body, (err, data) => {
+		if (err)
+			res.status(500).send({
+				message: err.message || 'Error processing request..'
+			});
+		else res.status(200).send();
+	});
+});
+
 module.exports = app;

@@ -8,18 +8,11 @@
  */
 
 import React from 'react';
-import {
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-  KeyboardAvoidingView,
-} from 'react-native';
-import {NavigationContainer} from '@react-navigation/native';
+import { StyleSheet, ScrollView, View, Text, StatusBar, KeyboardAvoidingView } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
 
 import Home from './src/components/pages/home/home';
-import QuizTopicList from './src/components/pages/quiz/quizTopicList';
+import TopicList from './src/components/pages/login/topicList';
 import QuizList from './src/components/pages/quiz/quizList';
 import QuizAdmin from './src/components/pages/quiz/quizAdmin';
 import QuizStackScreen from './src/components/navigation/QuizNavigator';
@@ -29,12 +22,12 @@ import StateStackScreen from './src/components/navigation/StateNavigator';
 import RootStackScreen from './src/components/navigation/MainNavigator';
 
 const App = () => {
-  return (
-    <NavigationContainer>
-      <StatusBar backgroundColor="blue" barStyle="light-content" />
-      <VideoStackScreen />
-    </NavigationContainer>
-  );
+	return (
+		<NavigationContainer>
+			<StatusBar backgroundColor="blue" barStyle="light-content" />
+			<RootStackScreen />
+		</NavigationContainer>
+	);
 };
 
 export default App;
