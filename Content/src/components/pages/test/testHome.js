@@ -33,7 +33,7 @@ const TestHome = props => {
 
   useEffect(() => {
     axios
-      .get('http://10.0.2.2:3000/common/getDropdown', {
+      .get('http://3.7.66.184:3000/common/getDropdown', {
         params: {
           userId: user.id,
           stateId: state,
@@ -52,7 +52,7 @@ const TestHome = props => {
 
   const fetchAllSubjects = () => {
     axios
-      .get('http://10.0.2.2:3000/common/getAllSubjectForUser', {
+      .get('http://3.7.66.184:3000/common/getAllSubjectForUser', {
         params: {
           userId: user.id,
           stateId: state,
@@ -73,7 +73,7 @@ const TestHome = props => {
 
   const fetchSubjectList = categoryId => {
     axios
-      .get('http://10.0.2.2:3000/common/getSubjectList', {
+      .get('http://3.7.66.184:3000/common/getSubjectList', {
         params: {
           id: categoryId,
         },
@@ -112,7 +112,7 @@ const TestHome = props => {
   const saveSubject = value => {
     if (value) {
       axios
-        .post('http://10.0.2.2:3000/common/addSubject', {
+        .post('http://3.7.66.184:3000/common/addSubject', {
           subjectName: value,
           categoryId: category,
           stateId: state,
@@ -130,7 +130,7 @@ const TestHome = props => {
   const deleteSubject = id => {
     if (id) {
       axios
-        .delete('http://10.0.2.2:3000/common/deleteSubject', {
+        .delete('http://3.7.66.184:3000/common/deleteSubject', {
           data: {
             id: id,
           },

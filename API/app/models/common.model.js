@@ -5,7 +5,7 @@ const Common = function(common) {};
 Common.getDropdownData = (id, stateid, result) => {
 	sql.query(
 		`select c.hmy as value, categoryname as label  from subject s 
-    inner join category c on c.hmy = s.fcategory inner join 
+    right outer join category c on c.hmy = s.fcategory inner join 
     state st on c.fstate = st.hmy inner join categoryxref cx on c.hmy = cx.fcategory 
     and cx.fuser = ${id} and st.hmy = ${stateid} group by c.hmy`,
 		(err, res) => {
@@ -17,7 +17,7 @@ Common.getDropdownData = (id, stateid, result) => {
 			if (res.length) {
 				res = JSON.parse(JSON.stringify(res));
 				res.push({ value: -1, label: 'All' });
-				//console.log(res);
+				console.log(res);
 				result(null, res);
 				return;
 			}
@@ -143,7 +143,7 @@ Common.deleteSubTopic = (body, result) => {
 
 Common.getCategoryList = (id, result) => {
 	sql.query(
-		`select c.hmy as id, categoryname as name from
+		`select ROW_NUMBER() OVER (ORDER BY (SELECT 1)) AS number,c.hmy as id, categoryname as name from
     category c inner join 
     state st on c.fstate = st.hmy where st.hmy = ${id}`,
 		(err, res) => {

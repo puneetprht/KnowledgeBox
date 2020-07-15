@@ -33,7 +33,7 @@ const VideoList = props => {
 
   const fetchAllTopics = () => {
     axios
-      .get('http://10.0.2.2:3000/Video/getVideoList', {
+      .get('http://3.7.66.184:3000/Video/getVideoList', {
         params: {
           id: SubTopicId,
         },
@@ -66,7 +66,7 @@ const VideoList = props => {
   const deleteVideo = id => {
     if (id) {
       axios
-        .delete('http://10.0.2.2:3000/video/deleteVideo', {
+        .delete('http://3.7.66.184:3000/video/deleteVideo', {
           data: {
             id: id,
           },
@@ -90,7 +90,7 @@ const VideoList = props => {
     }
     setEditMode(true);
     axios
-      .post('http://10.0.2.2:3000/video/postVideo', {
+      .post('http://3.7.66.184:3000/video/postVideo', {
         subTopicId: SubTopicId,
         subjectId: subjectId,
         categoryId: catergoryId,
