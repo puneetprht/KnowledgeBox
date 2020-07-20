@@ -19,11 +19,11 @@ import PButton from '../../../widgets/Button/pButton';
 import ElevatedView from 'react-native-elevated-view';
 import axios from 'axios';
 
-const QuizAdmin = (props) => {
+const TestAdmin = (props) => {
 	const [ key, setKey ] = useState(0);
 	const { user, stateId, catergoryId, subjectId, subTopicId, title } = props.route.params;
 	const [ isSubmit, setIsSubmit ] = useState(false);
-	const [ quizName, setQuizName ] = useState('');
+	const [ testName, setTestName ] = useState('');
 	const questionObject = {
 		question: '',
 		option1: '',
@@ -54,21 +54,21 @@ const QuizAdmin = (props) => {
 		setQuestionsList(questions);
 	};
 
-	const submitQuiz = () => {
+	const submitTest = () => {
 		setIsSubmit(true);
 		const submitAnswers = [];
 		axios
-			.post('http://10.0.2.2:3000/quiz/postQuiz', {
+			.post('http://10.0.2.2:3000/test/postTest', {
 				subTopicId: subTopicId,
 				subjectId: subjectId,
 				categoryId: catergoryId,
 				stateId: stateId,
 				questions: questionsList,
-				quizName: quizName
+				testName: testName
 			})
 			.then((response) => {
 				setIsSubmit(false);
-				props.navigation.navigate('QuizList', {
+				props.navigation.navigate('TestList', {
 					SubTopicId: subTopicId,
 					title: title,
 					user: user,
@@ -137,8 +137,8 @@ const QuizAdmin = (props) => {
 									width: '70%',
 									alignSelf: 'center'
 								}}
-								placeholder="Enter Quiz Name"
-								onChangeText={(val) => setQuizName(val)}
+								placeholder="Enter Test Name"
+								onChangeText={(val) => setTestName(val)}
 							/>
 							<View style={{ position: 'absolute', paddingLeft: 15 }}>
 								<TouchableOpacity onPress={() => props.navigation.goBack()}>
@@ -431,8 +431,8 @@ const QuizAdmin = (props) => {
 							</View>
 						) : (
 							<PButton
-								title={'Submit Quiz'}
-								onPress={() => submitQuiz()}
+								title={'Submit Test'}
+								onPress={() => submitTest()}
 								disable={
 									!(
 										questionsList[key].question &&
@@ -578,4 +578,4 @@ const styles = StyleSheet.create({
 	}
 });
 
-export default QuizAdmin;
+export default TestAdmin;

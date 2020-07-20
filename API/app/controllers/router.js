@@ -1,6 +1,6 @@
 const express = require('express');
 const user = require('./userController');
-const state = require('./stateController');
+const home = require('./homeController');
 const common = require('./commonController');
 const quiz = require('./quizController');
 const video = require('./videoController');
@@ -8,7 +8,7 @@ const test = require('./testController');
 var router = express.Router();
 
 router.use('/user', user);
-router.use('/state', state);
+router.use('/home', home);
 router.use('/common', common);
 router.use('/quiz', quiz);
 router.use('/video', video);

@@ -1,8 +1,8 @@
 import axios from 'axios';
 // Next we make an 'instance' of it
 const instance = axios.create({
-  // .. where we make our configurations
-  baseURL: 'http://3.7.66.184:3000',
+	// .. where we make our configurations
+	baseURL: 'http://10.0.2.2:3000'
 });
 
 /*

@@ -22,6 +22,7 @@ Quiz.getSubTopicList = (id, result) => {
 			}
 
 			result(null, null);
+			return;
 		}
 	);
 };
@@ -44,6 +45,7 @@ Quiz.getQuizList = (id, result) => {
 			}
 
 			result(null, null);
+			return;
 		}
 	);
 };
@@ -60,6 +62,7 @@ Quiz.addQuiz = (body, result) => {
 				return;
 			}
 			result(null, null);
+			return;
 		}
 	);
 };
@@ -76,6 +79,7 @@ Quiz.deleteQuiz = (body, result) => {
 				return;
 			}
 			result(null, null);
+			return;
 		}
 	);
 };
@@ -115,6 +119,7 @@ Quiz.getQuizDetail = (id, result) => {
 			}
 
 			result(null, null);
+			return;
 		}
 	);
 };

@@ -23,6 +23,7 @@ Common.getDropdownData = (id, stateid, result) => {
 			}
 
 			result(null, [ { value: 0, label: 'No categories' } ]);
+			return;
 		}
 	);
 };
@@ -48,6 +49,7 @@ Common.getAllSubjectForUser = (userId, stateId, result) => {
 				return;
 			}
 			result(null, null);
+			return;
 		}
 	);
 };
@@ -73,6 +75,7 @@ Common.getSubjectList = (Categoryid, result) => {
 			}
 
 			result(null, null);
+			return;
 		}
 	);
 };
@@ -89,6 +92,7 @@ Common.addSubject = (body, result) => {
 			}
 
 			result(null, null);
+			return;
 		}
 	);
 };
@@ -105,6 +109,7 @@ Common.deleteSubject = (body, result) => {
 			}
 
 			result(null, null);
+			return;
 		}
 	);
 };
@@ -121,6 +126,7 @@ Common.addSubTopic = (body, result) => {
 				return;
 			}
 			result(null, null);
+			return;
 		}
 	);
 };
@@ -137,6 +143,7 @@ Common.deleteSubTopic = (body, result) => {
 				return;
 			}
 			result(null, null);
+			return;
 		}
 	);
 };
@@ -158,13 +165,15 @@ Common.getCategoryList = (id, result) => {
 				result(null, res);
 				return;
 			}
-
+			result(null, null);
+			return;
 			//result(null, [ { value: 0, label: 'No categories' } ]);
 		}
 	);
 };
 
 Common.postCategoryForUser = (category, result) => {
+	console.log(category);
 	sql.query(
 		`delete from categoryxref where fstate = ${category.stateId} and fuser = ${category.userId}`,
 		(err, res) => {
