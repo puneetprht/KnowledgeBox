@@ -27,4 +27,14 @@ app.get('/GetUserState/:id', (req, res) => {
 	});
 });
 
+app.get('/SendVerification/', async (req, res) => {
+	await model.sendVerificationEmail(req.query.id, (err, data) => {
+		if (err)
+			res.status(500).send({
+				message: err.message || 'Some error occurred while fetching user state.'
+			});
+		else res.status(200).send(data);
+	});
+});
+
 module.exports = app;
