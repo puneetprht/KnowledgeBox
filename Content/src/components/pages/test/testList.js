@@ -15,7 +15,7 @@ const TestList = (props) => {
 
 	const fetchAllTopics = () => {
 		axios
-			.get('http://10.0.2.2:3000/test/getTestList', {
+			.get('http://3.7.66.184:3000/test/getTestList', {
 				params: {
 					id: SubTopicId
 				}
@@ -52,7 +52,7 @@ const TestList = (props) => {
 	const deleteTest = (id) => {
 		if (id) {
 			axios
-				.delete('http://10.0.2.2:3000/test/deleteTest', {
+				.delete('http://3.7.66.184:3000/test/deleteTest', {
 					data: {
 						id: id
 					}
@@ -78,7 +78,7 @@ const TestList = (props) => {
 	};
 
 	return (
-		<ContainerList title={title + ' testes'} onPress={() => props.navigation.goBack()}>
+		<ContainerList title={title + ' tests'} onPress={() => props.navigation.goBack()}>
 			<ScrollView style={{ marginBottom: 30 }}>
 				<View style={styles.Container}>
 					{list.map((l) => {
@@ -99,7 +99,7 @@ const TestList = (props) => {
 										}}
 									/>
 								</View>
-								{user.isAdmin ? (
+								{user && user.isAdmin ? (
 									<TouchableOpacity
 										onPress={deleteTest.bind(this, l.id)}
 										style={{
@@ -116,7 +116,7 @@ const TestList = (props) => {
 							</View>
 						);
 					})}
-					{user.isAdmin ? (
+					{user && user.isAdmin ? (
 						<View style={{ marginTop: 10 }}>
 							<PButton
 								title="Add Test"

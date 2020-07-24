@@ -96,7 +96,7 @@ Quiz.getQuizDetail = (id, result) => {
 				result(err, null);
 				return;
 			}
-			let count = 0;
+			let count = 1;
 			if (res.length) {
 				res = JSON.parse(JSON.stringify(res));
 				res.forEach((element) => {

@@ -25,7 +25,7 @@ const TestQuestionnaire = props => {
   const [questionsList, setQuestionsList] = useState([]);
   const fetchTestDetail = testId => {
     axios
-      .get('http://10.0.2.2:3000/test/getTestDetail', {
+      .get('http://3.7.66.184:3000/test/getTestDetail', {
         params: {
           id: testId,
         },
@@ -103,7 +103,7 @@ const TestQuestionnaire = props => {
       submitAnswers.push(answer);
     }
     axios
-      .post('http://10.0.2.2:3000/test/postTestAnswers', {
+      .post('http://3.7.66.184:3000/test/postTestAnswers', {
         testId: testId,
         userId: user.id,
         score: calculateScore(),

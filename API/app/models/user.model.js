@@ -8,6 +8,111 @@ const user = function(user) {
 	this.active = user.admin;
 };
 
+//GetUser should fetch details for the logged in user.
+const getUser = (userId, result) => {
+	sql.query(`SELECT * FROM user WHERE hmy = ${userId}`, (err, res) => {
+		if (err) {
+			console.log('error: ', err);
+			if (result) {
+				result(err, null);
+			}
+			return;
+		}
+
+		if (res.length) {
+			console.log('found user: ', res[0]);
+			if (result) {
+				result(null, res[0]);
+			}
+			return res[0];
+		}
+		result(null, null);
+	});
+};
+user.getUser = getUser;
+
+const getUserByEmail = async (userEmail) => {
+	sql.query(`SELECT * FROM user WHERE email = '${userEmail}'`, (err, res) => {
+		if (err) {
+			result(err, null);
+			return;
+		}
+		if (res.length) {
+			console.log('found user: ', res[0]);
+			if (result) {
+				result(null, res[0]);
+			}
+			return res[0];
+		}
+		result(null, null);
+	});
+};
+user.getUserByEmail = getUserByEmail;
+
+user.registerUser = async (user, result) => {
+	try {
+		let userFetch = {};
+		console.log(user);
+		sql.query(`SELECT * FROM user WHERE email = '${user.email}'`, (err, res) => {
+			if (err) {
+				result(err, null);
+				return;
+			}
+			let userFetch = res[0];
+			if (userFetch) {
+				result({ message: 'Email already registered!' }, null);
+				return;
+			}
+			sql.query(
+				`INSERT INTO user (firstname, lastname, email, password, phone, isAdmin) values ('${user.firstName}',
+				'${user.lastName}','${user.email}','${user.password}','${user.phoneNumber}', 0)`,
+				(err, res) => {
+					if (err) {
+						console.log('error: ', err);
+						result(err, null);
+						return;
+					}
+
+					console.log('created user: ', { hmy: res.insertId, ...user });
+					result(null, { hmy: res.insertId, ...user, isAdmin: 0 });
+					return;
+				}
+			);
+		});
+	} catch (error) {
+		result(error, null);
+		return;
+	}
+};
+
+user.authenticateUser = async (user, result) => {
+	try {
+		let userFetch = {};
+		console.log(user);
+		sql.query(
+			`SELECT hmy as id, firstname, lastname, email, password, phone, isAdmin, password FROM user WHERE email = '${user.email}'`,
+			(err, res) => {
+				if (err) {
+					result(err, null);
+					return;
+				}
+				let userFetch = res[0];
+				if (userFetch && userFetch.password === user.password) {
+					delete user.password;
+
+					result(null, userFetch);
+					return;
+				}
+				result({ message: 'Email/Password is wrong!' }, null);
+				return;
+			}
+		);
+	} catch (error) {
+		result(error, null);
+		return;
+	}
+};
+
 //create user while authentication.
 user.create = (newuser, result) => {
 	sql.query('INSERT INTO users SET ?', newuser, (err, res) => {
@@ -35,33 +140,6 @@ user.getUserState = (userId, result) => {
 			result(null, res);
 		});
 };
-
-//GetUser should fetch details for the logged in user.
-const getUser = (userId, result) => {
-	sql.query(`SELECT * FROM user WHERE hmy = ${userId}`, (err, res) => {
-		if (err) {
-			console.log('error: ', err);
-			if (result) {
-				result(err, null);
-			}
-			return;
-		}
-
-		if (res.length) {
-			console.log('found user: ', res[0]);
-			if (result) {
-				result(null, res[0]);
-			}
-			return res[0];
-		}
-
-		// not found user with the id
-		if (result) {
-			result({ message: 'No User' }, null);
-		}
-	});
-};
-user.getUser = getUser;
 
 user.updateById = (id, user, result) => {
 	sql.query(
@@ -119,22 +197,6 @@ user.removeAll = (result) => {
 };
 
 user.sendVerificationEmail = async (id, result) => {
-	/*let htmlBody =
-		'<div style="font-size:6px; line-height:10px; padding:0px 0px 0px 0px;" valign="top" align="center">';
-	htmlBody +=
-		'<img class="max-width" border="0" style="display:block; color:#000000; text-decoration:none; font-family:Helvetica, arial, sans-serif; font-size:16px; max-width:20% !important; width:20%; height:auto !important;" width="120" alt="" data-proportionally-constrained="true" data-responsive="true" src="http://cdn.mcauto-images-production.sendgrid.net/75379187249e0ae9/e8a778fe-17e6-4ffd-8cca-512c2e2e10e8/164x160.png">';
-	htmlBody += '</div>';
-	htmlBody +=
-		'<div style="font-family: inherit; text-align: inherit; margin-left: 0px"><span style="box-sizing: border-box; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; font-style: inherit; font-variant-ligatures: inherit; font-variant-caps: inherit; font-variant-numeric: inherit; font-variant-east-asian: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-size: 14px; vertical-align: baseline; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-style: initial; border-right-style: initial; border-bottom-style: initial; border-left-style: initial; border-top-color: initial; border-right-color: initial; border-bottom-color: initial; border-left-color: initial; border-image-source: initial; border-image-slice: initial; border-image-width: initial; border-image-outset: initial; border-image-repeat: initial; font-family: verdana, geneva, sans-serif; color: #003e92">Greeting from Knowledge box,</span></div>';
-	htmlBody += '<div style="font-family: inherit; text-align: inherit; margin-left: 0px"><br></div>';
-	htmlBody +=
-		'<div style="font-family: inherit; text-align: inherit; margin-left: 0px"><span style="box-sizing: border-box; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; font-style: inherit; font-variant-ligatures: inherit; font-variant-caps: inherit; font-variant-numeric: inherit; font-variant-east-asian: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-size: 14px; vertical-align: baseline; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-style: initial; border-right-style: initial; border-bottom-style: initial; border-left-style: initial; border-top-color: initial; border-right-color: initial; border-bottom-color: initial; border-left-color: initial; border-image-source: initial; border-image-slice: initial; border-image-width: initial; border-image-outset: initial; border-image-repeat: initial; font-family: verdana, geneva, sans-serif; color: #003e92">We are delighted to serve you with our Knowledge, Please verify and start learning.</span></div>';
-	htmlBody += '<br>';
-	htmlBody +=
-		'<div align="center" bgcolor="#003e92" class="inner-div" style="border-radius:6px; font-size:16px; text-align:center; background-color:inherit;">';
-	htmlBody +=
-		'<a href="https://www.google.com" style="background-color:#003e92; border:1px solid #003e92; border-color:#003e92; border-radius:30px; border-width:1px; color:#ffffff; display:inline-block; font-size:14px; font-weight:normal; letter-spacing:0px; line-height:normal; padding:12px 18px 12px 18px; text-align:center; text-decoration:none; border-style:solid;" target="_blank">Verify Email.</a>';
-	htmlBody += '</div>';*/
 	let user = {};
 	await getUser(id, (err, res) => {
 		if (err) {

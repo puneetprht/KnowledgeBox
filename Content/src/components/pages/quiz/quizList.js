@@ -15,7 +15,7 @@ const QuizList = (props) => {
 
 	const fetchAllTopics = () => {
 		axios
-			.get('http://10.0.2.2:3000/quiz/getQuizList', {
+			.get('http://3.7.66.184:3000/quiz/getQuizList', {
 				params: {
 					id: SubTopicId
 				}
@@ -52,7 +52,7 @@ const QuizList = (props) => {
 	const deleteQuiz = (id) => {
 		if (id) {
 			axios
-				.delete('http://10.0.2.2:3000/quiz/deleteQuiz', {
+				.delete('http://3.7.66.184:3000/quiz/deleteQuiz', {
 					data: {
 						id: id
 					}
@@ -99,7 +99,7 @@ const QuizList = (props) => {
 										}}
 									/>
 								</View>
-								{user.isAdmin ? (
+								{user && user.isAdmin ? (
 									<TouchableOpacity
 										onPress={deleteQuiz.bind(this, l.id)}
 										style={{
@@ -116,7 +116,7 @@ const QuizList = (props) => {
 							</View>
 						);
 					})}
-					{user.isAdmin ? (
+					{user && user.isAdmin ? (
 						<View style={{ marginTop: 10 }}>
 							<PButton
 								title="Add Quiz"

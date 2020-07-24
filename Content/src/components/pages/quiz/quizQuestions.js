@@ -25,7 +25,7 @@ const QuizQuestionnaire = props => {
   const [questionsList, setQuestionsList] = useState([]);
   const fetchQuizDetail = quizId => {
     axios
-      .get('http://10.0.2.2:3000/quiz/getQuizDetail', {
+      .get('http://3.7.66.184:3000/quiz/getQuizDetail', {
         params: {
           id: quizId,
         },
@@ -102,23 +102,30 @@ const QuizQuestionnaire = props => {
         questionsList[i].correctOption;
       submitAnswers.push(answer);
     }
-    axios
-      .post('http://10.0.2.2:3000/quiz/postQuizAnswers', {
-        quizId: quizId,
-        userId: user.id,
-        score: calculateScore(),
-        answers: submitAnswers,
-      })
-      .then(response => {
-        setIsSubmit(false);
-        props.navigation.navigate('QuizResult', {
-          questionsList: questionsList,
+    if (user) {
+      axios
+        .post('http://3.7.66.184:3000/quiz/postQuizAnswers', {
+          quizId: quizId,
+          userId: user.id,
+          score: calculateScore(),
+          answers: submitAnswers,
+        })
+        .then(response => {
+          setIsSubmit(false);
+          props.navigation.navigate('QuizResult', {
+            questionsList: questionsList,
+          });
+        })
+        .catch(err => {
+          setIsSubmit(false);
+          console.log(err);
         });
-      })
-      .catch(err => {
-        setIsSubmit(false);
-        console.log(err);
+    } else {
+      setIsSubmit(false);
+      props.navigation.navigate('QuizResult', {
+        questionsList: questionsList,
       });
+    }
   };
 
   const nextQuestion = (index, evt) => {

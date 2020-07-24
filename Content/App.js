@@ -8,8 +8,16 @@
  */
 
 import React from 'react';
-import { StyleSheet, ScrollView, View, Text, StatusBar, KeyboardAvoidingView } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import {
+  StyleSheet,
+  ScrollView,
+  View,
+  Text,
+  StatusBar,
+  KeyboardAvoidingView,
+} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import * as Constants from './src/constants/constants';
 
 import Home from './src/components/pages/home/home';
 import TopicList from './src/components/pages/login/topicList';
@@ -22,12 +30,12 @@ import StateStackScreen from './src/components/navigation/StateNavigator';
 import RootStackScreen from './src/components/navigation/MainNavigator';
 
 const App = () => {
-	return (
-		<NavigationContainer>
-			<StatusBar backgroundColor="blue" barStyle="light-content" />
-			<RootStackScreen />
-		</NavigationContainer>
-	);
+  return (
+    <NavigationContainer>
+      <StatusBar backgroundColor="#009CDE" barStyle="light-content" />
+      <RootStackScreen />
+    </NavigationContainer>
+  );
 };
 
 export default App;

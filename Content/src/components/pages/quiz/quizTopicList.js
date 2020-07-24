@@ -21,7 +21,7 @@ const QuizTopicList = (props) => {
 
 	const fetchAllTopics = () => {
 		axios
-			.get('http://10.0.2.2:3000/quiz/getSubTopicList', {
+			.get('http://3.7.66.184:3000/quiz/getSubTopicList', {
 				params: {
 					id: subjectId
 				}
@@ -53,7 +53,7 @@ const QuizTopicList = (props) => {
 	const saveSubject = (value) => {
 		if (value) {
 			axios
-				.post('http://10.0.2.2:3000/common/addSubTopic', {
+				.post('http://3.7.66.184:3000/common/addSubTopic', {
 					SubTopicName: value,
 					subjectId: subjectId,
 					catergoryId: catergoryId
@@ -71,7 +71,7 @@ const QuizTopicList = (props) => {
 	const deleteSubject = (id) => {
 		if (id) {
 			axios
-				.delete('http://10.0.2.2:3000/common/deleteSubTopic', {
+				.delete('http://3.7.66.184:3000/common/deleteSubTopic', {
 					data: {
 						id: id
 					}
@@ -102,7 +102,7 @@ const QuizTopicList = (props) => {
 										</Text>
 									</TouchableOpacity>
 								</View>
-								{user.isAdmin ? (
+								{user && user.isAdmin ? (
 									<TouchableOpacity
 										onPress={deleteSubject.bind(this, l.id)}
 										style={{
@@ -119,7 +119,7 @@ const QuizTopicList = (props) => {
 							</View>
 						);
 					})}
-					{user.isAdmin ? (
+					{user && user.isAdmin ? (
 						<View style={{ padding: 5 }}>
 							{editMode ? (
 								<View style={styles.boxSimple}>

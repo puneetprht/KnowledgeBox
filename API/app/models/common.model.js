@@ -54,6 +54,32 @@ Common.getAllSubjectForUser = (userId, stateId, result) => {
 	);
 };
 
+Common.getAllSubjectForNoUser = (categories, stateId, result) => {
+	console.log('categories:', categories);
+	sql.query(
+		`select s.hmy as id,concat(subjectname,'(',categoryname,')') as subject, 
+		count(stp.hmy) as count, c.hmy as category from  subject s 
+		left outer join subtopic stp on stp.fsubject = s.hmy 
+		inner join category c on c.hmy = s.fcategory inner join 
+    	state st on c.fstate = st.hmy where c.hmy in (${categories}) and st.hmy = ${stateId} group by s.hmy`,
+		(err, res) => {
+			if (err) {
+				console.log('error: ', err);
+				result(err, null);
+				return;
+			}
+			if (res.length) {
+				res = JSON.parse(JSON.stringify(res));
+				//console.log(res);
+				result(null, res);
+				return;
+			}
+			result(null, null);
+			return;
+		}
+	);
+};
+
 Common.getSubjectList = (Categoryid, result) => {
 	sql.query(
 		`select s.hmy as id,subjectname as subject,count(st.hmy) as count, s.fcategory as category

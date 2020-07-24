@@ -14,7 +14,7 @@ import axios from 'axios';
 const TopicList = (props) => {
 	const [ Topics, setTopics ] = useState([]);
 
-	const { stateId, title, user, isChange } = props.route.params; //props.route.params;
+	const { stateId, stateAcro, title, user, isChange } = props.route.params; //props.route.params;
 	const [ editMode, setEditMode ] = useState(false);
 	const [ addMode, setAddMode ] = useState(false);
 	const [ newCategory, setNewCategory ] = useState('');
@@ -24,13 +24,14 @@ const TopicList = (props) => {
 		global.stateId = stateId;
 		global.user = user;
 		global.title = title;
+		global.acro = stateAcro;
 	}
 	/*const retrieveData = async () => {
 		try {
 			const value = await AsyncStorage.getItem('userId');
 			const value2 = await AsyncStorage.getItem('userAdmin');
 			user.id = value || 1;
-			user.isAdmin = value2 || 0;
+			user && user.isAdmin = value2 || 0;
 			console.log('Value1: ', value, ' Value2: ', value2);
 		} catch (error) {
 			// Error retrieving data
@@ -40,7 +41,7 @@ const TopicList = (props) => {
 	const fetchAllTopics = () => {
 		console.log('state:', stateId);
 		axios
-			.get('http://10.0.2.2:3000/common/getCategoryList', {
+			.get('http://3.7.66.184:3000/common/getCategoryList', {
 				params: {
 					id: stateId
 				}
@@ -77,7 +78,9 @@ const TopicList = (props) => {
 	};
 
 	const continueForm = (index, evt) => {
-		postCategoryForUser();
+		if (user) {
+			postCategoryForUser();
+		}
 		global.selectedTopic = Topics.filter((topic) => {
 			return selectedTopic.includes(topic.id);
 		});
@@ -86,7 +89,7 @@ const TopicList = (props) => {
 
 	const postCategoryForUser = () => {
 		axios
-			.post('http://10.0.2.2:3000/common/postCategoryForUser', {
+			.post('http://3.7.66.184:3000/common/postCategoryForUser', {
 				stateId: stateId,
 				userId: user.id,
 				selectedTopic: selectedTopic
@@ -98,7 +101,7 @@ const TopicList = (props) => {
 	const saveCategory = (id) => {
 		setInRequest(true);
 		axios
-			.post('http://10.0.2.2:3000/common/postCategory', {
+			.post('http://3.7.66.184:3000/common/postCategory', {
 				id: id,
 				stateId: stateId,
 				categoryName: newCategory
@@ -121,7 +124,7 @@ const TopicList = (props) => {
 	const deleteCategory = (id) => {
 		setInRequest(true);
 		axios
-			.delete('http://10.0.2.2:3000/common/deleteCategory', {
+			.delete('http://3.7.66.184:3000/common/deleteCategory', {
 				data: {
 					id: id
 				}
@@ -187,7 +190,7 @@ const TopicList = (props) => {
 													{Topic.name}
 												</Text>
 											)}
-											{user.isAdmin ? (
+											{user && user.isAdmin ? (
 												<TouchableOpacity
 													onPress={deleteCategory.bind(this, Topic.id)}
 													disabled={inRequest}
@@ -208,7 +211,7 @@ const TopicList = (props) => {
 							</View>
 						);
 					})}
-					{user.isAdmin ? (
+					{user && user.isAdmin ? (
 						<View
 							style={{
 								...styles.boxSimple,

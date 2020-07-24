@@ -32,6 +32,21 @@ app.get('/getAllSubjectForUser', (req, res) => {
 	});
 });
 
+app.get('/getAllSubjectForNoUser', (req, res) => {
+	let selectedCategory = [];
+	for (const category of JSON.parse(req.query.selectedCategory)) {
+		selectedCategory.push(category.id);
+	}
+	console.log(selectedCategory);
+	model.getAllSubjectForNoUser(selectedCategory, req.query.stateId, (err, data) => {
+		if (err)
+			res.status(500).send({
+				message: err.message || 'Error processing request..'
+			});
+		else res.send(data);
+	});
+});
+
 app.get('/getSubjectList', (req, res) => {
 	model.getSubjectList(req.query.id, (err, data) => {
 		if (err)

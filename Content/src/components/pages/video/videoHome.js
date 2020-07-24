@@ -28,13 +28,39 @@ const VideoHome = (props) => {
 	const [ state, setState ] = useState(global.stateId);
 	const [ editMode, setEditMode ] = useState(false);
 	const [ newSubject, setNewSubject ] = useState('');
-	// setState(global.stateId);
-	// setUser(global.user);
 
 	useEffect(
 		() => {
+			if (user) {
+				axios
+					.get('http://3.7.66.184:3000/common/getDropdown', {
+						params: {
+							userId: user.id,
+							stateId: state
+						}
+					})
+					.then((response) => {
+						setDropdownList(response.data);
+					})
+					.catch((err) => {
+						console.log(err);
+					});
+			} else if (!user && global.selectedTopic.length) {
+				var topic = [ { value: 0, label: 'All' } ];
+				global.selectedTopic.forEach((element) => {
+					topic.push({ value: element.id, label: element.name });
+				});
+				setDropdownList(topic);
+			}
+			fetchAllSubjects();
+		},
+		[ user ]
+	);
+
+	const fetchAllSubjects = () => {
+		if (user) {
 			axios
-				.get('http://10.0.2.2:3000/common/getDropdown', {
+				.get('http://3.7.66.184:3000/common/getAllSubjectForUser', {
 					params: {
 						userId: user.id,
 						stateId: state
@@ -42,41 +68,39 @@ const VideoHome = (props) => {
 				})
 				.then((response) => {
 					//console.log(response);
-					setDropdownList(response.data);
+					if (response.data) {
+						setList(response.data);
+					} else {
+						setList([]);
+					}
 				})
 				.catch((err) => {
 					console.log(err);
 				});
-			fetchAllSubjects();
-			// eslint-disable-next-line react-hooks/exhaustive-deps
-		},
-		[ state, user ]
-	);
-
-	const fetchAllSubjects = () => {
-		axios
-			.get('http://10.0.2.2:3000/common/getAllSubjectForUser', {
-				params: {
-					userId: user.id,
-					stateId: state
-				}
-			})
-			.then((response) => {
-				//console.log(response);
-				if (response.data) {
-					setList(response.data);
-				} else {
-					setList([]);
-				}
-			})
-			.catch((err) => {
-				console.log(err);
-			});
+		} else {
+			axios
+				.get('http://3.7.66.184:3000/common/getAllSubjectForNoUser', {
+					params: {
+						selectedCategory: JSON.stringify(global.selectedTopic),
+						stateId: state
+					}
+				})
+				.then((response) => {
+					if (response.data) {
+						setList(response.data);
+					} else {
+						setList([]);
+					}
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+		}
 	};
 
 	const fetchSubjectList = (categoryId) => {
 		axios
-			.get('http://10.0.2.2:3000/common/getSubjectList', {
+			.get('http://3.7.66.184:3000/common/getSubjectList', {
 				params: {
 					id: categoryId
 				}
@@ -115,7 +139,7 @@ const VideoHome = (props) => {
 	const saveSubject = (value) => {
 		if (value) {
 			axios
-				.post('http://10.0.2.2:3000/common/addSubject', {
+				.post('http://3.7.66.184:3000/common/addSubject', {
 					subjectName: value,
 					categoryId: category,
 					stateId: state
@@ -133,7 +157,7 @@ const VideoHome = (props) => {
 	const deleteSubject = (id) => {
 		if (id) {
 			axios
-				.delete('http://10.0.2.2:3000/common/deleteSubject', {
+				.delete('http://3.7.66.184:3000/common/deleteSubject', {
 					data: {
 						id: id
 					}
@@ -214,7 +238,7 @@ const VideoHome = (props) => {
 												</Text>
 											</TouchableOpacity>
 										</View>
-										{user.isAdmin ? (
+										{user && user.isAdmin ? (
 											<TouchableOpacity
 												onPress={deleteSubject.bind(this, l.id)}
 												style={{
@@ -238,7 +262,7 @@ const VideoHome = (props) => {
 							</View>
 						)}
 					</View>
-					{category > 0 && user.isAdmin ? (
+					{category > 0 && user && user.isAdmin ? (
 						<View style={{ padding: 5 }}>
 							{editMode ? (
 								<View style={styles.boxSimple}>

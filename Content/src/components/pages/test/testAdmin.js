@@ -58,7 +58,7 @@ const TestAdmin = (props) => {
 		setIsSubmit(true);
 		const submitAnswers = [];
 		axios
-			.post('http://10.0.2.2:3000/test/postTest', {
+			.post('http://3.7.66.184:3000/test/postTest', {
 				subTopicId: subTopicId,
 				subjectId: subjectId,
 				categoryId: catergoryId,
