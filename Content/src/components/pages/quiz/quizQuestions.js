@@ -148,7 +148,7 @@ const QuizQuestionnaire = props => {
           <LinearGradient
             colors={[Constants.gradientColor1, Constants.gradientColor2]}
             style={{
-              paddingVertical: 20,
+              paddingVertical: 10,
               //height: '100%',
               //minHeight: 250,
               borderBottomLeftRadius: 15,
@@ -188,7 +188,7 @@ const QuizQuestionnaire = props => {
                 Question {questionsList[key].count}
               </Text>
               <Text style={{fontSize: 18, margin: 10, color: 'white'}}>
-                Question {questionsList[key].question}
+                {questionsList[key].question}
               </Text>
             </View>
           </LinearGradient>
@@ -198,7 +198,7 @@ const QuizQuestionnaire = props => {
             }}>
             <View
               style={{
-                width: '80%',
+                width: '70%',
                 backgroundColor: 'orange',
                 borderBottomRightRadius: 15,
                 borderBottomLeftRadius: 15,
@@ -207,7 +207,7 @@ const QuizQuestionnaire = props => {
                 style={{
                   color: 'white',
                   textAlign: 'center',
-                  fontSize: 20,
+                  fontSize: 17,
                   margin: 3,
                 }}>
                 {!questionsList[key].isMultiple
@@ -341,8 +341,8 @@ const styles = StyleSheet.create({
   },
   answerText: {
     textAlign: 'left',
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 18,
+    //fontWeight: 'bold',
     margin: 10,
 
     //color:

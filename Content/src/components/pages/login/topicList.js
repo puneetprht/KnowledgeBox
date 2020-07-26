@@ -25,20 +25,9 @@ const TopicList = (props) => {
 		global.title = title;
 		global.acro = stateAcro;
 	}
-	/*const retrieveData = async () => {
-		try {
-			const value = await AsyncStorage.getItem('userId');
-			const value2 = await AsyncStorage.getItem('userAdmin');
-			user.id = value || 1;
-			user && user.isAdmin = value2 || 0;
-			console.log('Value1: ', value, ' Value2: ', value2);
-		} catch (error) {
-			// Error retrieving data
-		}
-	};*/
 
 	const fetchAllTopics = () => {
-		console.log('state:', stateId);
+		//console.log('state:', stateId);
 		axios
 			.get('http://3.7.66.184:3000/common/getCategoryList', {
 				params: {
@@ -46,7 +35,7 @@ const TopicList = (props) => {
 				}
 			})
 			.then((response) => {
-				console.log('working');
+				//console.log('working');
 				if (response.data) {
 					setTopics(response.data);
 				} else {
@@ -167,7 +156,7 @@ const TopicList = (props) => {
 													color: selectedTopic.includes(Topic.id) ? 'white' : 'grey',
 													marginBottom: 10
 												}}
-												size={80}
+												size={70}
 											/>
 											{editMode === Topic.id ? (
 												<TextInput
@@ -323,7 +312,7 @@ const styles = StyleSheet.create({
 		alignItems: 'center'
 	},
 	text: {
-		fontSize: 20,
+		fontSize: 18,
 		fontWeight: 'bold',
 		marginBottom: 10
 	},

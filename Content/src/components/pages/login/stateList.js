@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
 	},
 	text: {
 		color: 'white',
-		fontSize: 23,
+		fontSize: 22,
 		fontWeight: 'bold',
 		zIndex: 2,
 		marginBottom: 10

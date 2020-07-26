@@ -167,7 +167,9 @@ const Home = (props) => {
 									style={{
 										flex: 10,
 										color: 'white',
-										fontSize: 20,
+										textAlign: 'left',
+										textAlignVertical: 'center',
+										fontSize: 18,
 										fontWeight: 'bold'
 									}}
 								>
@@ -264,8 +266,8 @@ const Home = (props) => {
 												<Image
 													source={require('../../../assets/icon2.png')}
 													style={{
-														height: 60,
-														width: 60,
+														height: 50,
+														width: 50,
 														borderRadius: 30
 													}}
 												/>
@@ -282,16 +284,22 @@ const Home = (props) => {
 										</View>
 										<View style={{ margin: 20 }}>
 											<PButton
-												title={object.object === 'video' ? 'Start' : 'Attempt'}
+												title={object.object === 'video' ? 'Watch' : 'Attempt'}
 												onPress={() => setEditMode(true)}
 												viewStyle={{
-													width: '70%',
+													width: '40%',
+													paddingVertical: 8,
+													paddingHorizontal: 15,
 													flexDirection: 'row',
 													justifyContent: 'center'
 												}}
 												elementStyle={{
 													flexDirection: 'row',
 													justifyContent: 'center'
+												}}
+												textStyle={{
+													fontSize: 15,
+													textAlignVertical: 'center'
 												}}
 											/>
 										</View>
@@ -339,16 +347,16 @@ const styles = StyleSheet.create({
 	},
 	textTitle: {
 		fontWeight: 'bold',
-		fontSize: 25
+		fontSize: 20
 	},
 	textTime: {
 		color: 'gray',
-		fontSize: 18
+		fontSize: 13
 	},
 	stayElevated: {
 		margin: 15,
 		marginBottom: 5,
-		padding: 20,
+		padding: 15,
 		backgroundColor: 'white',
 		borderRadius: 10,
 		justifyContent: 'center',
@@ -365,7 +373,7 @@ const styles = StyleSheet.create({
 		textAlign: 'center',
 		color: Constants.textColor1,
 		fontSize: 15,
-		fontWeight: 'bold',
+		//fontWeight: 'bold',
 		flex: 1,
 		justifyContent: 'center',
 		alignSelf: 'center',
@@ -375,7 +383,7 @@ const styles = StyleSheet.create({
 	textItemHorizontal: {
 		textAlign: 'center',
 		color: 'white',
-		fontSize: 20,
+		fontSize: 18,
 		justifyContent: 'center'
 	},
 	topMenu: {
@@ -385,12 +393,6 @@ const styles = StyleSheet.create({
 		alignContent: 'flex-start',
 		justifyContent: 'flex-start',
 		margin: 20
-	},
-	answerText: {
-		textAlign: 'left',
-		fontSize: 20,
-		fontWeight: 'bold',
-		margin: 10
 	}
 });
 

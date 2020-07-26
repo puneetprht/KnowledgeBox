@@ -212,12 +212,12 @@ const styles = StyleSheet.create({
 		alignItems: 'center'
 	},
 	textLeft: {
-		fontSize: 20,
+		fontSize: 18,
 		fontWeight: 'bold'
 	},
 	textRight: {
 		color: Constants.textColor1,
-		fontSize: 20,
+		fontSize: 18,
 		fontWeight: 'bold'
 	},
 	textArea: {

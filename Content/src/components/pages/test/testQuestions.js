@@ -200,7 +200,7 @@ const TestQuestionnaire = props => {
                 style={{
                   color: 'white',
                   textAlign: 'center',
-                  fontSize: 20,
+                  fontSize: 18,
                   margin: 3,
                 }}>
                 {!questionsList[key].isMultiple
@@ -334,7 +334,7 @@ const styles = StyleSheet.create({
   },
   answerText: {
     textAlign: 'left',
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     margin: 10,
 

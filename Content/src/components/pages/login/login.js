@@ -92,7 +92,7 @@ const Login = props => {
               props.navigation.replace('State');
             }}
             flexDirection="row">
-            <Text style={{color: Constants.textColor1, fontSize: 25}}>
+            <Text style={{color: Constants.textColor1, fontSize: 10}}>
               Skip
               <Icon name="chevron-right" size={20} />
             </Text>

@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
 		marginRight: 18,
 		marginTop: 18,
 		color: Constants.textColor1,
-		fontSize: 20,
+		fontSize: 15,
 		borderWidth: 2,
 		borderColor: Constants.textColor1,
 		borderRadius: 5

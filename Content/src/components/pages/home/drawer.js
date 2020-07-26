@@ -19,7 +19,12 @@ export function DrawerContent(props) {
 							<Avatar.Image source={avatar} size={50} />
 							<View style={{ marginLeft: 15, flexDirection: 'column' }}>
 								<Title style={styles.title}>
-									Hello, {global.user && global.user.firstName ? global.user.firstName : 'Genius'}
+									Hello,{' '}
+									{global.user && (global.user.firstName || global.user.firstname) ? (
+										global.user.firstName || global.user.firstname
+									) : (
+										'Genius'
+									)}
 								</Title>
 							</View>
 						</View>

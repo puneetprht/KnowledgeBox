@@ -211,19 +211,19 @@ const styles = StyleSheet.create({
 		alignItems: 'center'
 	},
 	textLeft: {
-		fontSize: 20,
+		fontSize: 18,
 		fontWeight: 'bold'
 	},
 	textRight: {
 		color: Constants.textColor1,
-		fontSize: 20,
+		fontSize: 18,
 		fontWeight: 'bold'
 	},
 	textArea: {
 		borderWidth: 1,
 		borderColor: Constants.textColor1,
 		width: '90%',
-		fontSize: 20
+		fontSize: 18
 	},
 	icon: {
 		padding: 10,
