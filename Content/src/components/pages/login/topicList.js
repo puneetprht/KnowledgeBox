@@ -22,7 +22,6 @@ const TopicList = (props) => {
 
 	if (isChange) {
 		global.stateId = stateId;
-		global.user = user;
 		global.title = title;
 		global.acro = stateAcro;
 	}

@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState} from 'react';
+import React, {useEffect} from 'react';
 import {
   View,
   Image,
@@ -8,15 +8,17 @@ import {
   Dimensions,
   StyleSheet,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import LoginBackground from './loginBackground';
 import * as Constants from '../../../constants/constants';
 import PButton from '../../../widgets/Button/pButton';
 import Icon from 'react-native-vector-icons/Entypo';
+import axios from 'axios';
 
 const Login = props => {
   var icon = require('../../../assets/iconLogin.png');
-
+  
   return (
     <>
       <View style={{flex: 46}}>
@@ -86,7 +88,8 @@ const Login = props => {
           flexDirection="row">
           <TouchableOpacity
             onPress={() => {
-              props.navigation.navigate('State');
+              global.user=null;
+              props.navigation.replace('State');
             }}
             flexDirection="row">
             <Text style={{color: Constants.textColor1, fontSize: 25}}>

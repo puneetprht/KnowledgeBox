@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import React, { useState } from 'react';
 //import { TextInput } from 'react-native-paper';
-import { Image, Text, StyleSheet, View, KeyboardAvoidingView, TextInput, Alert } from 'react-native';
+import { Image, Text, StyleSheet, View, KeyboardAvoidingView, TextInput, Alert, ScrollView } from 'react-native';
 import PButton from '../../../widgets/Button/pButton';
 import * as Constants from '../../../constants/constants';
 //import {validate} from 'validate';
@@ -39,7 +39,7 @@ const SignUp = (props) => {
 				setConfirmPassword('');
 				setPhoneNumber('');
 				global.user = response;
-				props.navigation.navigate('State');
+				props.navigation.replace('State');
 				//Alert.alert(JSON.stringify(response));
 			})
 			.catch((err) => {
@@ -149,62 +149,64 @@ const SignUp = (props) => {
 			style={{
 				justifyContent: 'center',
 				backgroundColor: 'white',
-				height: '100%'
+				height: '100%',
+				paddingBottom: 50
 			}}
 		>
-			<Image source={require('../../../assets/icon.png')} style={{ alignSelf: 'center', marginTop: -50 }} />
-			<Text
-				style={{
-					textAlign: 'center',
-					fontSize: 30,
-					color: Constants.textColor1,
-					marginLeft: 18,
-					marginTop: 10
-				}}
-			>
-				Sign Up.
-			</Text>
-			<TextInput
-				label="FirstName"
-				maxLength={40}
-				placeholder="Enter First name."
-				autoFocus={true}
-				value={firstName}
-				style={styles.text}
-				theme={{ colors: { primary: 'blue' } }}
-				onChangeText={(text) => {
-					setFirstName(text);
-					checkFormValid(text, 'FirstName');
-				}}
-			/>
-			<TextInput
-				label="LastName"
-				maxLength={40}
-				placeholder="Enter Last name."
-				value={lastName}
-				style={styles.text}
-				theme={{ colors: { primary: 'blue' } }}
-				onChangeText={(text) => {
-					setLastName(text);
-					checkFormValid(text, 'LastName');
-				}}
-			/>
-			{/* <View style={{justifyContent: 'center'}}> */}
-			<TextInput
-				label="Email"
-				keyboardType="email-address"
-				maxLength={40}
-				placeholder="Enter Valid Email."
-				value={email}
-				style={styles.text}
-				theme={{ colors: { primary: 'blue' } }}
-				onChangeText={(text) => {
-					setEmail(text);
-					//checkEmail(text);
-					checkFormValid(text, 'Email');
-				}}
-			/>
-			{/* <Icon
+			<ScrollView>
+				<Image source={require('../../../assets/icon.png')} style={{ alignSelf: 'center', marginTop: 10 }} />
+				<Text
+					style={{
+						textAlign: 'center',
+						fontSize: 30,
+						color: Constants.textColor1,
+						marginLeft: 18,
+						marginTop: 5
+					}}
+				>
+					Sign Up.
+				</Text>
+				<TextInput
+					label="FirstName"
+					maxLength={40}
+					placeholder="Enter First name."
+					autoFocus={true}
+					value={firstName}
+					style={styles.text}
+					theme={{ colors: { primary: 'blue' } }}
+					onChangeText={(text) => {
+						setFirstName(text);
+						checkFormValid(text, 'FirstName');
+					}}
+				/>
+				<TextInput
+					label="LastName"
+					maxLength={40}
+					placeholder="Enter Last name."
+					value={lastName}
+					style={styles.text}
+					theme={{ colors: { primary: 'blue' } }}
+					onChangeText={(text) => {
+						setLastName(text);
+						checkFormValid(text, 'LastName');
+					}}
+				/>
+				{/* <View style={{justifyContent: 'center'}}> */}
+				<TextInput
+					label="Email"
+					keyboardType="email-address"
+					maxLength={40}
+					placeholder="Enter Valid Email."
+					value={email}
+					style={styles.text}
+					theme={{ colors: { primary: 'blue' } }}
+					onChangeText={(text) => {
+						setEmail(text);
+						//checkEmail(text);
+						checkFormValid(text, 'Email');
+					}}
+				/>
+				{/* <Icon
           name={emailValid ? 'check' : 'ban'}
           size={20}
           style={{
@@ -217,110 +219,111 @@ const SignUp = (props) => {
           }}
         />
       </View> */}
-			<View style={{ justifyContent: 'center' }}>
-				<TextInput
-					label="password"
-					mode="outlined"
-					secureTextEntry={true}
-					placeholder="Enter Password(Min 8 characters)."
-					value={password}
-					onChangeText={(text) => {
-						setPassword(text);
-						checkPassword(text);
-						checkConfirmPassword(text, confirmPassword);
-						checkFormValid(text, 'Password');
+				<View style={{ justifyContent: 'center' }}>
+					<TextInput
+						label="password"
+						mode="outlined"
+						secureTextEntry={true}
+						placeholder="Enter Password(Min 8 characters)."
+						value={password}
+						onChangeText={(text) => {
+							setPassword(text);
+							checkPassword(text);
+							checkConfirmPassword(text, confirmPassword);
+							checkFormValid(text, 'Password');
+						}}
+						style={styles.text}
+						theme={{ colors: { primary: 'blue' } }}
+					/>
+					<Icon
+						name={passwordValid ? 'check' : 'ban'}
+						size={20}
+						style={{
+							position: 'absolute',
+							flex: 1,
+							alignSelf: 'flex-end',
+							paddingRight: 30,
+							paddingTop: 15,
+							color: passwordValid ? Constants.success : Constants.error
+						}}
+					/>
+				</View>
+				<View style={{ justifyContent: 'center' }}>
+					<TextInput
+						label="ConfirmPassword"
+						mode="outlined"
+						secureTextEntry={true}
+						placeholder="Confirm Password."
+						value={confirmPassword}
+						onChangeText={(text) => {
+							setConfirmPassword(text);
+							checkConfirmPassword(password, text);
+							checkFormValid(text, 'ConfirmPassword');
+						}}
+						style={styles.text}
+						theme={{ colors: { primary: 'blue' } }}
+					/>
+					<Icon
+						name={confirmPasswordValid ? 'check-double' : 'ban'}
+						size={20}
+						style={{
+							position: 'absolute',
+							flex: 1,
+							alignSelf: 'flex-end',
+							paddingRight: 30,
+							paddingTop: 15,
+							color: confirmPasswordValid ? Constants.success : Constants.error
+						}}
+					/>
+				</View>
+				<View style={{ justifyContent: 'center' }}>
+					<TextInput
+						label="PhoneNumber"
+						maxLength={10}
+						placeholder="Enter Phone number (No 0 or +91)."
+						value={phoneNumber}
+						style={styles.text}
+						theme={{ colors: { primary: 'blue' } }}
+						keyboardType="phone-pad"
+						onChangeText={(text) => {
+							setPhoneNumber(text);
+							checkPhoneNumber(text);
+							checkFormValid(text, 'PhoneNumber');
+						}}
+					/>
+					<Icon
+						name={phoneNumberValid ? 'check' : 'ban'}
+						size={20}
+						style={{
+							position: 'absolute',
+							flex: 1,
+							alignSelf: 'flex-end',
+							paddingRight: 30,
+							paddingTop: 15,
+							color: phoneNumberValid ? Constants.success : Constants.error
+						}}
+					/>
+				</View>
+				<PButton
+					disable={!formValid}
+					title="Sign Up."
+					onPress={() => {
+						registerUser();
 					}}
-					style={styles.text}
-					theme={{ colors: { primary: 'blue' } }}
-				/>
-				<Icon
-					name={passwordValid ? 'check' : 'ban'}
-					size={20}
-					style={{
-						position: 'absolute',
-						flex: 1,
-						alignSelf: 'flex-end',
-						paddingRight: 30,
-						paddingTop: 15,
-						color: passwordValid ? Constants.success : Constants.error
+					viewStyle={{
+						marginTop: 20,
+						width: '50%',
+						flexDirection: 'row',
+						justifyContent: 'center',
+						backgroundColor: !formValid ? '#5aa0ff' : Constants.textColor1
+					}}
+					elementStyle={{
+						flexDirection: 'row',
+						justifyContent: 'center',
+						margin: 5
 					}}
 				/>
-			</View>
-			<View style={{ justifyContent: 'center' }}>
-				<TextInput
-					label="ConfirmPassword"
-					mode="outlined"
-					secureTextEntry={true}
-					placeholder="Confirm Password."
-					value={confirmPassword}
-					onChangeText={(text) => {
-						setConfirmPassword(text);
-						checkConfirmPassword(password, text);
-						checkFormValid(text, 'ConfirmPassword');
-					}}
-					style={styles.text}
-					theme={{ colors: { primary: 'blue' } }}
-				/>
-				<Icon
-					name={confirmPasswordValid ? 'check-double' : 'ban'}
-					size={20}
-					style={{
-						position: 'absolute',
-						flex: 1,
-						alignSelf: 'flex-end',
-						paddingRight: 30,
-						paddingTop: 15,
-						color: confirmPasswordValid ? Constants.success : Constants.error
-					}}
-				/>
-			</View>
-			<View style={{ justifyContent: 'center' }}>
-				<TextInput
-					label="PhoneNumber"
-					maxLength={10}
-					placeholder="Enter Phone number (No 0 or +91)."
-					value={phoneNumber}
-					style={styles.text}
-					theme={{ colors: { primary: 'blue' } }}
-					keyboardType="phone-pad"
-					onChangeText={(text) => {
-						setPhoneNumber(text);
-						checkPhoneNumber(text);
-						checkFormValid(text, 'PhoneNumber');
-					}}
-				/>
-				<Icon
-					name={phoneNumberValid ? 'check' : 'ban'}
-					size={20}
-					style={{
-						position: 'absolute',
-						flex: 1,
-						alignSelf: 'flex-end',
-						paddingRight: 30,
-						paddingTop: 15,
-						color: phoneNumberValid ? Constants.success : Constants.error
-					}}
-				/>
-			</View>
-			<PButton
-				disable={!formValid}
-				title="Sign Up."
-				onPress={() => {
-					registerUser();
-				}}
-				viewStyle={{
-					marginTop: 20,
-					width: '50%',
-					flexDirection: 'row',
-					justifyContent: 'center',
-					backgroundColor: !formValid ? '#5aa0ff' : Constants.textColor1
-				}}
-				elementStyle={{
-					flexDirection: 'row',
-					justifyContent: 'center',
-					margin: 5
-				}}
-			/>
+			</ScrollView>
 		</KeyboardAvoidingView>
 	);
 };
@@ -329,10 +332,10 @@ const styles = StyleSheet.create({
 	text: {
 		marginLeft: 18,
 		marginRight: 18,
-		marginTop: 18,
+		marginTop: 15,
 		paddingLeft: 15,
 		color: Constants.textColor1,
-		fontSize: 20,
+		fontSize: 15,
 		borderWidth: 2,
 		borderColor: Constants.textColor1,
 		borderRadius: 5

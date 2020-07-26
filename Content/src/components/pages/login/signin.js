@@ -20,7 +20,7 @@ const SignIn = (props) => {
 				setEmail('');
 				setPassword('');
 				global.user = response.data;
-				props.navigation.navigate('State');
+				props.navigation.replace('State');
 			})
 			.catch((err) => {
 				Alert.alert('Wrong Email/Password.');
