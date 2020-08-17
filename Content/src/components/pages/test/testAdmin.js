@@ -7,6 +7,7 @@ import {
 	StyleSheet,
 	Text,
 	TextInput,
+	Image,
 	Alert,
 	TouchableOpacity,
 	ActivityIndicator,
@@ -18,37 +19,83 @@ import * as Constants from '../../../constants/constants';
 import PButton from '../../../widgets/Button/pButton';
 import ElevatedView from 'react-native-elevated-view';
 import axios from 'axios';
+import ContainerList from '../../../widgets/List/containerList';
 
 const TestAdmin = (props) => {
 	const [ key, setKey ] = useState(0);
-	const { user, stateId, catergoryId, subjectId, subTopicId, title } = props.route.params;
+	const {
+		user,
+		stateId,
+		catergoryId,
+		subjectId,
+		subTopicId,
+		title,
+		testId,
+		testTime,
+		testTitle,
+		testInstructions
+	} = props.route.params;
 	const [ isSubmit, setIsSubmit ] = useState(false);
-	const [ testName, setTestName ] = useState('');
+	const [ testName, setTestName ] = useState(testTitle);
+	const [ timeDuration, setTimeDuration ] = useState(testTime);
 	const questionObject = {
+		id: 0,
 		question: '',
 		option1: '',
 		option2: '',
 		option3: '',
 		option4: '',
-		isCorrect: [],
-		isMultiple: false,
-		isValid: false
+		questionLang: '',
+		optionLang1: '',
+		optionLang2: '',
+		optionLang3: '',
+		optionLang4: '',
+		explaination: '',
+		videoUrl: '',
+		videoUrlId: '',
+		weightage: 1,
+		negativeWeightage: 0,
+		correctOption: [],
+		isMultiple: false
 	};
 	const [ questionsList, setQuestionsList ] = useState([ questionObject ]);
+	const [ languageFlag, setLanguage ] = useState(false);
+	const [ introDone, setIntroDone ] = useState(false);
+	const [ instructions, setInstructions ] = useState(testInstructions);
+
+	useEffect(() => {
+		if (testId) {
+			axios
+				.get('http://10.0.2.2:3000/test/getTestDetail', {
+					params: {
+						id: testId
+					}
+				})
+				.then((response) => {
+					if (response.data) {
+						setQuestionsList(response.data);
+					}
+					//alert('Gettings');
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+		}
+	}, []);
 
 	const onOptionPress = (index) => {
 		const questions = JSON.parse(JSON.stringify(questionsList));
-		if (questions[key].isCorrect.includes(index) && questions[key].isMultiple) {
-			questions[key].isCorrect.splice(questions[key].isCorrect.indexOf(index), 1);
-		} else if (questions[key].isCorrect.includes(index) && !questions[key].isMultiple) {
-			questions[key].isCorrect = [];
+		if (questions[key].correctOption.includes(index) && questions[key].isMultiple) {
+			questions[key].correctOption.splice(questions[key].correctOption.indexOf(index), 1);
+		} else if (questions[key].correctOption.includes(index) && !questions[key].isMultiple) {
+			questions[key].correctOption = [];
 		} else {
 			if (questions[key].isMultiple) {
-				questions[key].isCorrect.push(index);
-				questions[key].isCorrect.sort();
+				questions[key].correctOption.push(index);
+				questions[key].correctOption.sort();
 			} else {
-				questions[key].isCorrect = [];
-				questions[key].isCorrect.push(index);
+				questions[key].correctOption = [];
+				questions[key].correctOption.push(index);
 			}
 		}
 		setQuestionsList(questions);
@@ -58,13 +105,16 @@ const TestAdmin = (props) => {
 		setIsSubmit(true);
 		const submitAnswers = [];
 		axios
-			.post('http://3.7.66.184:3000/test/postTest', {
+			.post('http://10.0.2.2:3000/test/postTest', {
 				subTopicId: subTopicId,
 				subjectId: subjectId,
 				categoryId: catergoryId,
 				stateId: stateId,
 				questions: questionsList,
-				testName: testName
+				testName: testName,
+				testId: testId,
+				testTime: parseFloat(timeDuration),
+				testInstructions: instructions
 			})
 			.then((response) => {
 				setIsSubmit(false);
@@ -93,10 +143,12 @@ const TestAdmin = (props) => {
 			setQuestionsList(questions);
 			setKey(index + 1);
 		}
+		setLanguage(false);
 	};
 
 	const prevQuestion = (index, evt) => {
 		setKey(index - 1);
+		setLanguage(false);
 	};
 
 	const isMultiple = (bool) => {
@@ -107,389 +159,563 @@ const TestAdmin = (props) => {
 
 	const saveQuestion = (val) => {
 		const questions = JSON.parse(JSON.stringify(questionsList));
-		questions[key].question = val;
+		if (languageFlag) {
+			questions[key].questionLang = val;
+		} else {
+			questions[key].question = val;
+		}
 		setQuestionsList(questions);
 	};
 
 	const saveOption = (val, index) => {
 		const questions = JSON.parse(JSON.stringify(questionsList));
-		questions[key]['option' + index] = val;
+		if (languageFlag) {
+			questions[key]['optionLang' + index] = val;
+		} else {
+			questions[key]['option' + index] = val;
+		}
 		setQuestionsList(questions);
+	};
+
+	const saveWeightage = (val, flag = true) => {
+		const questions = JSON.parse(JSON.stringify(questionsList));
+		if (flag) {
+			questions[key].weightage = val;
+		} else {
+			questions[key].negativeWeightage = val;
+		}
+		setQuestionsList(questions);
+	};
+
+	const saveExplanation = (val) => {
+		const questions = JSON.parse(JSON.stringify(questionsList));
+		questions[key].explaination = val;
+		setQuestionsList(questions);
+	};
+
+	const getQueryParams = (params, url) => {
+		let href = url;
+		//this expression is to get the query strings
+		let reg = new RegExp('[?&]' + params + '=([^&#]*)', 'i');
+		let queryString = reg.exec(href);
+		return queryString ? queryString[1] : null;
+	};
+
+	const saveVideoUrl = (val) => {
+		const questions = JSON.parse(JSON.stringify(questionsList));
+		questions[key].videoUrl = val;
+		questions[key].videoUrlId = getQueryParams('v', val);
+		if (!questions[key].videoUrlId) {
+			questions[key].videoUrlId = val.split('.be/')[1];
+		}
+		setQuestionsList(questions);
+	};
+
+	const validateQuiz = () => {
+		return (
+			questionsList[key].question &&
+			questionsList[key].option1 &&
+			questionsList[key].option2 &&
+			questionsList[key].option3 &&
+			questionsList[key].option4 &&
+			questionsList[key].correctOption.length
+		);
 	};
 
 	return (
 		<KeyboardAvoidingView>
-			<ScrollView style={{ marginBottom: 30 }}>
-				<LinearGradient
-					colors={[ Constants.gradientColor1, Constants.gradientColor2 ]}
-					style={{
-						paddingVertical: 20,
-						borderBottomLeftRadius: 15,
-						borderBottomRightRadius: 15
-					}}
-				>
-					<View>
-						<View style={{ flex: 1, justifyContent: 'center' }}>
-							<TextInput
-								textAlign="center"
-								style={{
-									...styles.textArea2,
-									width: '70%',
-									alignSelf: 'center'
-								}}
-								placeholder="Enter Test Name"
-								onChangeText={(val) => setTestName(val)}
-							/>
-							<View style={{ position: 'absolute', paddingLeft: 15 }}>
-								<TouchableOpacity onPress={() => props.navigation.goBack()}>
-									<Icon name="chevron-left" style={{ color: 'white' }} size={35} />
-								</TouchableOpacity>
-							</View>
-						</View>
-					</View>
-					<View style={{ alignItems: 'center' }}>{renderProgressBar(questionsList.length, key)}</View>
-					<View style={{ alignItems: 'center', justifyContent: 'center' }}>
-						<Text style={{ fontSize: 20, marginTop: 10, color: 'white' }}>Question {key + 1}</Text>
+			{!introDone ? (
+				<ContainerList title={testTitle} onPress={() => props.navigation.goBack()}>
+					<ScrollView style={{ marginBottom: 30 }}>
 						<TextInput
 							textAlign="left"
-							style={styles.textArea2}
-							placeholder="Enter Question"
+							style={
+								(styles.textArea2,
+								{ marginVertical: 15, backgroundColor: 'white', alignSelf: 'center', width: '95%' })
+							}
+							placeholder="Enter Instructions / निर्देश लिखिए"
 							multiline={true}
 							scrollEnabled={true}
-							numberOfLines={5}
 							maxLength={1000}
-							onChangeText={(val) => saveQuestion(val)}
-							value={questionsList[key].question}
+							onChangeText={(val) => setInstructions(val)}
+							value={instructions}
 						/>
-					</View>
-				</LinearGradient>
-				<View
-					flexDirection="row"
-					style={{
-						alignItems: 'center',
-						justifyContent: 'center'
-					}}
-				>
-					<View
+						<PButton
+							title={'Continue'}
+							onPress={() => setIntroDone(true)}
+							viewStyle={{
+								flexDirection: 'row',
+								justifyContent: 'center'
+							}}
+							elementStyle={{ flexDirection: 'row', justifyContent: 'center' }}
+						/>
+					</ScrollView>
+				</ContainerList>
+			) : (
+				<ScrollView style={{ marginBottom: 30 }}>
+					<LinearGradient
+						colors={[ Constants.gradientColor1, Constants.gradientColor2 ]}
 						style={{
-							width: '40%',
-							backgroundColor: !questionsList[key].isMultiple ? 'orange' : 'white',
-							borderBottomRightRadius: 15,
-							borderBottomLeftRadius: 15
+							paddingVertical: 20,
+							borderBottomLeftRadius: 15,
+							borderBottomRightRadius: 15
 						}}
 					>
-						<TouchableOpacity onPress={() => isMultiple(false)}>
-							<Text
-								style={{
-									color: !questionsList[key].isMultiple ? 'white' : 'black',
-									textAlign: 'center',
-									fontSize: 20,
-									margin: 3
-								}}
-							>
-								Single Choice
-							</Text>
-						</TouchableOpacity>
-					</View>
-					<View
-						style={{
-							width: '40%',
-							backgroundColor: questionsList[key].isMultiple ? 'orange' : 'white',
-							borderBottomRightRadius: 15,
-							borderBottomLeftRadius: 15
-						}}
-					>
-						<TouchableOpacity onPress={() => isMultiple(true)}>
-							<Text
-								style={{
-									color: !questionsList[key].isMultiple ? 'black' : 'white',
-									textAlign: 'center',
-									fontSize: 20,
-									margin: 3
-								}}
-							>
-								Multiple Choice
-							</Text>
-						</TouchableOpacity>
-					</View>
-				</View>
-				<View
-					flexDirection="row"
-					style={{
-						marginHorizontal: 10,
-						marginVertical: 5,
-						justifyContent: 'space-evenly'
-					}}
-				>
-					<ElevatedView
-						elevation={5}
-						style={{
-							...styles.elevatedStyle,
-							borderColor: questionsList[key].isCorrect.includes(1) ? Constants.textColor1 : 'white'
-						}}
-					>
-						<TouchableOpacity onPress={onOptionPress.bind(this, 1)} style={styles.elevatedStyleTO}>
-							<Text
-								style={{
-									...styles.answerText2,
-									color: Constants.textColor1
-								}}
-							>
-								1
-							</Text>
-						</TouchableOpacity>
-					</ElevatedView>
-					<ElevatedView
-						elevation={5}
-						style={{
-							...styles.elevatedStyle,
-							borderColor: questionsList[key].isCorrect.includes(2) ? Constants.textColor1 : 'white'
-						}}
-					>
-						<TouchableOpacity onPress={onOptionPress.bind(this, 2)} style={styles.elevatedStyleTO}>
-							<Text
-								style={{
-									...styles.answerText2,
-									color: Constants.textColor1
-								}}
-							>
-								2
-							</Text>
-						</TouchableOpacity>
-					</ElevatedView>
-					<ElevatedView
-						elevation={5}
-						style={{
-							...styles.elevatedStyle,
-							borderColor: questionsList[key].isCorrect.includes(3) ? Constants.textColor1 : 'white'
-						}}
-					>
-						<TouchableOpacity onPress={onOptionPress.bind(this, 3)} style={styles.elevatedStyleTO}>
-							<Text
-								style={{
-									...styles.answerText2,
-									color: Constants.textColor1
-								}}
-							>
-								3
-							</Text>
-						</TouchableOpacity>
-					</ElevatedView>
-					<ElevatedView
-						elevation={5}
-						style={{
-							...styles.elevatedStyle,
-							borderColor: questionsList[key].isCorrect.includes(4) ? Constants.textColor1 : 'white'
-						}}
-					>
-						<TouchableOpacity onPress={onOptionPress.bind(this, 4)} style={styles.elevatedStyleTO}>
-							<Text
-								style={{
-									...styles.answerText2,
-									color: Constants.textColor1
-								}}
-							>
-								4
-							</Text>
-						</TouchableOpacity>
-					</ElevatedView>
-				</View>
-				<View style={{ alignItems: 'center', margin: 10, marginTop: 15 }}>
-					<View
-						style={{
-							...styles.stayElevated,
-							borderWidth: 3,
-							borderColor: questionsList[key].isCorrect.includes(1) ? Constants.textColor1 : 'white'
-						}}
-					>
-						<ElevatedView elevation={5} style={{ borderRadius: 10 }}>
-							<TextInput
-								textAlign="left"
-								style={styles.textArea}
-								placeholder="Enter Question"
-								multiline={true}
-								scrollEnabled={true}
-								numberOfLines={2}
-								maxLength={200}
-								onChangeText={(val) => saveOption(val, 1)}
-								value={questionsList[key].option1}
-							/>
-						</ElevatedView>
-					</View>
-					<View
-						style={{
-							...styles.stayElevated,
-							borderWidth: 3,
-							borderColor: questionsList[key].isCorrect.includes(2) ? Constants.textColor1 : 'white'
-						}}
-					>
-						<ElevatedView elevation={5} style={{ borderRadius: 10 }}>
-							<TextInput
-								textAlign="left"
-								style={styles.textArea}
-								placeholder="Enter Question"
-								multiline={true}
-								scrollEnabled={true}
-								numberOfLines={2}
-								maxLength={200}
-								onChangeText={(val) => saveOption(val, 2)}
-								value={questionsList[key].option2}
-							/>
-						</ElevatedView>
-					</View>
-					<View
-						style={{
-							...styles.stayElevated,
-							borderWidth: 3,
-							borderColor: questionsList[key].isCorrect.includes(3) ? Constants.textColor1 : 'white'
-						}}
-					>
-						<ElevatedView elevation={5} style={{ borderRadius: 10 }}>
-							<TextInput
-								textAlign="left"
-								style={styles.textArea}
-								placeholder="Enter Question"
-								multiline={true}
-								scrollEnabled={true}
-								numberOfLines={2}
-								maxLength={200}
-								onChangeText={(val) => saveOption(val, 3)}
-								value={questionsList[key].option3}
-							/>
-						</ElevatedView>
-					</View>
-					<View
-						style={{
-							...styles.stayElevated,
-							borderWidth: 3,
-							borderColor: questionsList[key].isCorrect.includes(4) ? Constants.textColor1 : 'white'
-						}}
-					>
-						<ElevatedView elevation={5} style={{ borderRadius: 10 }}>
-							<TextInput
-								textAlign="left"
-								style={styles.textArea}
-								placeholder="Enter Question"
-								multiline={true}
-								scrollEnabled={true}
-								numberOfLines={2}
-								maxLength={200}
-								onChangeText={(val) => saveOption(val, 4)}
-								value={questionsList[key].option4}
-							/>
-						</ElevatedView>
-					</View>
-				</View>
-				<View flexDirection={'row'} style={{ marginHorizontal: 20, justifyContent: 'space-between' }}>
-					<View
-						style={{
-							paddingLeft: 15,
-							justifyContent: 'center',
-							alignItems: 'center'
-						}}
-					>
-						{key ? (
-							<TouchableOpacity
-								onPress={prevQuestion.bind(this, key)}
-								disabled={
-									!(
-										questionsList[key].question &&
-										questionsList[key].option1 &&
-										questionsList[key].option2 &&
-										questionsList[key].option3 &&
-										questionsList[key].option4 &&
-										questionsList[key].isCorrect.length
-									)
-								}
-							>
-								<Icon
-									name="chevron-left"
+						<View>
+							<View style={{ flex: 1, justifyContent: 'center' }}>
+								<View style={{ marginLeft: 40, justifyContent: 'space-around' }} flexDirection="row">
+									<TextInput
+										textAlign="center"
+										style={{
+											...styles.textArea2,
+											width: '70%',
+											alignSelf: 'center'
+										}}
+										value={testName}
+										placeholder="Enter Test Name"
+										placeholderTextColor={'white'}
+										onChangeText={(val) => setTestName(val)}
+									/>
+									<TextInput
+										textAlign="center"
+										style={{
+											...styles.textArea2,
+											marginLeft: 20,
+											width: '15%',
+											alignSelf: 'center'
+										}}
+										value={timeDuration ? String(timeDuration) : timeDuration}
+										keyboardType="number-pad"
+										placeholder="Time"
+										placeholderTextColor={'white'}
+										onChangeText={(val) => setTimeDuration(val)}
+									/>
+									<TouchableOpacity onPress={() => setLanguage(!languageFlag)}>
+										<Image
+											source={require('../../../assets/language.png')}
+											style={{ width: 30, height: 30, marginLeft: 20, margin: 10 }}
+										/>
+									</TouchableOpacity>
+								</View>
+								<View
 									style={{
-										color:
-											questionsList[key].question &&
-											questionsList[key].option1 &&
-											questionsList[key].option2 &&
-											questionsList[key].option3 &&
-											questionsList[key].option4 &&
-											questionsList[key].isCorrect.length
-												? Constants.textColor1
-												: '#acc3f8',
-										justifyContent: 'center',
-										alignItems: 'center'
+										position: 'absolute',
+										paddingLeft: 15
 									}}
-									size={35}
-								/>
-							</TouchableOpacity>
-						) : (
-							<View />
-						)}
-					</View>
-					<View>
-						{isSubmit ? (
-							<View style={{ justifyContent: 'center', alignContent: 'center' }}>
-								<ActivityIndicator size="large" color="#0000ff" />
+								>
+									<TouchableOpacity
+										onPress={() => (introDone ? setIntroDone(false) : props.navigation.goBack())}
+									>
+										<Icon name="chevron-left" style={{ color: 'white' }} size={35} />
+									</TouchableOpacity>
+								</View>
 							</View>
-						) : (
-							<PButton
-								title={'Submit Test'}
-								onPress={() => submitTest()}
-								disable={
-									!(
-										questionsList[key].question &&
-										questionsList[key].option1 &&
-										questionsList[key].option2 &&
-										questionsList[key].option3 &&
-										questionsList[key].option4 &&
-										questionsList[key].isCorrect.length
-									)
-								}
-								viewStyle={{
-									backgroundColor:
-										questionsList[key].question &&
-										questionsList[key].option1 &&
-										questionsList[key].option2 &&
-										questionsList[key].option3 &&
-										questionsList[key].option4 &&
-										questionsList[key].isCorrect.length
-											? Constants.textColor1
-											: '#acc3f8',
-									flexDirection: 'row',
-									justifyContent: 'center'
-								}}
-								elementStyle={{ flexDirection: 'row', justifyContent: 'center' }}
+						</View>
+						<View style={{ alignItems: 'center' }}>{renderProgressBar(questionsList.length, key)}</View>
+						<View style={{ alignItems: 'center', justifyContent: 'center' }}>
+							<Text style={{ fontSize: 20, marginTop: 10, color: 'white' }}>Question {key + 1}</Text>
+							<View
+								flexDirection="row"
+								style={{ justifyContent: 'center', alignItems: 'center', marginVertical: 10 }}
+							>
+								<Text style={{ marginLeft: 20, fontSize: 30, color: 'white' }}> + </Text>
+								<TextInput
+									textAlign="center"
+									style={{
+										...styles.textArea2,
+										width: '15%',
+										alignSelf: 'center'
+									}}
+									value={questionsList[key].weightage.toString()}
+									keyboardType="number-pad"
+									placeholderTextColor={'white'}
+									onChangeText={(val) => saveWeightage(val)}
+								/>
+								<Text style={{ marginLeft: 20, fontSize: 35, color: 'white' }}> - </Text>
+								<TextInput
+									textAlign="center"
+									style={{
+										...styles.textArea2,
+										width: '15%',
+										alignSelf: 'center'
+									}}
+									value={questionsList[key].negativeWeightage.toString()}
+									keyboardType="number-pad"
+									placeholderTextColor={'white'}
+									onChangeText={(val) => saveWeightage(val, false)}
+								/>
+							</View>
+							<TextInput
+								textAlign="left"
+								style={styles.textArea2}
+								placeholderTextColor={'white'}
+								placeholder={!languageFlag ? 'Enter Question' : 'प्रश्न लिखिए '}
+								multiline={true}
+								scrollEnabled={true}
+								numberOfLines={5}
+								maxLength={1000}
+								onChangeText={(val) => saveQuestion(val)}
+								value={languageFlag ? questionsList[key].questionLang : questionsList[key].question}
 							/>
-						)}
-					</View>
-					<PButton
-						title={key == questionsList.length - 1 ? 'Add' : 'Next'}
-						onPress={nextQuestion.bind(this, key)}
-						disable={
-							!(
-								questionsList[key].question &&
-								questionsList[key].option1 &&
-								questionsList[key].option2 &&
-								questionsList[key].option3 &&
-								questionsList[key].option4 &&
-								questionsList[key].isCorrect.length
-							)
-						}
-						viewStyle={{
-							backgroundColor:
-								questionsList[key].question &&
-								questionsList[key].option1 &&
-								questionsList[key].option2 &&
-								questionsList[key].option3 &&
-								questionsList[key].option4 &&
-								questionsList[key].isCorrect.length
-									? Constants.textColor1
-									: '#acc3f8',
-							flexDirection: 'row',
+						</View>
+						<View />
+					</LinearGradient>
+					<View
+						flexDirection="row"
+						style={{
+							alignItems: 'center',
 							justifyContent: 'center'
 						}}
-						elementStyle={{ flexDirection: 'row', justifyContent: 'center' }}
-					/>
-				</View>
-			</ScrollView>
+					>
+						<View
+							style={{
+								width: '30%',
+								backgroundColor: !questionsList[key].isMultiple ? 'orange' : 'white',
+								borderBottomRightRadius: 15,
+								borderBottomLeftRadius: 15
+							}}
+						>
+							<TouchableOpacity onPress={() => isMultiple(false)}>
+								<Text
+									style={{
+										color: !questionsList[key].isMultiple ? 'white' : 'black',
+										textAlign: 'center',
+										fontSize: 15,
+										margin: 3
+									}}
+								>
+									Single Choice
+								</Text>
+							</TouchableOpacity>
+						</View>
+						<View
+							style={{
+								width: '30%',
+								backgroundColor: questionsList[key].isMultiple ? 'orange' : 'white',
+								borderBottomRightRadius: 15,
+								borderBottomLeftRadius: 15
+							}}
+						>
+							<TouchableOpacity onPress={() => isMultiple(true)}>
+								<Text
+									style={{
+										color: !questionsList[key].isMultiple ? 'black' : 'white',
+										textAlign: 'center',
+										fontSize: 15,
+										margin: 3
+									}}
+								>
+									Multiple Choice
+								</Text>
+							</TouchableOpacity>
+						</View>
+					</View>
+					<View
+						flexDirection="row"
+						style={{
+							marginHorizontal: 10,
+							marginVertical: 10,
+							justifyContent: 'space-evenly'
+						}}
+					>
+						<ElevatedView
+							elevation={5}
+							style={{
+								...styles.elevatedStyle,
+								borderColor: questionsList[key].correctOption.includes(1)
+									? Constants.textColor1
+									: 'white'
+							}}
+						>
+							<TouchableOpacity onPress={onOptionPress.bind(this, 1)} style={styles.elevatedStyleTO}>
+								<Text
+									style={{
+										...styles.answerText2,
+										color: Constants.textColor1
+									}}
+								>
+									1
+								</Text>
+							</TouchableOpacity>
+						</ElevatedView>
+						<ElevatedView
+							elevation={5}
+							style={{
+								...styles.elevatedStyle,
+								borderColor: questionsList[key].correctOption.includes(2)
+									? Constants.textColor1
+									: 'white'
+							}}
+						>
+							<TouchableOpacity onPress={onOptionPress.bind(this, 2)} style={styles.elevatedStyleTO}>
+								<Text
+									style={{
+										...styles.answerText2,
+										color: Constants.textColor1
+									}}
+								>
+									2
+								</Text>
+							</TouchableOpacity>
+						</ElevatedView>
+						<ElevatedView
+							elevation={5}
+							style={{
+								...styles.elevatedStyle,
+								borderColor: questionsList[key].correctOption.includes(3)
+									? Constants.textColor1
+									: 'white'
+							}}
+						>
+							<TouchableOpacity onPress={onOptionPress.bind(this, 3)} style={styles.elevatedStyleTO}>
+								<Text
+									style={{
+										...styles.answerText2,
+										color: Constants.textColor1
+									}}
+								>
+									3
+								</Text>
+							</TouchableOpacity>
+						</ElevatedView>
+						<ElevatedView
+							elevation={5}
+							style={{
+								...styles.elevatedStyle,
+								borderColor: questionsList[key].correctOption.includes(4)
+									? Constants.textColor1
+									: 'white'
+							}}
+						>
+							<TouchableOpacity onPress={onOptionPress.bind(this, 4)} style={styles.elevatedStyleTO}>
+								<Text
+									style={{
+										...styles.answerText2,
+										color: Constants.textColor1
+									}}
+								>
+									4
+								</Text>
+							</TouchableOpacity>
+						</ElevatedView>
+					</View>
+					<View style={{ alignItems: 'center', margin: 10, marginTop: 15 }}>
+						<View
+							style={{
+								...styles.stayElevated,
+								borderWidth: 3,
+								borderColor: questionsList[key].correctOption.includes(1)
+									? Constants.textColor1
+									: 'white'
+							}}
+						>
+							<ElevatedView elevation={5} style={{ borderRadius: 10 }}>
+								<TextInput
+									textAlign="left"
+									style={styles.textArea}
+									placeholder={!languageFlag ? 'Enter Option 1' : 'विकल्प १'}
+									multiline={true}
+									scrollEnabled={true}
+									numberOfLines={2}
+									maxLength={200}
+									onChangeText={(val) => saveOption(val, 1)}
+									value={languageFlag ? questionsList[key].optionLang1 : questionsList[key].option1}
+								/>
+							</ElevatedView>
+						</View>
+						<View
+							style={{
+								...styles.stayElevated,
+								borderWidth: 3,
+								borderColor: questionsList[key].correctOption.includes(2)
+									? Constants.textColor1
+									: 'white'
+							}}
+						>
+							<ElevatedView elevation={5} style={{ borderRadius: 10 }}>
+								<TextInput
+									textAlign="left"
+									style={styles.textArea}
+									placeholder={!languageFlag ? 'Enter Option 2' : 'विकल्प २'}
+									multiline={true}
+									scrollEnabled={true}
+									numberOfLines={2}
+									maxLength={200}
+									onChangeText={(val) => saveOption(val, 2)}
+									value={languageFlag ? questionsList[key].optionLang2 : questionsList[key].option2}
+								/>
+							</ElevatedView>
+						</View>
+						<View
+							style={{
+								...styles.stayElevated,
+								borderWidth: 3,
+								borderColor: questionsList[key].correctOption.includes(3)
+									? Constants.textColor1
+									: 'white'
+							}}
+						>
+							<ElevatedView elevation={5} style={{ borderRadius: 10 }}>
+								<TextInput
+									textAlign="left"
+									style={styles.textArea}
+									placeholder={!languageFlag ? 'Enter Option 3' : 'विकल्प ३'}
+									multiline={true}
+									scrollEnabled={true}
+									numberOfLines={2}
+									maxLength={200}
+									onChangeText={(val) => saveOption(val, 3)}
+									value={languageFlag ? questionsList[key].optionLang3 : questionsList[key].option3}
+								/>
+							</ElevatedView>
+						</View>
+						<View
+							style={{
+								...styles.stayElevated,
+								borderWidth: 3,
+								borderColor: questionsList[key].correctOption.includes(4)
+									? Constants.textColor1
+									: 'white'
+							}}
+						>
+							<ElevatedView elevation={5} style={{ borderRadius: 10 }}>
+								<TextInput
+									textAlign="left"
+									style={styles.textArea}
+									placeholder={!languageFlag ? 'Enter Option 4' : 'विकल्प ४ '}
+									multiline={true}
+									scrollEnabled={true}
+									numberOfLines={2}
+									maxLength={200}
+									onChangeText={(val) => saveOption(val, 4)}
+									value={languageFlag ? questionsList[key].optionLang4 : questionsList[key].option4}
+								/>
+							</ElevatedView>
+						</View>
+						<View
+							style={{
+								width: '30%',
+								backgroundColor: 'orange',
+								borderTopRightRadius: 15,
+								borderTopLeftRadius: 15,
+								marginTop: 15
+							}}
+						>
+							<Text
+								style={{
+									color: 'white',
+									textAlign: 'center',
+									fontSize: 15,
+									margin: 3
+								}}
+							>
+								Video URL
+							</Text>
+						</View>
+						<View style={{ ...styles.stayElevated, marginTop: 0 }}>
+							<ElevatedView elevation={5} style={{ borderRadius: 10 }}>
+								<TextInput
+									textAlign="left"
+									style={styles.textArea}
+									multiline={true}
+									scrollEnabled={true}
+									maxLength={500}
+									onChangeText={(val) => saveVideoUrl(val)}
+									value={questionsList[key].videoUrl}
+								/>
+							</ElevatedView>
+						</View>
+						<View
+							style={{
+								width: '30%',
+								backgroundColor: 'orange',
+								borderTopRightRadius: 15,
+								borderTopLeftRadius: 15,
+								marginTop: 15
+							}}
+						>
+							<Text
+								style={{
+									color: 'white',
+									textAlign: 'center',
+									fontSize: 15,
+									margin: 3
+								}}
+							>
+								Explanation
+							</Text>
+						</View>
+						<View style={{ ...styles.stayElevated, marginTop: 0 }}>
+							<ElevatedView elevation={5} style={{ borderRadius: 10 }}>
+								<TextInput
+									textAlign="left"
+									style={styles.textArea}
+									multiline={true}
+									scrollEnabled={true}
+									maxLength={1000}
+									onChangeText={(val) => saveExplanation(val)}
+									value={questionsList[key].explaination}
+								/>
+							</ElevatedView>
+						</View>
+					</View>
+					<View flexDirection={'row'} style={{ marginHorizontal: 20, justifyContent: 'space-between' }}>
+						<View
+							style={{
+								paddingLeft: 15,
+								justifyContent: 'center',
+								alignItems: 'center'
+							}}
+						>
+							{key ? (
+								<TouchableOpacity onPress={prevQuestion.bind(this, key)} disabled={!validateQuiz()}>
+									<Icon
+										name="chevron-left"
+										style={{
+											color: validateQuiz() ? Constants.textColor1 : '#acc3f8',
+											justifyContent: 'center',
+											alignItems: 'center'
+										}}
+										size={35}
+									/>
+								</TouchableOpacity>
+							) : (
+								<View />
+							)}
+						</View>
+						<View>
+							{isSubmit ? (
+								<View style={{ justifyContent: 'center', alignContent: 'center' }}>
+									<ActivityIndicator size="large" color="#0000ff" />
+								</View>
+							) : (
+								<PButton
+									title={'Submit Test'}
+									onPress={() => submitTest()}
+									disable={!validateQuiz()}
+									viewStyle={{
+										backgroundColor: validateQuiz() ? Constants.textColor1 : '#acc3f8',
+										flexDirection: 'row',
+										justifyContent: 'center'
+									}}
+									elementStyle={{ flexDirection: 'row', justifyContent: 'center' }}
+								/>
+							)}
+						</View>
+						<PButton
+							title={key == questionsList.length - 1 ? 'Add' : 'Next'}
+							onPress={nextQuestion.bind(this, key)}
+							disable={!validateQuiz()}
+							viewStyle={{
+								backgroundColor: validateQuiz() ? Constants.textColor1 : '#acc3f8',
+								flexDirection: 'row',
+								justifyContent: 'center'
+							}}
+							elementStyle={{ flexDirection: 'row', justifyContent: 'center' }}
+						/>
+					</View>
+				</ScrollView>
+			)}
 		</KeyboardAvoidingView>
 	);
 };
@@ -551,7 +777,7 @@ const styles = StyleSheet.create({
 	textArea: {
 		color: Constants.textColor1,
 		borderRadius: 5,
-		fontSize: 20
+		fontSize: 17
 	},
 	textArea2: {
 		borderWidth: 1,
@@ -559,7 +785,7 @@ const styles = StyleSheet.create({
 		color: 'white',
 		borderRadius: 5,
 		width: '90%',
-		fontSize: 20
+		fontSize: 17
 	},
 	elevatedStyle: {
 		borderWidth: 3,

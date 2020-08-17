@@ -11,7 +11,7 @@ const SignIn = (props) => {
 
 	const sendCred = () => {
 		axios
-			.post('http://3.7.66.184:3000/user/authenticate', {
+			.post('http://10.0.2.2:3000/user/authenticate', {
 				email: email,
 				password: password
 			})

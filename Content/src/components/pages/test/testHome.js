@@ -24,34 +24,34 @@ const TestHome = (props) => {
 	const [ category, setCategory ] = useState(0);
 	const [ list, setList ] = useState([]);
 	const [ dropdownList, setDropdownList ] = useState([ { value: 0, label: 'No categories' } ]);
-	const [ user, setUser ] = useState(global.user);
-	const [ state, setState ] = useState(global.stateId);
+	const [ user, setUser ] = useState(global.user || { id: 1, isAdmin: 0 });
+	const [ state, setState ] = useState(global.stateId || 1);
 	const [ editMode, setEditMode ] = useState(false);
 	const [ newSubject, setNewSubject ] = useState('');
 
 	useEffect(
 		() => {
-			if (user) {
-				axios
-					.get('http://3.7.66.184:3000/common/getDropdown', {
-						params: {
-							userId: user.id,
-							stateId: state
-						}
-					})
-					.then((response) => {
-						setDropdownList(response.data);
-					})
-					.catch((err) => {
-						console.log(err);
-					});
-			} else if (!user && global.selectedTopic.length) {
-				var topic = [ { value: 0, label: 'All' } ];
-				global.selectedTopic.forEach((element) => {
-					topic.push({ value: element.id, label: element.name });
-				});
-				setDropdownList(topic);
-			}
+			/*if (user && 0) {
+      axios
+        .get('http://10.0.2.2:3000/common/getDropdown', {
+          params: {
+            userId: user.id,
+            stateId: state,
+          },
+        })
+        .then(response => {
+          setDropdownList(response.data);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    } else if (!user /*&& global.selectedTopic.length*/ //) {
+			var topic = [ { value: 0, label: 'All' } ];
+			global.selectedTopic.forEach((element) => {
+				topic.push({ value: element.id, label: element.name });
+			});
+			setDropdownList(topic);
+			//}
 			fetchAllSubjects();
 		},
 		[ user ]
@@ -60,7 +60,7 @@ const TestHome = (props) => {
 	const fetchAllSubjects = () => {
 		if (user) {
 			axios
-				.get('http://3.7.66.184:3000/common/getAllSubjectForUser', {
+				.get('http://10.0.2.2:3000/common/getAllSubjectForUser', {
 					params: {
 						userId: user.id,
 						stateId: state
@@ -79,7 +79,7 @@ const TestHome = (props) => {
 				});
 		} else {
 			axios
-				.get('http://3.7.66.184:3000/common/getAllSubjectForNoUser', {
+				.get('http://10.0.2.2:3000/common/getAllSubjectForNoUser', {
 					params: {
 						selectedCategory: JSON.stringify(global.selectedTopic),
 						stateId: state
@@ -100,7 +100,7 @@ const TestHome = (props) => {
 
 	const fetchSubjectList = (categoryId) => {
 		axios
-			.get('http://3.7.66.184:3000/common/getSubjectList', {
+			.get('http://10.0.2.2:3000/common/getSubjectList', {
 				params: {
 					id: categoryId
 				}
@@ -139,7 +139,7 @@ const TestHome = (props) => {
 	const saveSubject = (value) => {
 		if (value) {
 			axios
-				.post('http://3.7.66.184:3000/common/addSubject', {
+				.post('http://10.0.2.2:3000/common/addSubject', {
 					subjectName: value,
 					categoryId: category,
 					stateId: state
@@ -157,7 +157,7 @@ const TestHome = (props) => {
 	const deleteSubject = (id) => {
 		if (id) {
 			axios
-				.delete('http://3.7.66.184:3000/common/deleteSubject', {
+				.delete('http://10.0.2.2:3000/common/deleteSubject', {
 					data: {
 						id: id
 					}

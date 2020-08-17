@@ -2,7 +2,13 @@ const sql = require('./db.js');
 
 const Common = function(common) {};
 
+/*Common.use((req, res, next) => {
+	console.log('we are trying to make a middleware lets hope it works.');
+	next();
+});*/
+
 Common.getDropdownData = (id, stateid, result) => {
+	console.log('Dropdown data: UserId: ', id, ' StateId: ', stateid);
 	sql.query(
 		`select c.hmy as value, categoryname as label  from subject s 
     right outer join category c on c.hmy = s.fcategory inner join 
@@ -207,9 +213,9 @@ Common.postCategoryForUser = (category, result) => {
 				sql.query(
 					`select hmy from categoryXref where fcategory = ${topic} and fstate =${category.stateId} and fuser = ${category.userId}  LIMIT 1`,
 					(err, res) => {
-						if (!res[0]) {
+						if (!res) {
 							sql.query(
-								`insert into categoryxref (fcategory,fstate,fuser) 
+								`insert into categoryxref (fcategory,fstate,fuser)
 			values(${topic},${category.stateId},${category.userId})`,
 								(err, res) => {
 									if (err) {

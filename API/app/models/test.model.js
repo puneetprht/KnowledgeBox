@@ -1,5 +1,10 @@
 const sql = require('./db.js');
 
+const toSqlString = (string) => {
+	if (string) return `'${string.toString()}'`;
+	else return null;
+};
+
 const Test = function(test) {};
 
 Test.getSubTopicList = (id, result) => {
@@ -29,7 +34,7 @@ Test.getSubTopicList = (id, result) => {
 
 Test.getTestList = (id, result) => {
 	sql.query(
-		`select q.hmy as id,testname as value from test q
+		`select q.hmy as id,testname as value, q.duration as time, q.instructions as instructions from test q
 		inner join subtopic st on st.hmy = q.fsubtopic
 		where st.hmy = ${id} `,
 		(err, res) => {
@@ -87,7 +92,9 @@ Test.deleteTest = (body, result) => {
 Test.getTestDetail = (id, result) => {
 	console.log(id, ' Time: ', new Date());
 	sql.query(
-		`select qd.hmy as id,question , option1, option2, option3, option4, explaination,correctOption, isMultiple from testdetail qd
+		`select qd.hmy as id, question, option1, option2, option3, option4, explaination, correctOption, isMultiple,
+		qd.negativeWeightage asnegativeWeightage , qd.weightage as weightage, questionLang, optionLang1, optionLang2, optionLang3, optionLang4,
+		videoUrl, videoUrlId from testdetail qd
 		inner join test q on q.hmy = qd.ftest
 		where q.hmy = ${id} `,
 		(err, res) => {
@@ -99,8 +106,11 @@ Test.getTestDetail = (id, result) => {
 			let count = 1;
 			if (res.length) {
 				res = JSON.parse(JSON.stringify(res));
+				var maxMarks = 0;
 				res.forEach((element) => {
+					console.log('ELEMENT IS THIS PLEASE LOOK:', element);
 					element.options = [];
+					element.optionsLang = [];
 					element.count = count++;
 					for (let i = 1; i <= 4; i++) {
 						element.options.push({
@@ -108,12 +118,23 @@ Test.getTestDetail = (id, result) => {
 							value: element['option' + i],
 							isSelected: false
 						});
-						delete element['option' + i];
+						element.optionsLang.push({
+							id: i,
+							value: element['optionLang' + i],
+							isSelected: false
+						});
 					}
 					element.answer = element.correctOption.split(',').sort();
+					element.weightage = parseFloat(element.weightage || 0).toFixed(1);
+					element.negativeWeightage = parseFloat(element.negativeWeightage || 0).toFixed(1);
 					element.selectedAnswer = [];
+					element.isMarked = false;
+					element.isStar = false;
+					element.time = 0;
+					maxMarks += parseFloat(element.weightage || 0);
+					element.maxMarks = maxMarks;
 				});
-				console.log(res);
+				console.log('Test Details :', res);
 				result(null, res);
 				return;
 			}
@@ -157,39 +178,104 @@ Test.postTestAnswers = (testResult, result) => {
 
 Test.postTest = (test, result) => {
 	console.log(test);
-	sql.query(
-		`insert into test (testname,fsubtopic,fsubject,fcategory,fstate) values 
-		('${test.testName}',${test.subTopicId} ,${test.subjectId} ,${test.categoryId} ,${test.stateId} )`,
-		(err, data) => {
-			if (err) {
-				console.log('error: ', err);
-				result(err, null);
+	if (test.testId) {
+		sql.query(
+			`update test SET testname = '${test.testName}', duration = ${test.testTime}, instructions = '${test.testInstructions}'	 where hmy = ${test.testId}`,
+			(err, data) => {
+				if (err) {
+					console.log('error2: ', err);
+					result(err, null);
+					return;
+				}
+				console.log(data.insertId);
+				console.log(test.questions);
+
+				test.questions.forEach((question) => {
+					if (question.id) {
+						sql.query(
+							`update testdetail set question = '${question.question.toString()}',option1 = '${question.option1.toString()}',
+						option2='${question.option2.toString()}',
+							option3 = '${question.option3.toString()}',option4 = '${question.option4.toString()}'
+							,correctoption = '${question.correctOption.toString()}',isMultiple = ${question.isMultiple} 
+							,questionLang=${toSqlString(question.questionLang)},
+							optionLang1=${toSqlString(question.optionLang1)},optionLang2=${toSqlString(question.optionLang2)},
+							optionLang3=${toSqlString(question.optionLang3)}, optionLang4=${toSqlString(question.optionLang4)},
+							weightage=${question.weightage},
+							negativeWeightage=${question.negativeWeightage},videoUrl=${toSqlString(question.videoUrl)},
+							videoUrlId=${toSqlString(question.videoUrlId)}, explaination=${toSqlString(
+								question.explaination
+							)} where hmy = ${question.id}`,
+							(err, res) => {
+								if (err) {
+									console.log('error: ', err);
+									result(err, null);
+									return;
+								}
+							}
+						);
+					} else {
+						sql.query(
+							`insert into testdetail (ftest,fsubtopic,fsubject,fcategory,fstate,question,option1,option2,
+								option3,option4,correctoption,isMultiple, questionLang, optionLang1, optionLang2, optionLang3, optionLang4, weightage, negativeWeightage,
+								videoUrl, videoUrlId, explaination) values 
+								(${data.insertId},${test.subTopicId} ,${test.subjectId} ,${test.categoryId} ,${test.stateId},
+									'${question.question.toString()}','${question.option1.toString()}','${question.option2.toString()}',
+									'${question.option3.toString()}','${question.option4.toString()}',
+									'${question.correctOption.toString()}',${question.isMultiple},'${question.questionLang}',
+									'${question.optionLang1}','${question.optionLang2}','${question.optionLang3}','${question.optionLang4}',
+									${question.weightage},${question.negativeWeightage},'${question.videoUrl}','${question.videoUrlId}','${question.explaination}')`,
+							(err, res) => {
+								if (err) {
+									console.log('error: ', err);
+									result(err, null);
+									return;
+								}
+							}
+						);
+					}
+				});
+				result(null, null);
 				return;
 			}
-			console.log(data.insertId);
-			console.log(test.questions);
+		);
+	} else {
+		sql.query(
+			`insert into test (testname,fsubtopic,fsubject,fcategory,fstate,duration, instructions ) values 
+		('${test.testName}',${test.subTopicId} ,${test.subjectId} ,${test.categoryId} ,${test.stateId}, ${test.testTime}, '${test.testInstructions}')`,
+			(err, data) => {
+				if (err) {
+					console.log('error: ', err);
+					result(err, null);
+					return;
+				}
+				console.log(data.insertId);
+				console.log(test.questions);
 
-			test.questions.forEach((question) => {
-				sql.query(
-					`insert into testdetail (ftest,fsubtopic,fsubject,fcategory,fstate,question,option1,option2,
-						option3,option4,correctoption,isMultiple) values 
+				test.questions.forEach((question) => {
+					sql.query(
+						`insert into testdetail (ftest,fsubtopic,fsubject,fcategory,fstate,question,option1,option2,
+						option3,option4,correctoption,isMultiple, questionLang, optionLang1, optionLang2, optionLang3, optionLang4, weightage, negativeWeightage,
+						videoUrl, videoUrlId, explaination) values 
 						(${data.insertId},${test.subTopicId} ,${test.subjectId} ,${test.categoryId} ,${test.stateId},
 							'${question.question.toString()}','${question.option1.toString()}','${question.option2.toString()}',
 							'${question.option3.toString()}','${question.option4.toString()}',
-							'${question.isCorrect.toString()}',${question.isMultiple})`,
-					(err, res) => {
-						if (err) {
-							console.log('error: ', err);
-							result(err, null);
-							return;
+							'${question.correctOption.toString()}',${question.isMultiple},'${question.questionLang}',
+							'${question.optionLang1}','${question.optionLang2}','${question.optionLang3}','${question.optionLang4}',
+							${question.weightage},${question.negativeWeightage},'${question.videoUrl}','${question.videoUrlId}','${question.explaination}')`,
+						(err, res) => {
+							if (err) {
+								console.log('error: ', err);
+								result(err, null);
+								return;
+							}
 						}
-					}
-				);
-			});
-			result(null, null);
-			return;
-		}
-	);
+					);
+				});
+				result(null, null);
+				return;
+			}
+		);
+	}
 };
 
 module.exports = Test;

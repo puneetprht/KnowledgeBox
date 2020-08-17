@@ -1,1 +1,3 @@
-"sendgrid.env" 
+sendgrid.env
+aws.env
+config/aws.config.js

@@ -20,8 +20,9 @@ import PButton from '../../../widgets/Button/pButton';
 import axios from 'axios';
 
 const Home = (props) => {
-	const [ testList, setTestList ] = useState([
-		{
+	const [ testList, setTestList ] = useState(
+		[
+			/*{
 			id: 1,
 			value: 'test 1'
 		},
@@ -36,8 +37,9 @@ const Home = (props) => {
 		{
 			id: 4,
 			value: 'test 4'
-		}
-	]);
+		}*/
+		]
+	);
 
 	const fetchListData = (index) => {
 		//getdata for all/topic
@@ -53,8 +55,9 @@ const Home = (props) => {
 	}
 	const [ dropdownList, setDropdownList ] = useState(topic);
 
-	const [ objectList, setObjectList ] = useState([
-		{
+	const [ objectList, setObjectList ] = useState(
+		[
+			/*{
 			object: 'video',
 			objectName: 'Video 1',
 			id: 2,
@@ -93,8 +96,9 @@ const Home = (props) => {
 			subject: 'Science',
 			count: 5,
 			timeAgo: '20d'
-		}
-	]);
+		}*/
+		]
+	);
 
 	const onTestPress = (test) => {
 		Alert.alert('WIll reDirect to test.');

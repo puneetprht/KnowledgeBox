@@ -15,7 +15,7 @@ const TestList = (props) => {
 
 	const fetchAllTopics = () => {
 		axios
-			.get('http://3.7.66.184:3000/test/getTestList', {
+			.get('http://10.0.2.2:3000/test/getTestList', {
 				params: {
 					id: SubTopicId
 				}
@@ -43,6 +43,8 @@ const TestList = (props) => {
 		props.navigation.navigate('TestQuestionnaire', {
 			testId: index.id,
 			title: index.value,
+			testTime: index.time || 0,
+			testInstructions: index.instructions || '',
 			user: user,
 			stateId: stateId,
 			catergoryId: catergoryId
@@ -52,7 +54,7 @@ const TestList = (props) => {
 	const deleteTest = (id) => {
 		if (id) {
 			axios
-				.delete('http://3.7.66.184:3000/test/deleteTest', {
+				.delete('http://10.0.2.2:3000/test/deleteTest', {
 					data: {
 						id: id
 					}
@@ -73,7 +75,26 @@ const TestList = (props) => {
 			catergoryId: catergoryId,
 			subjectId: subjectId,
 			subTopicId: SubTopicId,
-			title: title
+			title: title,
+			testId: null,
+			testTitle: '',
+			testTime: 0,
+			testInstructions: ''
+		});
+	};
+
+	const editTest = (index) => {
+		props.navigation.navigate('TestAdmin', {
+			user: user,
+			stateId: stateId,
+			catergoryId: catergoryId,
+			subjectId: subjectId,
+			subTopicId: SubTopicId,
+			title: title,
+			testId: index.id,
+			testTitle: index.value,
+			testTime: index.time || 0,
+			testInstructions: index.instructions || ''
 		});
 	};
 
@@ -98,6 +119,22 @@ const TestList = (props) => {
 											justifyContent: 'center'
 										}}
 									/>
+									{user && user.isAdmin ? (
+										<TouchableOpacity
+											onPress={editTest.bind(this, l)}
+											style={{
+												...styles.icon,
+												padding: 5,
+												position: 'absolute',
+												alignSelf: 'flex-end',
+												backgroundColor: 'grey'
+											}}
+										>
+											<Icon name="edit" style={{ color: 'white' }} size={15} />
+										</TouchableOpacity>
+									) : (
+										<View />
+									)}
 								</View>
 								{user && user.isAdmin ? (
 									<TouchableOpacity

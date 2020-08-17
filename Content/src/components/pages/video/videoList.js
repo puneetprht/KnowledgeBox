@@ -12,13 +12,20 @@ import Icon2 from 'react-native-vector-icons/Feather';
 const VideoList = (props) => {
 	const [ list, setList ] = useState([]);
 	const { SubTopicId, title, user, stateId, catergoryId, subjectId } = props.route.params;
+	/*const SubTopicId = 1;
+	const title = 'RAS';
+	const user = { id: 1, isAdmin: 1 };
+	const stateId = 1;
+	const categoryId = 1;
+	const subjectId = 1;*/
+
 	const [ editMode, setEditMode ] = useState(false);
 	const [ videoName, setVideoName ] = useState('');
 	const [ videoUrl, setVideoUrl ] = useState('');
 
 	const fetchAllTopics = () => {
 		axios
-			.get('http://3.7.66.184:3000/Video/getVideoList', {
+			.get('http://10.0.2.2:3000/Video/getVideoList', {
 				params: {
 					id: SubTopicId
 				}
@@ -51,7 +58,7 @@ const VideoList = (props) => {
 	const deleteVideo = (id) => {
 		if (id) {
 			axios
-				.delete('http://3.7.66.184:3000/video/deleteVideo', {
+				.delete('http://10.0.2.2:3000/video/deleteVideo', {
 					data: {
 						id: id
 					}
@@ -75,7 +82,7 @@ const VideoList = (props) => {
 		}
 		setEditMode(true);
 		axios
-			.post('http://3.7.66.184:3000/video/postVideo', {
+			.post('http://10.0.2.2:3000/video/postVideo', {
 				subTopicId: SubTopicId,
 				subjectId: subjectId,
 				categoryId: catergoryId,
