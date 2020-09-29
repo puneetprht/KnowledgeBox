@@ -66,7 +66,7 @@ const TestAdmin = (props) => {
 	useEffect(() => {
 		if (testId) {
 			axios
-				.get('http://10.0.2.2:3000/test/getTestDetail', {
+				.get('http://3.7.66.184:3000/test/getTestDetail', {
 					params: {
 						id: testId
 					}
@@ -105,7 +105,7 @@ const TestAdmin = (props) => {
 		setIsSubmit(true);
 		const submitAnswers = [];
 		axios
-			.post('http://10.0.2.2:3000/test/postTest', {
+			.post('http://3.7.66.184:3000/test/postTest', {
 				subTopicId: subTopicId,
 				subjectId: subjectId,
 				categoryId: catergoryId,
@@ -227,6 +227,16 @@ const TestAdmin = (props) => {
 			{!introDone ? (
 				<ContainerList title={testTitle} onPress={() => props.navigation.goBack()}>
 					<ScrollView style={{ marginBottom: 30 }}>
+						<Text
+							style={{
+								fontSize: 19,
+								fontWeight: 'bold',
+								alignSelf: 'center'
+							}}
+						>
+							{' '}
+							Enter Instructions{' '}
+						</Text>
 						<TextInput
 							textAlign="left"
 							style={

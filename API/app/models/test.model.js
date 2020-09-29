@@ -93,7 +93,8 @@ Test.getTestDetail = (id, result) => {
 	console.log(id, ' Time: ', new Date());
 	sql.query(
 		`select qd.hmy as id, question, option1, option2, option3, option4, explaination, correctOption, isMultiple,
-		qd.negativeWeightage asnegativeWeightage , qd.weightage as weightage, questionLang, optionLang1, optionLang2, optionLang3, optionLang4,
+		qd.negativeWeightage as negativeWeightage , qd.weightage as weightage, questionLang, 
+		optionLang1, optionLang2, optionLang3, optionLang4, explainationLang,
 		videoUrl, videoUrlId from testdetail qd
 		inner join test q on q.hmy = qd.ftest
 		where q.hmy = ${id} `,
@@ -204,6 +205,8 @@ Test.postTest = (test, result) => {
 							negativeWeightage=${question.negativeWeightage},videoUrl=${toSqlString(question.videoUrl)},
 							videoUrlId=${toSqlString(question.videoUrlId)}, explaination=${toSqlString(
 								question.explaination
+							)}, explainationLang=${toSqlString(
+								question.explainationLang
 							)} where hmy = ${question.id}`,
 							(err, res) => {
 								if (err) {
@@ -217,13 +220,13 @@ Test.postTest = (test, result) => {
 						sql.query(
 							`insert into testdetail (ftest,fsubtopic,fsubject,fcategory,fstate,question,option1,option2,
 								option3,option4,correctoption,isMultiple, questionLang, optionLang1, optionLang2, optionLang3, optionLang4, weightage, negativeWeightage,
-								videoUrl, videoUrlId, explaination) values 
+								videoUrl, videoUrlId, explaination, explainationLang) values 
 								(${data.insertId},${test.subTopicId} ,${test.subjectId} ,${test.categoryId} ,${test.stateId},
 									'${question.question.toString()}','${question.option1.toString()}','${question.option2.toString()}',
 									'${question.option3.toString()}','${question.option4.toString()}',
 									'${question.correctOption.toString()}',${question.isMultiple},'${question.questionLang}',
 									'${question.optionLang1}','${question.optionLang2}','${question.optionLang3}','${question.optionLang4}',
-									${question.weightage},${question.negativeWeightage},'${question.videoUrl}','${question.videoUrlId}','${question.explaination}')`,
+									${question.weightage},${question.negativeWeightage},'${question.videoUrl}','${question.videoUrlId}','${question.explaination}','${question.explainationLang}')`,
 							(err, res) => {
 								if (err) {
 									console.log('error: ', err);
@@ -255,13 +258,13 @@ Test.postTest = (test, result) => {
 					sql.query(
 						`insert into testdetail (ftest,fsubtopic,fsubject,fcategory,fstate,question,option1,option2,
 						option3,option4,correctoption,isMultiple, questionLang, optionLang1, optionLang2, optionLang3, optionLang4, weightage, negativeWeightage,
-						videoUrl, videoUrlId, explaination) values 
+						videoUrl, videoUrlId, explaination, explainationLang) values 
 						(${data.insertId},${test.subTopicId} ,${test.subjectId} ,${test.categoryId} ,${test.stateId},
 							'${question.question.toString()}','${question.option1.toString()}','${question.option2.toString()}',
 							'${question.option3.toString()}','${question.option4.toString()}',
 							'${question.correctOption.toString()}',${question.isMultiple},'${question.questionLang}',
 							'${question.optionLang1}','${question.optionLang2}','${question.optionLang3}','${question.optionLang4}',
-							${question.weightage},${question.negativeWeightage},'${question.videoUrl}','${question.videoUrlId}','${question.explaination}')`,
+							${question.weightage},${question.negativeWeightage},'${question.videoUrl}','${question.videoUrlId}','${question.explaination}','${question.explainationLang}')`,
 						(err, res) => {
 							if (err) {
 								console.log('error: ', err);
