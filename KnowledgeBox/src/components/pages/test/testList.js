@@ -20,11 +20,31 @@ import IconFA5 from 'react-native-vector-icons/FontAwesome5';
 import DocumentPicker from 'react-native-document-picker';
 import RNFetchBlob from 'rn-fetch-blob';
 import * as csvtojson from '../../../services/csvToJson';
+//import {S3} from 'aws-sdk/dist/aws-sdk-react-native';
+import {decode} from 'base64-arraybuffer';
+import Amplify, {Auth, Storage} from 'aws-amplify';
+import {WebView} from 'react-native-webview';
 
 const TestList = (props) => {
   const [list, setList] = useState([]);
   const [listCSV, setListCSV] = useState([]);
-  const {
+
+  Amplify.configure({
+    Auth: {
+      identityPoolId: 'ap-south-1:1757063d-6ae6-48fd-971b-4278561c408f', //REQUIRED - Amazon Cognito Identity Pool ID
+      region: 'ap-south-1', // REQUIRED - Amazon Cognito Region
+      // userPoolId: 'XX-XXXX-X_abcd1234', //OPTIONAL - Amazon Cognito User Pool ID
+      // userPoolWebClientId: 'XX-XXXX-X_abcd1234', //OPTIONAL - Amazon Cognito Web Client ID
+    },
+    Storage: {
+      AWSS3: {
+        bucket: 'knowledge2020box', //REQUIRED -  Amazon S3 bucket name
+        region: 'ap-south-1', //OPTIONAL -  Amazon service region
+      },
+    },
+  });
+
+  /*const {
     SubTopicId,
     title,
     user,
@@ -32,14 +52,14 @@ const TestList = (props) => {
     catergoryId,
     subjectId,
   } = props.route.params;
-  let {refresh} = props.route.params;
-  /*const user = {isAdmin: true};
+  let {refresh} = props.route.params;*/
+  const user = {isAdmin: true};
   const SubTopicId = 6;
   const title = 'Science';
   const stateId = 8;
   const catergoryId = 3;
   const subjectId = 2;
-  let refresh = true;*/
+  let refresh = true;
 
   const fetchAllTopics = () => {
     axios
@@ -203,8 +223,112 @@ const TestList = (props) => {
       const res = await DocumentPicker.pick({
         type: [DocumentPicker.types.allFiles],
       });
+      console.log(res.uri);
+      console.log(res.name);
+      console.log(res.type);
+      const file = {
+        // `uri` can also be a file system path (i.e. file://)
+        uri: res.uri,
+        name: res.name,
+        type: res.type,
+      };
 
-      if (res && res.uri) {
+      /*const options = {
+        keyPrefix: 'Images/',
+        bucket: 'knowledge2020box',
+        region: 'ap-south-1',
+        accessKey: 'AKIASAPEFXWEJ5UIJLMY',
+        secretKey: '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',
+        successActionStatus: 201,
+      };*/
+
+      const options = {
+        keyPrefix: 'Images/',
+        bucket: 'knowledge2020box',
+        region: 'ap-south-1',
+        accessKey: 'AKIASAPEFXWEGWNNSAO4',
+        secretKey: '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',
+        successActionStatus: 201,
+        //awsUrl: 's3.ap-south-1.amazonaws.com',
+      };
+
+      console.log('starting to read');
+      /*const s3bucket = new S3({
+        accessKeyId: 'AKIASAPEFXWEGWNNSAO4',
+        secretAccessKey: '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',
+        Bucket: 'knowledge2020box',
+        signatureVersion: 'v4',
+      });*/
+
+      let contentType = file.type;
+      let contentDeposition = 'inline;filename="' + file.name + '"';
+      RNFetchBlob.fs
+        .readStream(file.uri, 'base64')
+        .then((stream) => {
+          let data = '';
+          stream.open();
+          stream.onData((chunk) => {
+            data += chunk;
+            console.log(data);
+          });
+          stream.onEnd(() => {
+            const arrayBuffer = decode(data);
+            console.log(arrayBuffer);
+            /*s3bucket.createBucket(() => {
+              const params = {
+                Bucket: 'knowledge2020box',
+                Key: file.name,
+                Body: arrayBuffer,
+                ContentDisposition: contentDeposition,
+                ContentType: contentType,
+              };
+              s3bucket.upload(params, (err, data) => {
+                if (err) {
+                  console.log('error in callback', err);
+                }
+                console.log('success');
+                console.log('Respomse URL : ' + data);
+              });
+            });*/
+            try {
+              /*const response = await fetch(pathToImageFile)
+          
+              const blob = await response.blob()-*/
+
+              Storage.put(file.name, data, {
+                contentType: file.type,
+              });
+            } catch (err) {
+              console.log(err);
+            }
+          });
+        })
+        .catch((err) => {
+          console.log('err:', err);
+        });
+
+      /*RNS3.put(file, options)
+        .then((response) => {
+          if (response.status !== 201) {
+            console.log(response.body);
+            throw new Error('Failed to upload image to S3');
+          }
+          console.log(response.body);
+          /**
+           * {
+           *   postResponse: {
+           *     bucket: "your-bucket",
+           *     etag : "9f620878e06d28774406017480a59fd4",
+           *     key: "uploads/image.png",
+           *     location: "https://your-bucket.s3.amazonaws.com/uploads%2Fimage.png"
+           *   }
+           * }
+           
+        })
+        .catch(function (err) {
+          console.log(err);
+        });*/
+      /*if (res && res.uri) {
         let filePath = '';
         if (Platform.OS === 'ios') {
           let arr = res.uri.split('/');
@@ -247,7 +371,7 @@ const TestList = (props) => {
           .catch((err) => {
             console.log('err:', err);
           });
-      }
+      }*/
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
         console.log(err);
@@ -256,7 +380,11 @@ const TestList = (props) => {
       }
     }
   };
-
+  const runFirst = `
+  var x = document.getElementsByClassName("ytp-chrome-top-buttons");
+  x[0].style.display="block";
+  true; // note: this is required, or you'll sometimes get silent failures
+`;
   return (
     <ContainerList
       title={title + ' tests'}
@@ -346,6 +474,16 @@ const TestList = (props) => {
                   />
                 </TouchableOpacity>
               </View>
+              <WebView
+                style={{flex: 1, width: 400, height: 225}}
+                javaScriptEnabled={true}
+                allowsFullscreenVideo={true}
+                source={{
+                  uri:
+                    'https://www.youtube.com/embed/xiumTLv93pY?rel=0&autoplay=0&showinfo=1&fullscreen=1&controls=1&modestbranding=1&iv_load_policy=3',
+                }}
+                injectedJavaScript={runFirst}
+              />
             </View>
           ) : (
             <View />
