@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import * as Constants from '../../constants/constants';
 
-const PButton = props => {
+const PButton = (props) => {
   return (
     <TouchableOpacity
       onPress={props.onPress}
@@ -26,6 +26,7 @@ var styles = StyleSheet.create({
   },
   buttonText: {
     color: '#ffffff',
+    fontFamily: 'Roboto-Medium',
     fontSize: 20,
   },
 });

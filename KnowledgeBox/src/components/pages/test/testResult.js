@@ -17,13 +17,13 @@ import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import PButton from '../../../widgets/Button/pButton';
 import ElevatedView from 'react-native-elevated-view';
 
-const TestResult = props => {
+const TestResult = (props) => {
   const {questionsList} = props.route.params;
   const [displaylist, setDisplayList] = useState(false);
 
   const correctAnswers = () => {
     let correct = 0;
-    questionsList.forEach(element => {
+    questionsList.forEach((element) => {
       if (element.selectedAnswer.toString() === element.correctOption) {
         correct += element.weightage;
       } else {
@@ -59,6 +59,7 @@ const TestResult = props => {
               textAlign: 'center',
               textAlignVertical: 'center',
               flex: 1,
+              fontFamily: 'Roboto-Medium',
               fontSize: 25,
             }}>
             Result and Explanation
@@ -79,8 +80,20 @@ const TestResult = props => {
           ]}
           style={styles.scoreBox}>
           <View style={{alignItems: 'center', marginTop: 20}}>
-            <Text style={{fontSize: 25, color: 'white'}}>Your Score</Text>
-            <Text style={{fontSize: 35, color: 'white'}}>
+            <Text
+              style={{
+                fontFamily: 'Roboto-Medium',
+                fontSize: 25,
+                color: 'white',
+              }}>
+              Your Score
+            </Text>
+            <Text
+              style={{
+                fontFamily: 'Roboto-Medium',
+                fontSize: 35,
+                color: 'white',
+              }}>
               {correctAnswers()}/
               {questionsList[questionsList.length - 1].maxMarks}
             </Text>
@@ -98,6 +111,7 @@ const TestResult = props => {
             <Text
               style={{
                 marginTop: 10,
+                fontFamily: 'Roboto-Medium',
                 fontSize: 25,
                 color: 'white',
                 position: 'absolute',
@@ -130,7 +144,7 @@ const TestResult = props => {
       </View>
       <View style={{marginHorizontal: 20, marginTop: 15}}>
         {displaylist ? (
-          questionsList.map(question => {
+          questionsList.map((question) => {
             return (
               <ElevatedView
                 key={question.id}
@@ -140,6 +154,7 @@ const TestResult = props => {
                   style={{
                     //margin: 10,
                     color: Constants.textColor1,
+                    fontFamily: 'Roboto-Medium',
                     fontSize: 18,
                     borderBottomColor: Constants.textColor1,
                     paddingBottom: 5,
@@ -150,12 +165,13 @@ const TestResult = props => {
                 <Text
                   style={{
                     color: Constants.textColor1,
+                    fontFamily: 'Roboto-Medium',
                     fontSize: 17,
                   }}>
                   Time on question: {question.time} seconds
                 </Text>
                 <View style={{alignItems: 'center'}}>
-                  {question.options.map(option => {
+                  {question.options.map((option) => {
                     return (
                       <View
                         key={option.id}
@@ -204,6 +220,7 @@ const TestResult = props => {
                     <Text
                       style={{
                         color: Constants.textColor1,
+                        fontFamily: 'Roboto-Medium',
                         fontSize: 18,
                       }}>
                       Explanation: {question.explaination}
@@ -217,6 +234,7 @@ const TestResult = props => {
                     <Text
                       style={{
                         color: Constants.textColor1,
+                        fontFamily: 'Roboto-Medium',
                         fontSize: 18,
                         marginTop: 8,
                       }}>
@@ -226,7 +244,7 @@ const TestResult = props => {
                       title="Watch"
                       onPress={openDetail.bind(this, question.videoUrlId)}
                       viewStyle={(styles.button, {marginLeft: 10})}
-                      textStyle={{fontSize: 17}}
+                      textStyle={{fontFamily: 'Roboto-Medium', fontSize: 17}}
                       elementStyle={{
                         flexDirection: 'row',
                         justifyContent: 'center',
@@ -256,6 +274,7 @@ const styles = StyleSheet.create({
   },
   answerText: {
     textAlign: 'left',
+    fontFamily: 'Roboto-Medium',
     fontSize: 18,
     //fontWeight: 'bold',
     margin: 10,

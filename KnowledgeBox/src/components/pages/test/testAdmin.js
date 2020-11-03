@@ -259,6 +259,7 @@ const TestAdmin = (props) => {
           <ScrollView style={{marginBottom: 30}}>
             <Text
               style={{
+                fontFamily: 'Roboto-Medium',
                 fontSize: 19,
                 fontWeight: 'bold',
                 alignSelf: 'center',
@@ -373,7 +374,13 @@ const TestAdmin = (props) => {
               {renderProgressBar(questionsList.length, key)}
             </View>
             <View style={{alignItems: 'center', justifyContent: 'center'}}>
-              <Text style={{fontSize: 20, marginTop: 10, color: 'white'}}>
+              <Text
+                style={{
+                  fontFamily: 'Roboto-Medium',
+                  fontSize: 20,
+                  marginTop: 10,
+                  color: 'white',
+                }}>
                 Question {key + 1}
               </Text>
               <View
@@ -383,7 +390,13 @@ const TestAdmin = (props) => {
                   alignItems: 'center',
                   marginVertical: 10,
                 }}>
-                <Text style={{marginLeft: 20, fontSize: 30, color: 'white'}}>
+                <Text
+                  style={{
+                    marginLeft: 20,
+                    fontFamily: 'Roboto-Medium',
+                    fontSize: 30,
+                    color: 'white',
+                  }}>
                   {' '}
                   +{' '}
                 </Text>
@@ -403,7 +416,13 @@ const TestAdmin = (props) => {
                   placeholderTextColor={'white'}
                   onChangeText={(val) => saveWeightage(val)}
                 />
-                <Text style={{marginLeft: 20, fontSize: 35, color: 'white'}}>
+                <Text
+                  style={{
+                    marginLeft: 20,
+                    fontFamily: 'Roboto-Medium',
+                    fontSize: 35,
+                    color: 'white',
+                  }}>
                   {' '}
                   -{' '}
                 </Text>
@@ -463,6 +482,7 @@ const TestAdmin = (props) => {
                   style={{
                     color: !questionsList[key].isMultiple ? 'white' : 'black',
                     textAlign: 'center',
+                    fontFamily: 'Roboto-Medium',
                     fontSize: 13,
                     margin: 3,
                   }}>
@@ -484,6 +504,7 @@ const TestAdmin = (props) => {
                   style={{
                     color: !questionsList[key].isMultiple ? 'black' : 'white',
                     textAlign: 'center',
+                    fontFamily: 'Roboto-Medium',
                     fontSize: 13,
                     margin: 3,
                   }}>
@@ -697,6 +718,7 @@ const TestAdmin = (props) => {
                 style={{
                   color: 'white',
                   textAlign: 'center',
+                  fontFamily: 'Roboto-Medium',
                   fontSize: 15,
                   margin: 3,
                 }}>
@@ -728,6 +750,7 @@ const TestAdmin = (props) => {
                 style={{
                   color: 'white',
                   textAlign: 'center',
+                  fontFamily: 'Roboto-Medium',
                   fontSize: 15,
                   margin: 3,
                 }}>
@@ -885,18 +908,21 @@ const styles = StyleSheet.create({
   },
   answerText: {
     textAlign: 'left',
+    fontFamily: 'Roboto-Medium',
     fontSize: 20,
     fontWeight: 'bold',
     margin: 10,
   },
   answerText2: {
     textAlign: 'left',
+    fontFamily: 'Roboto-Medium',
     fontSize: 20,
     fontWeight: 'bold',
   },
   textArea: {
     color: Constants.textColor1,
     borderRadius: 5,
+    fontFamily: 'Roboto-Medium',
     fontSize: 17,
   },
   textArea2: {
@@ -905,6 +931,7 @@ const styles = StyleSheet.create({
     color: 'white',
     borderRadius: 5,
     width: '90%',
+    fontFamily: 'Roboto-Medium',
     fontSize: 17,
   },
   elevatedStyle: {

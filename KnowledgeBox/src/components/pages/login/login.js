@@ -16,9 +16,9 @@ import PButton from '../../../widgets/Button/pButton';
 import Icon from 'react-native-vector-icons/Entypo';
 import axios from 'axios';
 
-const Login = props => {
+const Login = (props) => {
   var icon = require('../../../assets/iconLogin.png');
-  
+
   return (
     <>
       <View style={{flex: 46}}>
@@ -56,29 +56,6 @@ const Login = props => {
           textStyle={styles.buttonTextStyle}
           elementStyle={styles.buttonElementStyle}
         />
-        {/* <PButton
-          title="Login as Admin"
-          onPress={() => {
-            //storeCookieData(0);
-            global.user = {id: 1, isAdmin: 1};
-            props.navigation.navigate('State');
-            //global.isAdmin = true;
-          }}
-          viewStyle={styles.buttonViewStyle}
-          textStyle={styles.buttonTextStyle}
-          elementStyle={styles.buttonElementStyle}
-        />
-        <PButton
-          title="Login as User"
-          onPress={() => {
-            //storeCookieData(0);
-            global.user = {id: 1, isAdmin: 0};
-            props.navigation.navigate('State');
-          }}
-          viewStyle={styles.buttonViewStyle}
-          textStyle={styles.buttonTextStyle}
-          elementStyle={styles.buttonElementStyle}
-        /> */}
         <View
           style={{
             marginTop: 30,
@@ -88,13 +65,25 @@ const Login = props => {
           flexDirection="row">
           <TouchableOpacity
             onPress={() => {
-              global.user=null;
-              props.navigation.replace('State');
+              global.user = null;
+              props.navigation.navigate('State', {
+                screen: 'TopicList',
+              });
             }}
-            flexDirection="row">
-            <Text style={{color: Constants.textColor1, fontSize: 15}}>
+            flexDirection="row"
+            justifyContent="center"
+            alignItems="flex-start">
+            <Text
+              style={{
+                color: Constants.textColor1,
+                fontFamily: 'Roboto-Medium',
+                fontSize: 15,
+                fontFamily: 'Roboto-Medium',
+                textAlign: 'center',
+                textAlignVertical: 'top',
+              }}>
               Skip
-              <Icon name="chevron-right" size={18} />
+              <Icon name="chevron-right" alignSelf="center" size={17} />
             </Text>
           </TouchableOpacity>
         </View>

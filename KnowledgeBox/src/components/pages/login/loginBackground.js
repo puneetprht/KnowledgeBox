@@ -10,7 +10,15 @@ const LoginBackground = () => {
       colors={[Constants.gradientColor1, Constants.gradientColor2]}
       style={{height: '100%', borderBottomLeftRadius: 40}}>
       <View style={{alignItems: 'center'}}>
-        <Text style={{fontSize: 20, marginTop: 20, color: 'white'}}>Login</Text>
+        <Text
+          style={{
+            fontFamily: 'Roboto-Medium',
+            fontSize: 20,
+            marginTop: 20,
+            color: 'white',
+          }}>
+          Login
+        </Text>
       </View>
       <View style={{alignItems: 'center', justifyContent: 'flex-start'}} />
     </LinearGradient>

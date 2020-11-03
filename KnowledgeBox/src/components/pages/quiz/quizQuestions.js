@@ -17,27 +17,27 @@ import PButton from '../../../widgets/Button/pButton';
 import ElevatedView from 'react-native-elevated-view';
 import axios from 'axios';
 
-const QuizQuestionnaire = props => {
+const QuizQuestionnaire = (props) => {
   const [key, setKey] = useState(0);
   const {quizId, title, user, stateId, catergoryId} = props.route.params;
   const [isSubmit, setIsSubmit] = useState(false);
 
   const [questionsList, setQuestionsList] = useState([]);
-  const fetchQuizDetail = quizId => {
+  const fetchQuizDetail = (quizId) => {
     axios
       .get('http://3.7.66.184:3000/quiz/getQuizDetail', {
         params: {
           id: quizId,
         },
       })
-      .then(response => {
+      .then((response) => {
         if (response.data) {
           setQuestionsList(response.data);
         } else {
           setQuestionsList([]);
         }
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
       });
   };
@@ -46,7 +46,7 @@ const QuizQuestionnaire = props => {
     fetchQuizDetail(quizId);
   }, []);
 
-  const onOptionPress = index => {
+  const onOptionPress = (index) => {
     const questions = JSON.parse(JSON.stringify(questionsList));
     if (
       questions[key].selectedAnswer.includes(index) &&
@@ -71,7 +71,7 @@ const QuizQuestionnaire = props => {
       } else {
         questions[key].selectedAnswer = [];
         questions[key].selectedAnswer.push(index);
-        questions[key].options.forEach(element => {
+        questions[key].options.forEach((element) => {
           element.isSelected = false;
         });
         questions[key].options[index - 1].isSelected = true;
@@ -82,7 +82,7 @@ const QuizQuestionnaire = props => {
 
   const calculateScore = () => {
     let correct = 0;
-    questionsList.forEach(element => {
+    questionsList.forEach((element) => {
       if (element.selectedAnswer.toString() === element.correctOption) {
         correct++;
       }
@@ -110,13 +110,13 @@ const QuizQuestionnaire = props => {
           score: calculateScore(),
           answers: submitAnswers,
         })
-        .then(response => {
+        .then((response) => {
           setIsSubmit(false);
           props.navigation.navigate('QuizResult', {
             questionsList: questionsList,
           });
         })
-        .catch(err => {
+        .catch((err) => {
           setIsSubmit(false);
           console.log(err);
         });
@@ -162,6 +162,7 @@ const QuizQuestionnaire = props => {
                     textAlign: 'center',
                     textAlignVertical: 'center',
                     flex: 1,
+                    fontFamily: 'Roboto-Medium',
                     fontSize: 25,
                   }}>
                   {title}
@@ -184,10 +185,22 @@ const QuizQuestionnaire = props => {
               )}
             </View>
             <View style={{alignItems: 'center', justifyContent: 'center'}}>
-              <Text style={{fontSize: 20, marginTop: 10, color: 'white'}}>
+              <Text
+                style={{
+                  fontFamily: 'Roboto-Medium',
+                  fontSize: 20,
+                  marginTop: 10,
+                  color: 'white',
+                }}>
                 Question {questionsList[key].count}
               </Text>
-              <Text style={{fontSize: 18, margin: 10, color: 'white'}}>
+              <Text
+                style={{
+                  fontFamily: 'Roboto-Medium',
+                  fontSize: 18,
+                  margin: 10,
+                  color: 'white',
+                }}>
                 {questionsList[key].question}
               </Text>
             </View>
@@ -207,6 +220,7 @@ const QuizQuestionnaire = props => {
                 style={{
                   color: 'white',
                   textAlign: 'center',
+                  fontFamily: 'Roboto-Medium',
                   fontSize: 17,
                   margin: 3,
                 }}>
@@ -217,7 +231,7 @@ const QuizQuestionnaire = props => {
             </View>
           </View>
           <View style={{alignItems: 'center', margin: 10, marginTop: 15}}>
-            {questionsList[key].options.map(option => {
+            {questionsList[key].options.map((option) => {
               return (
                 <View
                   key={option.id}
@@ -313,7 +327,7 @@ const renderProgressBar = (length, inFocus) => {
         alignContent: 'center',
         marginTop: 10,
       }}>
-      {junctions.map(j => {
+      {junctions.map((j) => {
         return (
           <View
             key={j.key}
@@ -341,6 +355,7 @@ const styles = StyleSheet.create({
   },
   answerText: {
     textAlign: 'left',
+    fontFamily: 'Roboto-Medium',
     fontSize: 18,
     //fontWeight: 'bold',
     margin: 10,

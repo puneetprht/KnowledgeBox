@@ -402,7 +402,7 @@ const TestList = (props) => {
                     title="Start"
                     onPress={openDetail.bind(this, l)}
                     viewStyle={styles.button}
-                    textStyle={{fontSize: 17}}
+                    textStyle={{fontFamily: 'Roboto-Medium', fontSize: 17}}
                     elementStyle={{
                       flexDirection: 'row',
                       justifyContent: 'center',
@@ -532,11 +532,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   textLeft: {
+    fontFamily: 'Roboto-Medium',
     fontSize: 18,
     fontWeight: 'bold',
   },
   textRight: {
     color: Constants.textColor1,
+    fontFamily: 'Roboto-Medium',
     fontSize: 18,
     fontWeight: 'bold',
   },
@@ -544,6 +546,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Constants.textColor1,
     width: '90%',
+    fontFamily: 'Roboto-Medium',
     fontSize: 18,
   },
   icon: {
