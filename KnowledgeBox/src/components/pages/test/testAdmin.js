@@ -69,7 +69,7 @@ const TestAdmin = (props) => {
   useEffect(() => {
     if (testId) {
       axios
-        .get('http://3.7.66.184:3000/test/getTestDetail', {
+        .get('http://' + Constants.apiDomain + '/test/getTestDetail', {
           params: {
             id: testId,
           },
@@ -120,7 +120,7 @@ const TestAdmin = (props) => {
     setIsSubmit(true);
     const submitAnswers = [];
     axios
-      .post('http://3.7.66.184:3000/test/postTest', {
+      .post('http://' + Constants.apiDomain + '/test/postTest', {
         subTopicId: subTopicId,
         subjectId: subjectId,
         categoryId: catergoryId,

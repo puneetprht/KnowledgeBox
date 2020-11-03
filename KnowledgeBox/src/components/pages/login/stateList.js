@@ -16,7 +16,7 @@ import axios from '../../../services/axios';
 
 /*const fetchUserState = userId => {
   axios
-    .get('https://3.7.66.184:3000/quiz/GetUserState?' + userId)
+    .get('https://' + Constants.apiDomain + '/quiz/GetUserState?' + userId)
     .then(response => {
       return response.data;
     })

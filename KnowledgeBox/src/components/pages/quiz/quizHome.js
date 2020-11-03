@@ -40,7 +40,7 @@ const QuizHome = (props) => {
   const onRefresh = () => {
     /*if (user && 0) {
       axios
-        .get('http://3.7.66.184:3000/common/getDropdown', {
+        .get('http://' + Constants.apiDomain + '/common/getDropdown', {
           params: {
             userId: user.id,
             stateId: state,
@@ -65,7 +65,7 @@ const QuizHome = (props) => {
   const fetchAllSubjects = () => {
     /*if (user) {
 			axios
-				.get('http://3.7.66.184:3000/common/getAllSubjectForUser', {
+				.get('http://' + Constants.apiDomain + '/common/getAllSubjectForUser', {
 					params: {
 						userId: user.id,
 						stateId: state
@@ -84,7 +84,7 @@ const QuizHome = (props) => {
 				});
 		} else { */
     axios
-      .get('http://3.7.66.184:3000/common/getAllSubjectForNoUser', {
+      .get('http://' + Constants.apiDomain + '/common/getAllSubjectForNoUser', {
         params: {
           selectedCategory: JSON.stringify(global.selectedTopic),
           stateId: state,
@@ -105,7 +105,7 @@ const QuizHome = (props) => {
 
   const fetchSubjectList = (categoryId) => {
     axios
-      .get('http://3.7.66.184:3000/common/getSubjectList', {
+      .get('http://' + Constants.apiDomain + '/common/getSubjectList', {
         params: {
           id: categoryId,
         },
@@ -144,7 +144,7 @@ const QuizHome = (props) => {
   const saveSubject = (value) => {
     if (value) {
       axios
-        .post('http://3.7.66.184:3000/common/addSubject', {
+        .post('http://' + Constants.apiDomain + '/common/addSubject', {
           subjectName: value,
           categoryId: category,
           stateId: state,
@@ -162,7 +162,7 @@ const QuizHome = (props) => {
   const deleteSubject = (id) => {
     if (id) {
       axios
-        .delete('http://3.7.66.184:3000/common/deleteSubject', {
+        .delete('http://' + Constants.apiDomain + '/common/deleteSubject', {
           data: {
             id: id,
           },

@@ -29,7 +29,7 @@ const QuizTopicList = (props) => {
 
   const fetchAllTopics = () => {
     axios
-      .get('http://3.7.66.184:3000/quiz/getSubTopicList', {
+      .get('http://' + Constants.apiDomain + '/quiz/getSubTopicList', {
         params: {
           id: subjectId,
         },
@@ -61,7 +61,7 @@ const QuizTopicList = (props) => {
   const saveSubject = (value) => {
     if (value) {
       axios
-        .post('http://3.7.66.184:3000/common/addSubTopic', {
+        .post('http://' + Constants.apiDomain + '/common/addSubTopic', {
           SubTopicName: value,
           subjectId: subjectId,
           catergoryId: catergoryId,
@@ -79,7 +79,7 @@ const QuizTopicList = (props) => {
   const deleteSubject = (id) => {
     if (id) {
       axios
-        .delete('http://3.7.66.184:3000/common/deleteSubTopic', {
+        .delete('http://' + Constants.apiDomain + '/common/deleteSubTopic', {
           data: {
             id: id,
           },

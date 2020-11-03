@@ -63,7 +63,7 @@ const TestList = (props) => {
 
   const fetchAllTopics = () => {
     axios
-      .get('http://3.7.66.184:3000/test/getTestList', {
+      .get('http://' + Constants.apiDomain + '/test/getTestList', {
         params: {
           id: SubTopicId,
         },
@@ -99,7 +99,7 @@ const TestList = (props) => {
   const deleteTest = (id) => {
     if (id) {
       axios
-        .delete('http://3.7.66.184:3000/test/deleteTest', {
+        .delete('http://' + Constants.apiDomain + '/test/deleteTest', {
           data: {
             id: id,
           },

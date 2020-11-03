@@ -6,4 +6,4 @@ export const success = '#1fc281';
 export const error = '#de3500';
 export const textColor1 = '#003e92';
 export const googleApiKey = 'AIzaSyCHMa3V4ZeF49SXVJ1QAzOHp8WTEIgtoEg';
-export const apiDomain = '3.7.66.184:3000';
+export const apiDomain = '' + Constants.apiDomain + '';

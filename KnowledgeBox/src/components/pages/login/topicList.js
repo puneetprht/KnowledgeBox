@@ -38,7 +38,7 @@ const TopicList = (props) => {
   const fetchAllTopics = () => {
     //console.log('state:', stateId);
     axios
-      .get('http://3.7.66.184:3000/common/getCategoryList', {
+      .get('http://' + Constants.apiDomain + '/common/getCategoryList', {
         params: {
           id: stateId,
         },
@@ -84,7 +84,7 @@ const TopicList = (props) => {
 
   const postCategoryForUser = () => {
     axios
-      .post('http://3.7.66.184:3000/common/postCategoryForUser', {
+      .post('http://' + Constants.apiDomain + '/common/postCategoryForUser', {
         stateId: stateId,
         userId: user.id,
         selectedTopic: selectedTopic,
@@ -96,7 +96,7 @@ const TopicList = (props) => {
   const saveCategory = (id) => {
     setInRequest(true);
     axios
-      .post('http://3.7.66.184:3000/common/postCategory', {
+      .post('http://' + Constants.apiDomain + '/common/postCategory', {
         id: id,
         stateId: stateId,
         categoryName: newCategory,
@@ -119,7 +119,7 @@ const TopicList = (props) => {
   const deleteCategory = (id) => {
     setInRequest(true);
     axios
-      .delete('http://3.7.66.184:3000/common/deleteCategory', {
+      .delete('http://' + Constants.apiDomain + '/common/deleteCategory', {
         data: {
           id: id,
         },

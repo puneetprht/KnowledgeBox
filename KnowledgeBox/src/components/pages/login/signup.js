@@ -30,7 +30,7 @@ const SignUp = (props) => {
 
   const registerUser = () => {
     axios
-      .post('http://3.7.66.184:3000/user/register', {
+      .post('http://' + Constants.apiDomain + '/user/register', {
         email: email,
         password: password,
         firstName: firstName,
