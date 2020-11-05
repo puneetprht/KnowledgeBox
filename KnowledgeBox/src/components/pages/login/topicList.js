@@ -18,7 +18,7 @@ import * as Constants from '../../../constants/constants';
 import Icon from 'react-native-vector-icons/Entypo';
 import Icon3 from 'react-native-vector-icons/Feather';
 import Icon2 from 'react-native-vector-icons/AntDesign';
-import axios from 'axios';
+import axios from '../../../services/axios';
 
 const TopicList = (props) => {
   const [Topics, setTopics] = useState([]);
@@ -38,7 +38,7 @@ const TopicList = (props) => {
   const fetchAllTopics = () => {
     //console.log('state:', stateId);
     axios
-      .get(Constants.apiDomain + '/common/getCategoryList', {
+      .get('/common/getCategoryList', {
         params: {
           id: stateId,
         },
@@ -84,7 +84,7 @@ const TopicList = (props) => {
 
   const postCategoryForUser = () => {
     axios
-      .post(Constants.apiDomain + '/common/postCategoryForUser', {
+      .post('/common/postCategoryForUser', {
         stateId: stateId,
         userId: user.id,
         selectedTopic: selectedTopic,
@@ -96,7 +96,7 @@ const TopicList = (props) => {
   const saveCategory = (id) => {
     setInRequest(true);
     axios
-      .post(Constants.apiDomain + '/common/postCategory', {
+      .post('/common/postCategory', {
         id: id,
         stateId: stateId,
         categoryName: newCategory,
@@ -119,7 +119,7 @@ const TopicList = (props) => {
   const deleteCategory = (id) => {
     setInRequest(true);
     axios
-      .delete(Constants.apiDomain + '/common/deleteCategory', {
+      .delete('/common/deleteCategory', {
         data: {
           id: id,
         },

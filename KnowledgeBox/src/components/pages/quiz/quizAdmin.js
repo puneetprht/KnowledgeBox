@@ -17,7 +17,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import * as Constants from '../../../constants/constants';
 import PButton from '../../../widgets/Button/pButton';
 import ElevatedView from 'react-native-elevated-view';
-import axios from 'axios';
+import axios from '../../../services/axios';
 
 const QuizAdmin = (props) => {
   const [key, setKey] = useState(0);
@@ -71,7 +71,7 @@ const QuizAdmin = (props) => {
     setIsSubmit(true);
     const submitAnswers = [];
     axios
-      .post(Constants.apiDomain + '/quiz/postQuiz', {
+      .post('/quiz/postQuiz', {
         subTopicId: subTopicId,
         subjectId: subjectId,
         categoryId: catergoryId,

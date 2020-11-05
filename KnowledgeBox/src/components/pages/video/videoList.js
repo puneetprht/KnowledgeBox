@@ -13,7 +13,7 @@ import {
 import ContainerList from '../../../widgets/List/containerList';
 import * as Constants from '../../../constants/constants';
 import PButton from '../../../widgets/Button/pButton';
-import axios from 'axios';
+import axios from '../../../services/axios';
 import Icon from 'react-native-vector-icons/AntDesign';
 import Icon2 from 'react-native-vector-icons/Feather';
 
@@ -40,7 +40,7 @@ const VideoList = (props) => {
 
   const fetchAllTopics = () => {
     axios
-      .get(Constants.apiDomain + '/Video/getVideoList', {
+      .get('/Video/getVideoList', {
         params: {
           id: SubTopicId,
         },
@@ -73,7 +73,7 @@ const VideoList = (props) => {
   const deleteVideo = (id) => {
     if (id) {
       axios
-        .delete(Constants.apiDomain + '/video/deleteVideo', {
+        .delete('/video/deleteVideo', {
           data: {
             id: id,
           },
@@ -97,7 +97,7 @@ const VideoList = (props) => {
     }
     setEditMode(true);
     axios
-      .post(Constants.apiDomain + '/video/postVideo', {
+      .post('/video/postVideo', {
         subTopicId: SubTopicId,
         subjectId: subjectId,
         categoryId: catergoryId,

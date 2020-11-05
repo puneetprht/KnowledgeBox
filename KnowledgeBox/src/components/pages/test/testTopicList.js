@@ -15,7 +15,7 @@ import * as Constants from '../../../constants/constants';
 import PButton from '../../../widgets/Button/pButton';
 import Icon from 'react-native-vector-icons/Feather';
 import Icon2 from 'react-native-vector-icons/AntDesign';
-import axios from 'axios';
+import axios from '../../../services/axios';
 
 const TestTopicList = (props) => {
   const [list, setList] = useState([]);
@@ -29,7 +29,7 @@ const TestTopicList = (props) => {
 
   const fetchAllTopics = () => {
     axios
-      .get(Constants.apiDomain + '/test/getSubTopicList', {
+      .get('/test/getSubTopicList', {
         params: {
           id: subjectId,
         },
@@ -61,7 +61,7 @@ const TestTopicList = (props) => {
   const saveSubject = (value) => {
     if (value) {
       axios
-        .post(Constants.apiDomain + '/common/addSubTopic', {
+        .post('/common/addSubTopic', {
           SubTopicName: value,
           subjectId: subjectId,
           catergoryId: catergoryId,
@@ -79,7 +79,7 @@ const TestTopicList = (props) => {
   const deleteSubject = (id) => {
     if (id) {
       axios
-        .delete(Constants.apiDomain + '/common/deleteSubTopic', {
+        .delete('/common/deleteSubTopic', {
           data: {
             id: id,
           },

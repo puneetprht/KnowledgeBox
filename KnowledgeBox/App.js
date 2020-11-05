@@ -32,7 +32,7 @@ const App = () => {
   return (
     <NavigationContainer>
       <StatusBar backgroundColor="#009CDE" barStyle="light-content" />
-      <TopicList />
+      <RootStackScreen />
     </NavigationContainer>
   );
 };

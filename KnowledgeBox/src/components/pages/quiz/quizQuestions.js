@@ -15,7 +15,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import * as Constants from '../../../constants/constants';
 import PButton from '../../../widgets/Button/pButton';
 import ElevatedView from 'react-native-elevated-view';
-import axios from 'axios';
+import axios from '../../../services/axios';
 
 const QuizQuestionnaire = (props) => {
   const [key, setKey] = useState(0);
@@ -25,7 +25,7 @@ const QuizQuestionnaire = (props) => {
   const [questionsList, setQuestionsList] = useState([]);
   const fetchQuizDetail = (quizId) => {
     axios
-      .get(Constants.apiDomain + '/quiz/getQuizDetail', {
+      .get('/quiz/getQuizDetail', {
         params: {
           id: quizId,
         },
@@ -104,7 +104,7 @@ const QuizQuestionnaire = (props) => {
     }
     if (user) {
       axios
-        .post(Constants.apiDomain + '/quiz/postQuizAnswers', {
+        .post('/quiz/postQuizAnswers', {
           quizId: quizId,
           userId: user.id,
           score: calculateScore(),

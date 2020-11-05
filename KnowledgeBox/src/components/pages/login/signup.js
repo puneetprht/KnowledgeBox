@@ -30,7 +30,7 @@ const SignUp = (props) => {
 
   const registerUser = () => {
     axios
-      .post(Constants.apiDomain + '/user/register', {
+      .post('/user/register', {
         email: email,
         password: password,
         firstName: firstName,

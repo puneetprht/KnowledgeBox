@@ -15,7 +15,7 @@ import * as Constants from '../../../constants/constants';
 import PButton from '../../../widgets/Button/pButton';
 import Icon from 'react-native-vector-icons/Feather';
 import Icon2 from 'react-native-vector-icons/AntDesign';
-import axios from 'axios';
+import axios from '../../../services/axios';
 
 const VideoTopicList = (props) => {
   const [list, setList] = useState([]);
@@ -29,7 +29,7 @@ const VideoTopicList = (props) => {
 
   const fetchAllTopics = () => {
     axios
-      .get(Constants.apiDomain + '/video/getSubTopicList', {
+      .get('/video/getSubTopicList', {
         params: {
           id: subjectId,
         },
@@ -60,7 +60,7 @@ const VideoTopicList = (props) => {
   const saveSubject = (value) => {
     if (value) {
       axios
-        .post(Constants.apiDomain + '/common/addSubTopic', {
+        .post('/common/addSubTopic', {
           SubTopicName: value,
           subjectId: subjectId,
           catergoryId: catergoryId,
@@ -78,7 +78,7 @@ const VideoTopicList = (props) => {
   const deleteSubject = (id) => {
     if (id) {
       axios
-        .delete(Constants.apiDomain + '/common/deleteSubTopic', {
+        .delete('/common/deleteSubTopic', {
           data: {
             id: id,
           },

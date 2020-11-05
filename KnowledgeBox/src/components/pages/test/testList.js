@@ -14,7 +14,7 @@ import {
 import ContainerList from '../../../widgets/List/containerList';
 import * as Constants from '../../../constants/constants';
 import PButton from '../../../widgets/Button/pButton';
-import axios from 'axios';
+import axios from '../../../services/axios';
 import Icon from 'react-native-vector-icons/AntDesign';
 import IconFA5 from 'react-native-vector-icons/FontAwesome5';
 import DocumentPicker from 'react-native-document-picker';
@@ -63,7 +63,7 @@ const TestList = (props) => {
 
   const fetchAllTopics = () => {
     axios
-      .get(Constants.apiDomain + '/test/getTestList', {
+      .get('/test/getTestList', {
         params: {
           id: SubTopicId,
         },
@@ -99,7 +99,7 @@ const TestList = (props) => {
   const deleteTest = (id) => {
     if (id) {
       axios
-        .delete(Constants.apiDomain + '/test/deleteTest', {
+        .delete('/test/deleteTest', {
           data: {
             id: id,
           },

@@ -38,7 +38,13 @@ const SignIn = (props) => {
         setIsSubmit(false);
         setIsError(false);
         global.user = response.data;
-        props.navigation.replace('State');
+        if (global.user && global.user.state) {
+          props.navigation.navigate('State', {
+            screen: 'TopicList',
+          });
+        } else {
+          props.navigation.replace('State');
+        }
       })
       .catch((err) => {
         setIsSubmit(false);

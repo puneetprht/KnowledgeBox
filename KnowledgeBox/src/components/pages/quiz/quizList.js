@@ -12,7 +12,7 @@ import {
 import ContainerList from '../../../widgets/List/containerList';
 import * as Constants from '../../../constants/constants';
 import PButton from '../../../widgets/Button/pButton';
-import axios from 'axios';
+import axios from '../../../services/axios';
 import Icon from 'react-native-vector-icons/AntDesign';
 
 const QuizList = (props) => {
@@ -29,7 +29,7 @@ const QuizList = (props) => {
 
   const fetchAllTopics = () => {
     axios
-      .get(Constants.apiDomain + '/quiz/getQuizList', {
+      .get('/quiz/getQuizList', {
         params: {
           id: SubTopicId,
         },
@@ -63,7 +63,7 @@ const QuizList = (props) => {
   const deleteQuiz = (id) => {
     if (id) {
       axios
-        .delete(Constants.apiDomain + '/quiz/deleteQuiz', {
+        .delete('/quiz/deleteQuiz', {
           data: {
             id: id,
           },

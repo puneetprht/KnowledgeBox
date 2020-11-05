@@ -17,7 +17,7 @@ import ElevatedView from 'react-native-elevated-view';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import * as Constants from '../../../constants/constants';
 import PButton from '../../../widgets/Button/pButton';
-import axios from 'axios';
+import axios from '../../../services/axios';
 
 const Home = (props) => {
   const [testList, setTestList] = useState([

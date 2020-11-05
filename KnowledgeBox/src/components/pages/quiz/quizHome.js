@@ -19,7 +19,7 @@ import * as Constants from '../../../constants/constants';
 import PButton from '../../../widgets/Button/pButton';
 import Icon from 'react-native-vector-icons/Feather';
 import Icon2 from 'react-native-vector-icons/AntDesign';
-import axios from 'axios';
+import axios from '../../../services/axios';
 
 const QuizHome = (props) => {
   const [category, setCategory] = useState(0);
@@ -40,7 +40,7 @@ const QuizHome = (props) => {
   const onRefresh = () => {
     /*if (user && 0) {
       axios
-        .get(Constants.apiDomain + '/common/getDropdown', {
+        .get('/common/getDropdown', {
           params: {
             userId: user.id,
             stateId: state,
@@ -65,7 +65,7 @@ const QuizHome = (props) => {
   const fetchAllSubjects = () => {
     /*if (user) {
 			axios
-				.get(Constants.apiDomain + '/common/getAllSubjectForUser', {
+				.get('/common/getAllSubjectForUser', {
 					params: {
 						userId: user.id,
 						stateId: state
@@ -84,7 +84,7 @@ const QuizHome = (props) => {
 				});
 		} else { */
     axios
-      .get(Constants.apiDomain + '/common/getAllSubjectForNoUser', {
+      .get('/common/getAllSubjectForNoUser', {
         params: {
           selectedCategory: JSON.stringify(global.selectedTopic),
           stateId: state,
@@ -105,7 +105,7 @@ const QuizHome = (props) => {
 
   const fetchSubjectList = (categoryId) => {
     axios
-      .get(Constants.apiDomain + '/common/getSubjectList', {
+      .get('/common/getSubjectList', {
         params: {
           id: categoryId,
         },
@@ -144,7 +144,7 @@ const QuizHome = (props) => {
   const saveSubject = (value) => {
     if (value) {
       axios
-        .post(Constants.apiDomain + '/common/addSubject', {
+        .post('/common/addSubject', {
           subjectName: value,
           categoryId: category,
           stateId: state,
@@ -162,7 +162,7 @@ const QuizHome = (props) => {
   const deleteSubject = (id) => {
     if (id) {
       axios
-        .delete(Constants.apiDomain + '/common/deleteSubject', {
+        .delete('/common/deleteSubject', {
           data: {
             id: id,
           },

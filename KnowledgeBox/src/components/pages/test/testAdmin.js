@@ -19,7 +19,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import * as Constants from '../../../constants/constants';
 import PButton from '../../../widgets/Button/pButton';
 import ElevatedView from 'react-native-elevated-view';
-import axios from 'axios';
+import axios from '../../../services/axios';
 import ContainerList from '../../../widgets/List/containerList';
 
 const TestAdmin = (props) => {
@@ -69,7 +69,7 @@ const TestAdmin = (props) => {
   useEffect(() => {
     if (testId) {
       axios
-        .get(Constants.apiDomain + '/test/getTestDetail', {
+        .get('/test/getTestDetail', {
           params: {
             id: testId,
           },
@@ -120,7 +120,7 @@ const TestAdmin = (props) => {
     setIsSubmit(true);
     const submitAnswers = [];
     axios
-      .post(Constants.apiDomain + '/test/postTest', {
+      .post('/test/postTest', {
         subTopicId: subTopicId,
         subjectId: subjectId,
         categoryId: catergoryId,

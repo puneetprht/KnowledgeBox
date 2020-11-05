@@ -18,7 +18,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import * as Constants from '../../../constants/constants';
 import PButton from '../../../widgets/Button/pButton';
 import ElevatedView from 'react-native-elevated-view';
-import axios from 'axios';
+import axios from '../../../services/axios';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import ContainerList from '../../../widgets/List/containerList';
 
@@ -44,7 +44,7 @@ const TestQuestionnaire = (props) => {
 
   const fetchTestDetail = (testId) => {
     axios
-      .get(Constants.apiDomain + '/test/getTestDetail', {
+      .get('/test/getTestDetail', {
         params: {
           id: testId,
         },
@@ -146,7 +146,7 @@ const TestQuestionnaire = (props) => {
       submitAnswers.push(answer);
     }
     axios
-      .post(Constants.apiDomain + '/test/postTestAnswers', {
+      .post('/test/postTestAnswers', {
         testId: testId,
         userId: user.id,
         score: calculateScore(),
