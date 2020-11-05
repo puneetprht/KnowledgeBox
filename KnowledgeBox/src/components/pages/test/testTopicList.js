@@ -29,7 +29,7 @@ const TestTopicList = (props) => {
 
   const fetchAllTopics = () => {
     axios
-      .get('http://' + Constants.apiDomain + '/test/getSubTopicList', {
+      .get(Constants.apiDomain + '/test/getSubTopicList', {
         params: {
           id: subjectId,
         },
@@ -61,7 +61,7 @@ const TestTopicList = (props) => {
   const saveSubject = (value) => {
     if (value) {
       axios
-        .post('http://' + Constants.apiDomain + '/common/addSubTopic', {
+        .post(Constants.apiDomain + '/common/addSubTopic', {
           SubTopicName: value,
           subjectId: subjectId,
           catergoryId: catergoryId,
@@ -79,7 +79,7 @@ const TestTopicList = (props) => {
   const deleteSubject = (id) => {
     if (id) {
       axios
-        .delete('http://' + Constants.apiDomain + '/common/deleteSubTopic', {
+        .delete(Constants.apiDomain + '/common/deleteSubTopic', {
           data: {
             id: id,
           },

@@ -1,27 +1,16 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {
   View,
   ScrollView,
   StyleSheet,
   Text,
   Dimensions,
-  Alert,
   Image,
   TouchableOpacity,
 } from 'react-native';
 import ContainerList from '../../../widgets/List/containerList';
-import axios from '../../../services/axios';
-
-/*const fetchUserState = userId => {
-  axios
-    .get('https://' + Constants.apiDomain + '/quiz/GetUserState?' + userId)
-    .then(response => {
-      return response.data;
-    })
-    .catch(error => {});
-};*/
 
 const StateList = (props) => {
   const user = global.user;

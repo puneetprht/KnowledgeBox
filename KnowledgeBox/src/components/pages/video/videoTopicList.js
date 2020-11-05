@@ -29,7 +29,7 @@ const VideoTopicList = (props) => {
 
   const fetchAllTopics = () => {
     axios
-      .get('http://' + Constants.apiDomain + '/video/getSubTopicList', {
+      .get(Constants.apiDomain + '/video/getSubTopicList', {
         params: {
           id: subjectId,
         },
@@ -60,7 +60,7 @@ const VideoTopicList = (props) => {
   const saveSubject = (value) => {
     if (value) {
       axios
-        .post('http://' + Constants.apiDomain + '/common/addSubTopic', {
+        .post(Constants.apiDomain + '/common/addSubTopic', {
           SubTopicName: value,
           subjectId: subjectId,
           catergoryId: catergoryId,
@@ -78,7 +78,7 @@ const VideoTopicList = (props) => {
   const deleteSubject = (id) => {
     if (id) {
       axios
-        .delete('http://' + Constants.apiDomain + '/common/deleteSubTopic', {
+        .delete(Constants.apiDomain + '/common/deleteSubTopic', {
           data: {
             id: id,
           },

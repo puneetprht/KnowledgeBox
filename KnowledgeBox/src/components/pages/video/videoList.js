@@ -40,7 +40,7 @@ const VideoList = (props) => {
 
   const fetchAllTopics = () => {
     axios
-      .get('http://' + Constants.apiDomain + '/Video/getVideoList', {
+      .get(Constants.apiDomain + '/Video/getVideoList', {
         params: {
           id: SubTopicId,
         },
@@ -73,7 +73,7 @@ const VideoList = (props) => {
   const deleteVideo = (id) => {
     if (id) {
       axios
-        .delete('http://' + Constants.apiDomain + '/video/deleteVideo', {
+        .delete(Constants.apiDomain + '/video/deleteVideo', {
           data: {
             id: id,
           },
@@ -97,7 +97,7 @@ const VideoList = (props) => {
     }
     setEditMode(true);
     axios
-      .post('http://' + Constants.apiDomain + '/video/postVideo', {
+      .post(Constants.apiDomain + '/video/postVideo', {
         subTopicId: SubTopicId,
         subjectId: subjectId,
         categoryId: catergoryId,

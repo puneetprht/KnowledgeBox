@@ -13,7 +13,7 @@ import {
 import PButton from '../../../widgets/Button/pButton';
 import * as Constants from '../../../constants/constants';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import axios from 'axios';
+import axios from '../../../services/axios';
 
 const SignUp = (props) => {
   const [firstName, setFirstName] = useState('');
@@ -22,7 +22,7 @@ const SignUp = (props) => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [emailValid, setEmailValid] = useState(false);
+  //  const [emailValid, setEmailValid] = useState(false);
   const [passwordValid, setPasswordValid] = useState(false);
   const [confirmPasswordValid, setConfirmPasswordValid] = useState(false);
   const [phoneNumberValid, setPhoneNumberValid] = useState(false);
@@ -30,7 +30,7 @@ const SignUp = (props) => {
 
   const registerUser = () => {
     axios
-      .post('http://' + Constants.apiDomain + '/user/register', {
+      .post(Constants.apiDomain + '/user/register', {
         email: email,
         password: password,
         firstName: firstName,
@@ -47,7 +47,6 @@ const SignUp = (props) => {
         setPhoneNumber('');
         global.user = response;
         props.navigation.replace('State');
-        //Alert.alert(JSON.stringify(response));
       })
       .catch((err) => {
         console.log(err.message);
@@ -167,13 +166,13 @@ const SignUp = (props) => {
         <Text
           style={{
             textAlign: 'center',
-            fontFamily: 'Roboto-Medium',
-            fontSize: 30,
-            color: Constants.textColor1,
+            fontFamily: 'z-arista.regular',
+            fontSize: 40,
+            color: Constants.textColor2,
             marginLeft: 18,
-            marginTop: 5,
+            marginBottom: 10,
           }}>
-          Sign Up.
+          Knowledge Box
         </Text>
         <TextInput
           label="FirstName"

@@ -1,20 +1,10 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react-native/no-inline-styles */
-import React, {useEffect} from 'react';
-import {
-  View,
-  Image,
-  Text,
-  Dimensions,
-  StyleSheet,
-  TouchableOpacity,
-  Alert,
-} from 'react-native';
+import React from 'react';
+import {View, Image, Dimensions, StyleSheet} from 'react-native';
 import LoginBackground from './loginBackground';
 import * as Constants from '../../../constants/constants';
 import PButton from '../../../widgets/Button/pButton';
-import Icon from 'react-native-vector-icons/Entypo';
-import axios from 'axios';
 
 const Login = (props) => {
   var icon = require('../../../assets/iconLogin.png');
@@ -56,37 +46,18 @@ const Login = (props) => {
           textStyle={styles.buttonTextStyle}
           elementStyle={styles.buttonElementStyle}
         />
-        <View
-          style={{
-            marginTop: 30,
-            justifyContent: 'flex-end',
-            alignSelf: 'flex-end',
+        <PButton
+          title="Skip for now"
+          onPress={() => {
+            global.user = null;
+            props.navigation.navigate('State', {
+              screen: 'TopicList',
+            });
           }}
-          flexDirection="row">
-          <TouchableOpacity
-            onPress={() => {
-              global.user = null;
-              props.navigation.navigate('State', {
-                screen: 'TopicList',
-              });
-            }}
-            flexDirection="row"
-            justifyContent="center"
-            alignItems="flex-start">
-            <Text
-              style={{
-                color: Constants.textColor1,
-                fontFamily: 'Roboto-Medium',
-                fontSize: 15,
-                fontFamily: 'Roboto-Medium',
-                textAlign: 'center',
-                textAlignVertical: 'top',
-              }}>
-              Skip
-              <Icon name="chevron-right" alignSelf="center" size={17} />
-            </Text>
-          </TouchableOpacity>
-        </View>
+          viewStyle={styles.buttonViewStyle2}
+          textStyle={styles.buttonTextStyle2}
+          elementStyle={styles.buttonElementStyle}
+        />
       </View>
       <Image source={icon} style={styles.imageStyle} resizeMode="contain" />
     </>
@@ -114,6 +85,16 @@ const styles = StyleSheet.create({
     width: '75%',
     flexDirection: 'row',
     justifyContent: 'center',
+  },
+  buttonTextStyle2: {
+    fontFamily: 'Roboto',
+    color: Constants.textColor1,
+  },
+  buttonViewStyle2: {
+    width: '75%',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    backgroundColor: '#ffffff',
   },
   buttonParentView: {
     flex: 44,

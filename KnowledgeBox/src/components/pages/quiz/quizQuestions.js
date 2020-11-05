@@ -25,7 +25,7 @@ const QuizQuestionnaire = (props) => {
   const [questionsList, setQuestionsList] = useState([]);
   const fetchQuizDetail = (quizId) => {
     axios
-      .get('http://' + Constants.apiDomain + '/quiz/getQuizDetail', {
+      .get(Constants.apiDomain + '/quiz/getQuizDetail', {
         params: {
           id: quizId,
         },
@@ -104,7 +104,7 @@ const QuizQuestionnaire = (props) => {
     }
     if (user) {
       axios
-        .post('http://' + Constants.apiDomain + '/quiz/postQuizAnswers', {
+        .post(Constants.apiDomain + '/quiz/postQuizAnswers', {
           quizId: quizId,
           userId: user.id,
           score: calculateScore(),

@@ -73,6 +73,9 @@
 		<string>Zocial.ttf</string>
 		<string>Roboto-Medium.ttf</string>
 		<string>z-arista.light.ttf</string>
+		<string>z-arista.alternate-light.ttf</string>
+		<string>z-arista.alternate.ttf</string>
+		<string>z-arista.regular.ttf</string>
 	</array>
 </dict>
 </plist>

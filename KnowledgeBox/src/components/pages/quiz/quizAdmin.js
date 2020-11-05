@@ -71,7 +71,7 @@ const QuizAdmin = (props) => {
     setIsSubmit(true);
     const submitAnswers = [];
     axios
-      .post('http://' + Constants.apiDomain + '/quiz/postQuiz', {
+      .post(Constants.apiDomain + '/quiz/postQuiz', {
         subTopicId: subTopicId,
         subjectId: subjectId,
         categoryId: catergoryId,

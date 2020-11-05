@@ -44,7 +44,7 @@ const TestQuestionnaire = (props) => {
 
   const fetchTestDetail = (testId) => {
     axios
-      .get('http://' + Constants.apiDomain + '/test/getTestDetail', {
+      .get(Constants.apiDomain + '/test/getTestDetail', {
         params: {
           id: testId,
         },
@@ -146,7 +146,7 @@ const TestQuestionnaire = (props) => {
       submitAnswers.push(answer);
     }
     axios
-      .post('http://' + Constants.apiDomain + '/test/postTestAnswers', {
+      .post(Constants.apiDomain + '/test/postTestAnswers', {
         testId: testId,
         userId: user.id,
         score: calculateScore(),

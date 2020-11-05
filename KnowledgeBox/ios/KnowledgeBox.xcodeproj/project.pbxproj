@@ -34,6 +34,9 @@
 		7C53E0CA819F43109F2A38F1 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3B6F178241B04C8B88F082BD /* Zocial.ttf */; };
 		69E187C13D874164A8EABF5F /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9E7830A6C032498AB1080CC3 /* Roboto-Medium.ttf */; };
 		D476324E451F49438CA4A9F3 /* z-arista.light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1C28182A5C674BA1ACAF515C /* z-arista.light.ttf */; };
+		37B9775C92444B0BA9E030C1 /* z-arista.alternate-light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AB54D473059A4F9F8E53EEDD /* z-arista.alternate-light.ttf */; };
+		87C516FF85884EF1B105C8E4 /* z-arista.alternate.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 222EE7B8DB594B1E95E26036 /* z-arista.alternate.ttf */; };
+		C7C2049C11544D918D2243E4 /* z-arista.regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0C53E4B8E380405EA8C3822A /* z-arista.regular.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -87,6 +90,9 @@
 		3B6F178241B04C8B88F082BD /* Zocial.ttf */ = {isa = PBXFileReference; name = "Zocial.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		9E7830A6C032498AB1080CC3 /* Roboto-Medium.ttf */ = {isa = PBXFileReference; name = "Roboto-Medium.ttf"; path = "../src/assets/fonts/Roboto-Medium.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		1C28182A5C674BA1ACAF515C /* z-arista.light.ttf */ = {isa = PBXFileReference; name = "z-arista.light.ttf"; path = "../src/assets/fonts/z-arista.light.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		AB54D473059A4F9F8E53EEDD /* z-arista.alternate-light.ttf */ = {isa = PBXFileReference; name = "z-arista.alternate-light.ttf"; path = "../src/assets/fonts/z-arista.alternate-light.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		222EE7B8DB594B1E95E26036 /* z-arista.alternate.ttf */ = {isa = PBXFileReference; name = "z-arista.alternate.ttf"; path = "../src/assets/fonts/z-arista.alternate.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		0C53E4B8E380405EA8C3822A /* z-arista.regular.ttf */ = {isa = PBXFileReference; name = "z-arista.regular.ttf"; path = "../src/assets/fonts/z-arista.regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -215,6 +221,9 @@
 				3B6F178241B04C8B88F082BD /* Zocial.ttf */,
 				9E7830A6C032498AB1080CC3 /* Roboto-Medium.ttf */,
 				1C28182A5C674BA1ACAF515C /* z-arista.light.ttf */,
+				AB54D473059A4F9F8E53EEDD /* z-arista.alternate-light.ttf */,
+				222EE7B8DB594B1E95E26036 /* z-arista.alternate.ttf */,
+				0C53E4B8E380405EA8C3822A /* z-arista.regular.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -376,6 +385,9 @@
 				7C53E0CA819F43109F2A38F1 /* Zocial.ttf in Resources */,
 				69E187C13D874164A8EABF5F /* Roboto-Medium.ttf in Resources */,
 				D476324E451F49438CA4A9F3 /* z-arista.light.ttf in Resources */,
+				37B9775C92444B0BA9E030C1 /* z-arista.alternate-light.ttf in Resources */,
+				87C516FF85884EF1B105C8E4 /* z-arista.alternate.ttf in Resources */,
+				C7C2049C11544D918D2243E4 /* z-arista.regular.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -40,7 +40,7 @@ const TestHome = (props) => {
   const onRefresh = () => {
     /*if (user && 0) {
       axios
-        .get('http://' + Constants.apiDomain + '/common/getDropdown', {
+        .get(Constants.apiDomain + '/common/getDropdown', {
           params: {
             userId: user.id,
             stateId: state,
@@ -65,7 +65,7 @@ const TestHome = (props) => {
   const fetchAllSubjects = () => {
     /*if (user) {
 			axios
-				.get('http://' + Constants.apiDomain + '/common/getAllSubjectForUser', {
+				.get(Constants.apiDomain + '/common/getAllSubjectForUser', {
 					params: {
 						userId: user.id,
 						stateId: state
@@ -84,7 +84,7 @@ const TestHome = (props) => {
 				});
 		} else { */
     axios
-      .get('http://' + Constants.apiDomain + '/common/getAllSubjectForNoUser', {
+      .get(Constants.apiDomain + '/common/getAllSubjectForNoUser', {
         params: {
           selectedCategory: JSON.stringify(global.selectedTopic),
           stateId: state,
@@ -105,7 +105,7 @@ const TestHome = (props) => {
 
   const fetchSubjectList = (categoryId) => {
     axios
-      .get('http://' + Constants.apiDomain + '/common/getSubjectList', {
+      .get(Constants.apiDomain + '/common/getSubjectList', {
         params: {
           id: categoryId,
         },
@@ -144,7 +144,7 @@ const TestHome = (props) => {
   const saveSubject = (value) => {
     if (value) {
       axios
-        .post('http://' + Constants.apiDomain + '/common/addSubject', {
+        .post(Constants.apiDomain + '/common/addSubject', {
           subjectName: value,
           categoryId: category,
           stateId: state,
@@ -162,7 +162,7 @@ const TestHome = (props) => {
   const deleteSubject = (id) => {
     if (id) {
       axios
-        .delete('http://' + Constants.apiDomain + '/common/deleteSubject', {
+        .delete(Constants.apiDomain + '/common/deleteSubject', {
           data: {
             id: id,
           },

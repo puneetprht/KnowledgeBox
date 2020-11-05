@@ -1,8 +1,10 @@
 import axios from 'axios';
+import * as Constants from '../constants/constants';
 // Next we make an 'instance' of it
 const instance = axios.create({
   // .. where we make our configurations
-  baseURL: 'http://' + Constants.apiDomain + '',
+  baseURL: Constants.apiDomain,
+  timeout: 2000,
 });
 
 /*

@@ -2,23 +2,31 @@
 import React, {useState} from 'react';
 import {
   Text,
-  Alert,
-  KeyboardAvoidingView,
+  View,
+  Image,
   TextInput,
   StyleSheet,
-  Image,
+  TouchableOpacity,
+  ActivityIndicator,
+  KeyboardAvoidingView,
 } from 'react-native';
 import PButton from '../../../widgets/Button/pButton';
 import * as Constants from '../../../constants/constants';
-import axios from 'axios';
+import axios from '../../../services/axios';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const SignIn = (props) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [formValid, setFormValid] = useState(false);
+  const [isSubmit, setIsSubmit] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [isShow, setIsShow] = useState(false);
 
   const sendCred = () => {
+    setIsSubmit(true);
     axios
-      .post('http://' + Constants.apiDomain + '/user/authenticate', {
+      .post('/user/authenticate', {
         email: email,
         password: password,
       })
@@ -26,13 +34,28 @@ const SignIn = (props) => {
         //AsyncStorage.setItem('token', response.data.token);
         setEmail('');
         setPassword('');
+        setFormValid(false);
+        setIsSubmit(false);
+        setIsError(false);
         global.user = response.data;
         props.navigation.replace('State');
       })
       .catch((err) => {
-        Alert.alert('Wrong Email/Password.');
+        setIsSubmit(false);
+        setIsError(true);
         console.log(err);
       });
+  };
+
+  const checkFormValid = (text, type) => {
+    switch (type) {
+      case 'Email':
+        setFormValid(text.length && password.length >= 8);
+        break;
+      case 'Password':
+        setFormValid(email.length && text.length >= 8);
+        break;
+    }
   };
 
   return (
@@ -50,13 +73,13 @@ const SignIn = (props) => {
       <Text
         style={{
           textAlign: 'center',
-          fontFamily: 'Roboto-Medium',
-          fontSize: 30,
-          color: Constants.textColor1,
+          fontFamily: 'z-arista.regular',
+          fontSize: 40,
+          color: Constants.textColor2,
           marginLeft: 18,
-          marginTop: 20,
+          marginBottom: 20,
         }}>
-        Sign In.
+        Knowledge Box
       </Text>
       <TextInput
         label="Email"
@@ -68,37 +91,92 @@ const SignIn = (props) => {
         value={email}
         style={styles.text}
         theme={{colors: {primary: 'blue'}}}
-        onChangeText={(text) => setEmail(text)}
-      />
-      <TextInput
-        label="password"
-        mode="outlined"
-        secureTextEntry={true}
-        placeholder="Enter Password."
-        value={password}
         onChangeText={(text) => {
-          setPassword(text);
-        }}
-        style={styles.text}
-        theme={{colors: {primary: 'blue'}}}
-      />
-      <PButton
-        title="Sign In"
-        onPress={() => {
-          sendCred();
-        }}
-        viewStyle={{
-          marginTop: 20,
-          width: '50%',
-          flexDirection: 'row',
-          justifyContent: 'center',
-        }}
-        elementStyle={{
-          flexDirection: 'row',
-          justifyContent: 'center',
-          margin: 5,
+          setEmail(text);
+          checkFormValid(text, 'Email');
         }}
       />
+      <View style={{justifyContent: 'center'}}>
+        <TextInput
+          label="password"
+          mode="outlined"
+          secureTextEntry={!isShow}
+          placeholder="Enter Password."
+          value={password}
+          onChangeText={(text) => {
+            setPassword(text);
+            checkFormValid(text, 'Password');
+          }}
+          style={styles.text}
+          theme={{colors: {primary: 'blue'}}}
+        />
+        <View
+          style={{
+            position: 'absolute',
+            flex: 1,
+            alignSelf: 'flex-end',
+            paddingRight: 30,
+            paddingTop: 15,
+          }}>
+          <TouchableOpacity
+            style={{padding: 3}}
+            onPress={() => setIsShow(!isShow)}>
+            <Icon
+              name={isShow ? 'eye-outline' : 'eye-off-outline'}
+              size={20}
+              style={{
+                color: Constants.textColor1,
+              }}
+            />
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {isError ? (
+        <View
+          style={{
+            justifyContent: 'center',
+            alignContent: 'center',
+            marginTop: 10,
+          }}>
+          <Text
+            style={{
+              fontFamily: 'Roboto',
+              textAlign: 'center',
+              fontSize: 14,
+              color: 'red',
+            }}>
+            Wrong Email or Password.
+          </Text>
+        </View>
+      ) : (
+        <View />
+      )}
+      {isSubmit ? (
+        <View style={{justifyContent: 'center', alignItems: 'center'}}>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      ) : (
+        <PButton
+          disable={!formValid}
+          title="Sign In"
+          onPress={() => {
+            sendCred();
+          }}
+          viewStyle={{
+            marginTop: 20,
+            width: '50%',
+            flexDirection: 'row',
+            justifyContent: 'center',
+            backgroundColor: !formValid ? '#5aa0ff' : Constants.textColor1,
+          }}
+          elementStyle={{
+            flexDirection: 'row',
+            justifyContent: 'center',
+            margin: 5,
+          }}
+        />
+      )}
     </KeyboardAvoidingView>
   );
 };

@@ -29,7 +29,7 @@ const QuizList = (props) => {
 
   const fetchAllTopics = () => {
     axios
-      .get('http://' + Constants.apiDomain + '/quiz/getQuizList', {
+      .get(Constants.apiDomain + '/quiz/getQuizList', {
         params: {
           id: SubTopicId,
         },
@@ -63,7 +63,7 @@ const QuizList = (props) => {
   const deleteQuiz = (id) => {
     if (id) {
       axios
-        .delete('http://' + Constants.apiDomain + '/quiz/deleteQuiz', {
+        .delete(Constants.apiDomain + '/quiz/deleteQuiz', {
           data: {
             id: id,
           },
