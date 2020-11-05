@@ -90,7 +90,7 @@ user.authenticateUser = async (user, result) => {
 		let userFetch = {};
 		console.log(user);
 		sql.query(
-			`SELECT hmy as id, firstname, lastname, email, password, phone, isAdmin, password FROM user WHERE email = '${user.email}'`,
+			`SELECT hmy as id, firstname, lastname, email, password, phone, isAdmin, password, stateId FROM user WHERE email = '${user.email}'`,
 			(err, res) => {
 				if (err) {
 					result(err, null);
@@ -125,6 +125,26 @@ user.create = (newuser, result) => {
 		console.log('created user: ', { id: res.insertId, ...newuser });
 		result(null, { id: res.insertId, ...newuser });
 	});
+};
+
+user.postUserState = async (user, result) => {
+	try {
+		console.log(user);
+		sql.query(
+			`update user SET stateId = ${user.stateId} WHERE hmy = '${user.userId}'`,
+			(err, res) => {
+				if (err) {
+					result(err, null);
+					return;
+				}
+				result(null, null);
+				return;
+			}
+		);
+	} catch (error) {
+		result(error, null);
+		return;
+	}
 };
 
 user.getUserState = (userId, result) => {

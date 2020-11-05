@@ -99,7 +99,7 @@ app.delete('/deleteSubTopic', (req, res) => {
 });
 
 app.get('/getCategoryList', (req, res) => {
-	model.getCategoryList(req.query.id, (err, data) => {
+	model.getCategoryList((err, data) => {
 		if (err)
 			res.status(500).send({
 				message: err.message || 'Error processing request..'
@@ -108,6 +108,7 @@ app.get('/getCategoryList', (req, res) => {
 	});
 });
 
+/*
 app.post('/postCategoryForUser', (req, res) => {
 	model.postCategoryForUser(req.body, (err, data) => {
 		if (err)
@@ -117,6 +118,7 @@ app.post('/postCategoryForUser', (req, res) => {
 		else res.status(200).send();
 	});
 });
+*/
 
 app.post('/postCategory', (req, res) => {
 	model.postCategory(req.body, (err, data) => {

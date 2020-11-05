@@ -3,13 +3,12 @@
 import React, {useState, useEffect} from 'react';
 import {
   View,
-  ScrollView,
-  StyleSheet,
   Text,
   TextInput,
+  StyleSheet,
+  ScrollView,
   Dimensions,
   TouchableOpacity,
-  Alert,
 } from 'react-native';
 import ContainerList from '../../../widgets/List/containerList';
 import LinearGradient from 'react-native-linear-gradient';
@@ -22,29 +21,17 @@ import axios from '../../../services/axios';
 
 const TopicList = (props) => {
   const [Topics, setTopics] = useState([]);
-
-  const {stateId, stateAcro, title, user, isChange} = props.route.params; //props.route.params;
+  const [user, setUser] = useState(global.user);
   const [editMode, setEditMode] = useState(false);
   const [addMode, setAddMode] = useState(false);
   const [newCategory, setNewCategory] = useState('');
   const [inRequest, setInRequest] = useState(false);
 
-  if (isChange) {
-    global.stateId = stateId;
-    global.title = title;
-    global.acro = stateAcro;
-  }
-
   const fetchAllTopics = () => {
-    //console.log('state:', stateId);
     axios
-      .get('/common/getCategoryList', {
-        params: {
-          id: stateId,
-        },
-      })
+      .get('/common/getCategoryList')
       .then((response) => {
-        //console.log('working');
+        console.log('Working');
         if (response.data) {
           setTopics(response.data);
         } else {
@@ -52,6 +39,7 @@ const TopicList = (props) => {
         }
       })
       .catch((err) => {
+        console.log('Not working');
         console.log(err);
       });
   };
@@ -73,24 +61,10 @@ const TopicList = (props) => {
   };
 
   const continueForm = (index, evt) => {
-    if (user) {
-      postCategoryForUser();
-    }
     global.selectedTopic = Topics.filter((topic) => {
       return selectedTopic.includes(topic.id);
     });
-    props.navigation.navigate('Tabs', {stateId, user});
-  };
-
-  const postCategoryForUser = () => {
-    axios
-      .post('/common/postCategoryForUser', {
-        stateId: stateId,
-        userId: user.id,
-        selectedTopic: selectedTopic,
-      })
-      .then((response) => {})
-      .catch((err) => {});
+    props.navigation.navigate('Tabs');
   };
 
   const saveCategory = (id) => {
@@ -112,7 +86,6 @@ const TopicList = (props) => {
         setInRequest(false);
         setAddMode(false);
         console.log(err);
-        //fetchAllTopics();
       });
   };
 
@@ -131,12 +104,13 @@ const TopicList = (props) => {
       .catch((err) => {
         setInRequest(false);
         console.log(err);
-        //fetchAllTopics();
       });
   };
 
   return (
-    <ContainerList title={title} onPress={() => props.navigation.goBack()}>
+    <ContainerList
+      title="Exam Category(s)"
+      onPress={() => props.navigation.replace('Tabs', {screen: 'HOME'})}>
       <ScrollView style={{marginBottom: 50}}>
         <View style={styles.container}>
           {Topics.map((Topic) => {
@@ -196,7 +170,6 @@ const TopicList = (props) => {
                           disabled={inRequest}
                           style={{
                             ...styles.icon,
-                            //position: 'absolute',
                             backgroundColor: '#de3500',
                           }}>
                           <Icon2
@@ -305,7 +278,6 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: Constants.textColor1,
     marginTop: 10,
-    //marginHorizontal: Dimensions.get('window').width * 0.02,
     height: Dimensions.get('window').width * 0.45,
     width: Dimensions.get('window').width * 0.45,
     justifyContent: 'center',

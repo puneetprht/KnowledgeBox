@@ -180,11 +180,11 @@ Common.deleteSubTopic = (body, result) => {
 	);
 };
 
-Common.getCategoryList = (id, result) => {
+Common.getCategoryList = (result) => {
+	console.log("Fetching Category(s).")
 	sql.query(
 		`select ROW_NUMBER() OVER (ORDER BY (SELECT 1)) AS number,c.hmy as id, categoryname as name from
-    category c inner join 
-    state st on c.fstate = st.hmy where st.hmy = ${id}`,
+    category c`,
 		(err, res) => {
 			if (err) {
 				console.log('error: ', err);
@@ -199,7 +199,6 @@ Common.getCategoryList = (id, result) => {
 			}
 			result(null, null);
 			return;
-			//result(null, [ { value: 0, label: 'No categories' } ]);
 		}
 	);
 };

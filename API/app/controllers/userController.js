@@ -26,6 +26,16 @@ app.post('/authenticate', async (req, res) => {
 	});
 });
 
+app.post('/PostUserState', async (req, res) => {
+	model.postUserState(req.body, (err, data) => {
+		if (err)
+			res.status(500).send({
+				message: err.message || 'Some error occurred while fetching user.'
+			});
+		else res.status(200).send(data);
+	});
+});
+
 app.get('/GetUserState/:id', (req, res) => {
 	console.log(req.params);
 	model.getUserState(req.params.id, (err, data) => {

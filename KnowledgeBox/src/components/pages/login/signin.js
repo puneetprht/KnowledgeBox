@@ -25,6 +25,7 @@ const SignIn = (props) => {
 
   const sendCred = () => {
     setIsSubmit(true);
+    setIsError(false);
     axios
       .post('/user/authenticate', {
         email: email,
@@ -38,12 +39,12 @@ const SignIn = (props) => {
         setIsSubmit(false);
         setIsError(false);
         global.user = response.data;
-        if (global.user && global.user.state) {
+        if (global.user && global.user.stateId) {
           props.navigation.navigate('State', {
             screen: 'TopicList',
           });
         } else {
-          props.navigation.replace('State');
+          props.navigation.navigate('State');
         }
       })
       .catch((err) => {

@@ -10,6 +10,7 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
+import axios from '../../../services/axios';
 import ContainerList from '../../../widgets/List/containerList';
 
 const StateList = (props) => {
@@ -30,7 +31,7 @@ const StateList = (props) => {
       imagebnw: require('../../../assets/states/rajasthanbnw.jpg'),
       isActive: false,
     },
-    {
+    /*{
       id: 7,
       count: 2,
       name: 'All India',
@@ -38,10 +39,10 @@ const StateList = (props) => {
       image: require('../../../assets/states/india.jpg'),
       imagebnw: require('../../../assets/states/indiabnw.jpg'),
       isActive: false,
-    },
+    },*/
     {
       id: 6,
-      count: 3,
+      count: 2,
       name: 'New Delhi',
       acro: 'Delhi',
       image: require('../../../assets/states/delhi.jpg'),
@@ -50,7 +51,7 @@ const StateList = (props) => {
     },
     {
       id: 2,
-      count: 4,
+      count: 3,
       name: 'Uttar Pradesh',
       acro: 'UP',
       image: require('../../../assets/states/UP.jpg'),
@@ -59,7 +60,7 @@ const StateList = (props) => {
     },
     {
       id: 4,
-      count: 5,
+      count: 4,
       name: 'Bihar',
       acro: 'Bihar',
       image: require('../../../assets/states/bihar.jpg'),
@@ -68,7 +69,7 @@ const StateList = (props) => {
     },
     {
       id: 5,
-      count: 6,
+      count: 5,
       name: 'Madhya Pradesh',
       acro: 'MP',
       image: require('../../../assets/states/MadhyaPradesh.jpg'),
@@ -77,7 +78,7 @@ const StateList = (props) => {
     },
     {
       id: 3,
-      count: 7,
+      count: 6,
       name: 'Maharashtra',
       acro: 'Mah.',
       image: require('../../../assets/states/maharashtra.jpg'),
@@ -86,7 +87,7 @@ const StateList = (props) => {
     },
     {
       id: 8,
-      count: 8,
+      count: 7,
       name: 'Punjab',
       acro: 'Punjab',
       image: require('../../../assets/states/Punjab.jpg'),
@@ -95,7 +96,7 @@ const StateList = (props) => {
     },
     {
       id: 9,
-      count: 9,
+      count: 8,
       name: 'Gujarat',
       acro: 'Guj.',
       image: require('../../../assets/states/gujarat.jpg'),
@@ -104,7 +105,7 @@ const StateList = (props) => {
     },
     {
       id: 10,
-      count: 10,
+      count: 9,
       name: 'Haryana',
       acro: 'Haryana',
       image: require('../../../assets/states/haryana.jpg'),
@@ -113,7 +114,7 @@ const StateList = (props) => {
     },
     {
       id: 11,
-      count: 11,
+      count: 10,
       name: 'Himachal Pradesh',
       acro: 'Himachal',
       image: require('../../../assets/states/HimachalPradesh.jpg'),
@@ -122,7 +123,7 @@ const StateList = (props) => {
     },
     {
       id: 12,
-      count: 12,
+      count: 11,
       name: 'Uttarakhand',
       acro: 'UK',
       image: require('../../../assets/states/uttarakhand.jpg'),
@@ -131,7 +132,7 @@ const StateList = (props) => {
     },
     {
       id: 13,
-      count: 13,
+      count: 12,
       name: 'West Bengal',
       acro: 'WB',
       image: require('../../../assets/states/westbengal.jpg'),
@@ -140,11 +141,20 @@ const StateList = (props) => {
     },
     {
       id: 14,
-      count: 14,
+      count: 13,
       name: 'Chattisgarh',
       acro: 'CG',
       image: require('../../../assets/states/chattisgarh.jpg'),
       imagebnw: require('../../../assets/states/chattisgarhbnw.jpg'),
+      isActive: false,
+    },
+    {
+      id: 7,
+      count: 14,
+      name: 'Others',
+      acro: 'Others',
+      image: require('../../../assets/states/india.jpg'),
+      imagebnw: require('../../../assets/states/indiabnw.jpg'),
       isActive: false,
     },
   ]);
@@ -160,23 +170,28 @@ const StateList = (props) => {
     setStates(state);
     setUpdatedStates([...updatedStates, index.id]);
     if (state[index.count - 1].isActive) {
-      props.navigation.navigate('TopicList', {
-        stateId: index.id,
-        stateAcro: index.acro,
-        title: index.name,
-        user: user,
-        isChange: true,
-      });
+      axios
+        .post('/user/PostUserState', {
+          userId: user.id,
+          stateId: index.id,
+        })
+        .then((response) => {
+          props.navigation.navigate('TopicList');
+        })
+        .catch((err) => {
+          props.navigation.navigate('TopicList');
+        });
     }
   };
 
   return (
     <ContainerList
       title="Select State(s)"
-      onPress={() =>
-        isGoBack
-          ? props.navigation.replace('Tabs', {screen: 'HOME'})
-          : props.navigation.replace('Auth', {screen: 'AuthPage'})
+      onPress={
+        () =>
+          //isGoBack
+          props.navigation.replace('Tabs', {screen: 'HOME'})
+        //: props.navigation.replace('Auth', {screen: 'AuthPage'})
       }>
       <ScrollView style={{marginBottom: 50}}>
         <View style={styles.container}>

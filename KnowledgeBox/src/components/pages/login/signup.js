@@ -1,19 +1,19 @@
 /* eslint-disable prettier/prettier */
 import React, {useState} from 'react';
 import {
-  Image,
-  Text,
-  StyleSheet,
   View,
-  KeyboardAvoidingView,
+  Text,
+  Image,
   TextInput,
-  Alert,
+  StyleSheet,
   ScrollView,
+  ActivityIndicator,
+  KeyboardAvoidingView,
 } from 'react-native';
+import axios from '../../../services/axios';
 import PButton from '../../../widgets/Button/pButton';
 import * as Constants from '../../../constants/constants';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import axios from '../../../services/axios';
 
 const SignUp = (props) => {
   const [firstName, setFirstName] = useState('');
@@ -27,8 +27,11 @@ const SignUp = (props) => {
   const [confirmPasswordValid, setConfirmPasswordValid] = useState(false);
   const [phoneNumberValid, setPhoneNumberValid] = useState(false);
   const [formValid, setFormValid] = useState(false);
+  const [isSubmit, setIsSubmit] = useState(false);
+  const [isEmailExist, setIsEmailExist] = useState(false);
 
   const registerUser = () => {
+    setIsSubmit(true);
     axios
       .post('/user/register', {
         email: email,
@@ -39,6 +42,7 @@ const SignUp = (props) => {
       })
       .then((response) => {
         //await AsyncStorage.setItem('token', response.data.token);
+        setIsSubmit(false);
         setFirstName('');
         setLastName('');
         setEmail('');
@@ -49,8 +53,9 @@ const SignUp = (props) => {
         props.navigation.replace('State');
       })
       .catch((err) => {
+        setIsSubmit(false);
         console.log(err.message);
-        Alert.alert('Email already registered');
+        setIsEmailExist(true);
       });
   };
 
@@ -312,25 +317,51 @@ const SignUp = (props) => {
             }}
           />
         </View>
-        <PButton
-          disable={!formValid}
-          title="Sign Up."
-          onPress={() => {
-            registerUser();
-          }}
-          viewStyle={{
-            marginTop: 20,
-            width: '50%',
-            flexDirection: 'row',
-            justifyContent: 'center',
-            backgroundColor: !formValid ? '#5aa0ff' : Constants.textColor1,
-          }}
-          elementStyle={{
-            flexDirection: 'row',
-            justifyContent: 'center',
-            margin: 5,
-          }}
-        />
+        {isEmailExist ? (
+          <View
+            style={{
+              justifyContent: 'center',
+              alignContent: 'center',
+              marginTop: 10,
+            }}>
+            <Text
+              style={{
+                fontFamily: 'Roboto',
+                textAlign: 'center',
+                fontSize: 14,
+                color: 'red',
+              }}>
+              Email already exists.
+            </Text>
+          </View>
+        ) : (
+          <View />
+        )}
+        {isSubmit ? (
+          <View style={{justifyContent: 'center', alignItems: 'center'}}>
+            <ActivityIndicator size="large" color="#0000ff" />
+          </View>
+        ) : (
+          <PButton
+            disable={!formValid}
+            title="Sign Up."
+            onPress={() => {
+              registerUser();
+            }}
+            viewStyle={{
+              marginTop: 20,
+              width: '50%',
+              flexDirection: 'row',
+              justifyContent: 'center',
+              backgroundColor: !formValid ? '#5aa0ff' : Constants.textColor1,
+            }}
+            elementStyle={{
+              flexDirection: 'row',
+              justifyContent: 'center',
+              margin: 5,
+            }}
+          />
+        )}
       </ScrollView>
     </KeyboardAvoidingView>
   );
