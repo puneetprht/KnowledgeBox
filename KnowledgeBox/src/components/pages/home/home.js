@@ -21,22 +21,30 @@ import axios from '../../../services/axios';
 
 const Home = (props) => {
   const [testList, setTestList] = useState([
-    /*{
-			id: 1,
-			value: 'test 1'
-		},
-		{
-			id: 2,
-			value: 'test 2'
-		},
-		{
-			id: 3,
-			value: 'test 3'
-		},
-		{
-			id: 4,
-			value: 'test 4'
-		}*/
+    // {
+    //   id: 1,
+    //   value: 'test 1',
+    // },
+    // {
+    //   id: 2,
+    //   value: 'test 2',
+    // },
+    // {
+    //   id: 3,
+    //   value: 'test 3',
+    // },
+    // {
+    //   id: 4,
+    //   value: 'test 4',
+    // },
+    // {
+    //   id: 5,
+    //   value: 'test 3',
+    // },
+    // {
+    //   id: 6,
+    //   value: 'test 4',
+    // },
   ]);
 
   const fetchListData = (index) => {
@@ -45,7 +53,6 @@ const Home = (props) => {
 
   if (global.selectedTopic.length) {
     var topic = [{value: 0, label: 'All', isSelected: 1}];
-    //Alert.alert(JSON.stringify(global.selectedTopic));
     global.selectedTopic.forEach((element) => {
       topic.push({value: element.id, label: element.name, isSelected: 0});
     });
@@ -103,13 +110,6 @@ const Home = (props) => {
   const openTopicList = () => {
     props.navigation.navigate('State', {
       screen: 'TopicList',
-      params: {
-        stateId: global.stateId,
-        stateAcro: global.acro,
-        title: global.title,
-        user: global.user,
-        isChange: false,
-      },
     });
   };
 
@@ -137,14 +137,14 @@ const Home = (props) => {
           }}>
           <Image
             style={{height: '100%', width: '100%'}}
-            ImageResizeMode="contain"
+            ImageResizeMode="stretch"
             source={require('../../../assets/home.png')}
           />
           <View style={styles.topMenu} flexDirection="row">
             <TouchableOpacity
               style={{alignSelf: 'flex-start', marginRight: 10}}
               onPress={() => props.navigation.openDrawer()}>
-              <Icon name="menu" size={40} style={{color: '#ffffff'}} />
+              <Icon name="menu" size={30} style={{color: '#ffffff'}} />
             </TouchableOpacity>
             <TouchableOpacity
               style={{flex: 1, alignSelf: 'flex-start', marginRight: 10}}
@@ -154,9 +154,9 @@ const Home = (props) => {
                   borderWidth: 2,
                   borderRadius: 5,
                   padding: 2,
-                  paddingHorizontal: 5,
+                  paddingLeft: 7,
                   borderColor: '#ffffff',
-                  maxWidth: 200,
+                  maxWidth: 180,
                 }}
                 flexDirection="row">
                 <Text
@@ -166,14 +166,14 @@ const Home = (props) => {
                     textAlign: 'left',
                     textAlignVertical: 'center',
                     fontFamily: 'Roboto-Medium',
-                    fontSize: 18,
+                    fontSize: 16,
                     fontWeight: 'bold',
                   }}>
-                  {global.acro} govt exams
+                  Change category
                 </Text>
                 <Icon
                   name="arrow-drop-down"
-                  size={30}
+                  size={25}
                   style={{flex: 2, alignSelf: 'flex-end', color: '#ffffff'}}
                 />
               </View>
@@ -191,7 +191,7 @@ const Home = (props) => {
                         <Icon
                           name="timer"
                           style={{color: Constants.textColor1}}
-                          size={50}
+                          size={40}
                         />
                       </ElevatedView>
                     </TouchableOpacity>
@@ -200,28 +200,33 @@ const Home = (props) => {
                 );
               })
             ) : (
-              <View
-                style={{
-                  width: '100%',
-                  height: 50,
-                  justifyContent: 'center',
-                  alignContent: 'center',
-                }}>
-                <Text
-                  style={{
-                    fontFamily: 'Roboto-Medium',
-                    fontSize: 23,
-                    margin: 20,
-                    color: Constants.textColor1,
-                    justifyContent: 'center',
-                    textAlign: 'center',
-                    textAlignVertical: 'center',
-                  }}>
-                  No Test available for you.
-                </Text>
-              </View>
+              <View />
             )}
           </ScrollView>
+          {testList.length ? (
+            <View />
+          ) : (
+            <View
+              style={{
+                width: '100%',
+                height: 50,
+                justifyContent: 'center',
+                alignSelf: 'center',
+              }}>
+              <Text
+                style={{
+                  fontFamily: 'Roboto-Medium',
+                  fontSize: 18,
+                  margin: 20,
+                  color: Constants.textColor1,
+                  justifyContent: 'center',
+                  textAlign: 'center',
+                  textAlignVertical: 'center',
+                }}>
+                Live Test coming soon!
+              </Text>
+            </View>
+          )}
         </View>
         <View>
           <ScrollView
@@ -235,13 +240,13 @@ const Home = (props) => {
             contentContainerStyle={{justifyContent: 'center'}}>
             {dropdownList.map((test) => {
               return (
-                <View key={test.value}>
+                <View key={test.value} justifyContent="center">
                   <TouchableOpacity
                     onPress={changeSelection.bind(this, test)}
                     style={{
                       margin: 3,
                       marginHorizontal: 10,
-                      padding: 5,
+                      padding: 3,
                       borderRadius: 5,
                       backgroundColor: test.isSelected
                         ? '#ff621c'
@@ -267,8 +272,8 @@ const Home = (props) => {
                         <Image
                           source={require('../../../assets/icon2.png')}
                           style={{
-                            height: 50,
-                            width: 50,
+                            height: 40,
+                            width: 40,
                             borderRadius: 30,
                           }}
                         />
@@ -320,14 +325,14 @@ const Home = (props) => {
               <Text
                 style={{
                   fontFamily: 'Roboto-Medium',
-                  fontSize: 23,
+                  fontSize: 18,
                   margin: 20,
                   color: Constants.textColor1,
                   justifyContent: 'center',
                   textAlign: 'center',
                   textAlignVertical: 'center',
                 }}>
-                Please comeback again later.
+                No Latest Update.
               </Text>
             </View>
           )}
@@ -358,7 +363,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   stayElevated: {
-    margin: 15,
+    margin: 12,
     marginBottom: 5,
     padding: 15,
     backgroundColor: 'white',
@@ -367,7 +372,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   stayElevatedCard: {
-    margin: 15,
+    margin: 12,
     marginBottom: 5,
     padding: 20,
     backgroundColor: 'white',
@@ -378,7 +383,6 @@ const styles = StyleSheet.create({
     color: Constants.textColor1,
     fontFamily: 'Roboto-Medium',
     fontSize: 15,
-    //fontWeight: 'bold',
     flex: 1,
     justifyContent: 'center',
     alignSelf: 'center',
@@ -389,7 +393,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'white',
     fontFamily: 'Roboto-Medium',
-    fontSize: 18,
+    fontSize: 17,
     justifyContent: 'center',
   },
   topMenu: {
