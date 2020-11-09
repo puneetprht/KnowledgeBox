@@ -187,11 +187,10 @@ const StateList = (props) => {
   return (
     <ContainerList
       title="Select State(s)"
-      onPress={
-        () =>
-          //isGoBack
-          props.navigation.replace('Tabs', {screen: 'HOME'})
-        //: props.navigation.replace('Auth', {screen: 'AuthPage'})
+      onPress={() =>
+        global.selectedTopic
+          ? props.navigation.replace('Tabs', {screen: 'HOME'})
+          : props.navigation.replace('Auth', {screen: 'AuthPage'})
       }>
       <ScrollView style={{marginBottom: 50}}>
         <View style={styles.container}>

@@ -51,10 +51,19 @@ const Home = (props) => {
     //getdata for all/topic
   };
 
-  if (global.selectedTopic.length) {
-    var topic = [{value: 0, label: 'All', isSelected: 1}];
+  let topic = [];
+  if (global.selectedTopic && global.selectedTopic.length) {
+    console.log('global.selectedTopic.length:', global.selectedTopic.length);
+    if (global.selectedTopic.length !== 1) {
+      topic = [{value: 0, label: 'All', isSelected: 1}];
+    }
     global.selectedTopic.forEach((element) => {
-      topic.push({value: element.id, label: element.name, isSelected: 0});
+      console.log('Topic.length:', topic.length);
+      topic.push({
+        value: element.id,
+        label: element.name,
+        isSelected: global.selectedTopic.length === 1 && !topic.length ? 1 : 0,
+      });
     });
     fetchListData(0);
   }

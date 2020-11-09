@@ -110,7 +110,11 @@ const TopicList = (props) => {
   return (
     <ContainerList
       title="Exam Category(s)"
-      onPress={() => props.navigation.replace('Tabs', {screen: 'HOME'})}>
+      onPress={() =>
+        global.selectedTopic
+          ? props.navigation.replace('Tabs', {screen: 'HOME'})
+          : props.navigation.replace('Auth', {screen: 'AuthPage'})
+      }>
       <ScrollView style={{marginBottom: 50}}>
         <View style={styles.container}>
           {Topics.map((Topic) => {

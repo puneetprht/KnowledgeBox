@@ -61,6 +61,15 @@ export function DrawerContent(props) {
                   });
                 }}
               />
+              <DrawerItem
+                icon={({color, size}) => (
+                  <Icon name="bookmark-outline" color={color} size={size} />
+                )}
+                label="Refer and Earn"
+                onPress={() => {
+                  props.navigation.navigate('Referral');
+                }}
+              />
             </Drawer.Section>
           ) : (
             <Drawer.Section style={styles.drawerSection}>
@@ -77,12 +86,9 @@ export function DrawerContent(props) {
                 icon={({color, size}) => (
                   <Icon name="bookmark-outline" color={color} size={size} />
                 )}
-                label="Change State"
+                label="Refer and Earn"
                 onPress={() => {
-                  props.navigation.navigate('State', {
-                    screen: 'StateList',
-                    params: {isGoBack: true},
-                  });
+                  props.navigation.navigate('Referral');
                 }}
               />
             </Drawer.Section>
