@@ -28,7 +28,6 @@ const TestQuestionnaire = (props) => {
     testId,
     title,
     user,
-    stateId,
     catergoryId,
     testTitle,
     testTime,

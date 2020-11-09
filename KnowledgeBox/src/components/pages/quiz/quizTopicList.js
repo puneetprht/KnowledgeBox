@@ -7,7 +7,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  Alert,
+  RefreshControl,
   TouchableOpacity,
 } from 'react-native';
 import ContainerList from '../../../widgets/List/containerList';
@@ -19,13 +19,18 @@ import axios from '../../../services/axios';
 
 const QuizTopicList = (props) => {
   const [list, setList] = useState([]);
-  const {subjectId, title, user, stateId, catergoryId} = props.route.params;
+  const {subjectId, title, user, catergoryId} = props.route.params;
   const [editMode, setEditMode] = useState(false);
   const [newSubject, setNewSubject] = useState('');
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    fetchAllTopics();
+    onRefresh();
   }, []);
+
+  const onRefresh = () => {
+    fetchAllTopics();
+  };
 
   const fetchAllTopics = () => {
     axios
@@ -51,14 +56,13 @@ const QuizTopicList = (props) => {
       SubTopicId: index.id,
       title: index.value,
       user: user,
-      stateId: stateId,
       catergoryId: catergoryId,
       subjectId: subjectId,
       refresh: true,
     });
   };
 
-  const saveSubject = (value) => {
+  const addSubTopic = (value) => {
     if (value) {
       axios
         .post('/common/addSubTopic', {
@@ -97,7 +101,11 @@ const QuizTopicList = (props) => {
     <ContainerList
       title={title + ' topics'}
       onPress={() => props.navigation.goBack()}>
-      <ScrollView style={{marginBottom: 30}}>
+      <ScrollView
+        style={{marginBottom: 30}}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
         <View style={styles.Container}>
           {list.map((l) => {
             return (
@@ -142,7 +150,7 @@ const QuizTopicList = (props) => {
                   </View>
                   <View flexDirection="row" style={styles.boxRightOptions}>
                     <TouchableOpacity
-                      onPress={saveSubject.bind(this, newSubject)}
+                      onPress={addSubTopic.bind(this, newSubject)}
                       style={{...styles.icon, backgroundColor: '#1fc281'}}>
                       <Icon name="check" style={{color: 'white'}} size={25} />
                     </TouchableOpacity>

@@ -19,7 +19,7 @@ import axios from '../../../services/axios';
 
 const QuizQuestionnaire = (props) => {
   const [key, setKey] = useState(0);
-  const {quizId, title, user, stateId, catergoryId} = props.route.params;
+  const {quizId, title, user, catergoryId} = props.route.params;
   const [isSubmit, setIsSubmit] = useState(false);
 
   const [questionsList, setQuestionsList] = useState([]);

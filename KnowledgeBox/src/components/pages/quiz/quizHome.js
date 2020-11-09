@@ -11,7 +11,6 @@ import {
   Image,
   TouchableOpacity,
   RefreshControl,
-  Alert,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -101,7 +100,6 @@ const QuizHome = (props) => {
       subjectId: index.id,
       title: index.subject,
       user: user,
-      stateId: state,
       catergoryId: index.category,
     });
   };

@@ -21,14 +21,7 @@ import axios from '../../../services/axios';
 
 const QuizAdmin = (props) => {
   const [key, setKey] = useState(0);
-  const {
-    user,
-    stateId,
-    catergoryId,
-    subjectId,
-    subTopicId,
-    title,
-  } = props.route.params;
+  const {user, catergoryId, subjectId, subTopicId, title} = props.route.params;
   const [isSubmit, setIsSubmit] = useState(false);
   const [quizName, setQuizName] = useState('');
   const questionObject = {
@@ -75,7 +68,6 @@ const QuizAdmin = (props) => {
         subTopicId: subTopicId,
         subjectId: subjectId,
         categoryId: catergoryId,
-        stateId: stateId,
         questions: questionsList,
         quizName: quizName,
       })
@@ -85,7 +77,6 @@ const QuizAdmin = (props) => {
           SubTopicId: subTopicId,
           title: title,
           user: user,
-          stateId: stateId,
           catergoryId: catergoryId,
           subjectId: subjectId,
           refresh: true,

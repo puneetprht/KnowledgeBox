@@ -7,7 +7,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  Alert,
+  RefreshControl,
   PermissionsAndroid,
   Platform,
 } from 'react-native';
@@ -28,6 +28,7 @@ import {WebView} from 'react-native-webview';
 const TestList = (props) => {
   const [list, setList] = useState([]);
   const [listCSV, setListCSV] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
 
   Amplify.configure({
     Auth: {
@@ -44,22 +45,23 @@ const TestList = (props) => {
     },
   });
 
-  /*const {
-    SubTopicId,
-    title,
-    user,
-    stateId,
-    catergoryId,
-    subjectId,
-  } = props.route.params;
-  let {refresh} = props.route.params;*/
-  const user = {isAdmin: true};
+  const {SubTopicId, title, user, catergoryId, subjectId} = props.route.params;
+  let {refresh} = props.route.params;
+  /*const user = {isAdmin: true};
   const SubTopicId = 6;
   const title = 'Science';
-  const stateId = 8;
   const catergoryId = 3;
   const subjectId = 2;
-  let refresh = true;
+  let refresh = true;*/
+
+  useEffect(() => {
+    onRefresh();
+    refresh = false;
+  }, [refresh]);
+
+  const onRefresh = () => {
+    fetchAllTopics();
+  };
 
   const fetchAllTopics = () => {
     axios
@@ -79,10 +81,6 @@ const TestList = (props) => {
         console.log('FetchAllTopics: ', err);
       });
   };
-  useEffect(() => {
-    fetchAllTopics();
-    refresh = false;
-  }, [refresh]);
 
   const openDetail = (index, evt) => {
     props.navigation.navigate('TestQuestionnaire', {
@@ -91,7 +89,6 @@ const TestList = (props) => {
       testTime: index.time || 0,
       testInstructions: index.instructions || '',
       user: user,
-      stateId: stateId,
       catergoryId: catergoryId,
     });
   };
@@ -116,7 +113,6 @@ const TestList = (props) => {
   const addTest = () => {
     props.navigation.navigate('TestAdmin', {
       user: user,
-      stateId: stateId,
       catergoryId: catergoryId,
       subjectId: subjectId,
       subTopicId: SubTopicId,
@@ -132,7 +128,6 @@ const TestList = (props) => {
   const editTest = (index) => {
     props.navigation.navigate('TestAdmin', {
       user: user,
-      stateId: stateId,
       catergoryId: catergoryId,
       subjectId: subjectId,
       subTopicId: SubTopicId,
@@ -177,7 +172,6 @@ const TestList = (props) => {
       //console.log(test.testHeader);
       props.navigation.navigate('TestAdmin', {
         user: user,
-        stateId: stateId,
         catergoryId: catergoryId,
         subjectId: subjectId,
         subTopicId: SubTopicId,
@@ -389,7 +383,11 @@ const TestList = (props) => {
     <ContainerList
       title={title + ' tests'}
       onPress={() => props.navigation.goBack()}>
-      <ScrollView style={{marginBottom: 30}}>
+      <ScrollView
+        style={{marginBottom: 30}}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
         <View style={styles.Container}>
           {list.map((l) => {
             return (

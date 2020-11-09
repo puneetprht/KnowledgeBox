@@ -243,8 +243,8 @@ Quiz.postQuizAnswers = (quizResult, result) => {
 Quiz.postQuiz = (quiz, result) => {
 	console.log(quiz);
 	sql.query(
-		`insert into quiz (quizname,fsubtopic,fsubject,fcategory,fstate) values 
-		('${quiz.quizName}',${quiz.subTopicId} ,${quiz.subjectId} ,${quiz.categoryId} ,${quiz.stateId} )`,
+		`insert into quiz (quizname,fsubtopic,fsubject,fcategory) values 
+		('${quiz.quizName}',${quiz.subTopicId} ,${quiz.subjectId} ,${quiz.categoryId} )`,
 		(err, data) => {
 			if (err) {
 				console.log('error: ', err);
@@ -256,9 +256,9 @@ Quiz.postQuiz = (quiz, result) => {
 
 			quiz.questions.forEach((question) => {
 				sql.query(
-					`insert into quizdetail (fquiz,fsubtopic,fsubject,fcategory,fstate,question,option1,option2,
+					`insert into quizdetail (fquiz,fsubtopic,fsubject,fcategory,question,option1,option2,
 						option3,option4,correctoption,isMultiple) values 
-						(${data.insertId},${quiz.subTopicId} ,${quiz.subjectId} ,${quiz.categoryId} ,${quiz.stateId},
+						(${data.insertId},${quiz.subTopicId} ,${quiz.subjectId} ,${quiz.categoryId} ,
 							'${question.question.toString()}','${question.option1.toString()}','${question.option2.toString()}',
 							'${question.option3.toString()}','${question.option4.toString()}',
 							'${question.isCorrect.toString()}',${question.isMultiple})`,

@@ -101,7 +101,6 @@ const VideoHome = (props) => {
       subjectId: index.id,
       title: index.subject,
       user: user,
-      stateId: state,
       catergoryId: index.category,
     });
   };

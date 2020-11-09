@@ -303,10 +303,10 @@ Test.postTest = (test, result) => {
 						);
 					} else {
 						sql.query(
-							`insert into testdetail (ftest,fsubtopic,fsubject,fcategory,fstate,question,option1,option2,
+							`insert into testdetail (ftest,fsubtopic,fsubject,fcategory,question,option1,option2,
 								option3,option4,correctoption,isMultiple, questionLang, optionLang1, optionLang2, optionLang3, optionLang4, weightage, negativeWeightage,
 								videoUrl, videoUrlId, explaination, explainationLang) values 
-								(${data.insertId},${test.subTopicId} ,${test.subjectId} ,${test.categoryId} ,${test.stateId},
+								(${data.insertId}, ${test.subTopicId}, ${test.subjectId}, ${test.categoryId},
 									'${question.question.toString()}','${question.option1.toString()}','${question.option2.toString()}',
 									'${question.option3.toString()}','${question.option4.toString()}',
 									'${question.correctOption.toString()}',${question.isMultiple},'${question.questionLang}',
@@ -328,8 +328,8 @@ Test.postTest = (test, result) => {
 		);
 	} else {
 		sql.query(
-			`insert into test (testname,fsubtopic,fsubject,fcategory,fstate,duration, instructions ) values 
-		('${test.testName}',${test.subTopicId} ,${test.subjectId} ,${test.categoryId} ,${test.stateId}, ${test.testTime}, '${test.testInstructions}')`,
+			`insert into test (testname,fsubtopic,fsubject,fcategory,duration, instructions ) values 
+		('${test.testName}', ${test.subTopicId}, ${test.subjectId}, ${test.categoryId}, ${test.testTime}, '${test.testInstructions}')`,
 			(err, data) => {
 				if (err) {
 					console.log('error: ', err);
@@ -341,10 +341,10 @@ Test.postTest = (test, result) => {
 
 				test.questions.forEach((question) => {
 					sql.query(
-						`insert into testdetail (ftest,fsubtopic,fsubject,fcategory,fstate,question,option1,option2,
+						`insert into testdetail (ftest,fsubtopic,fsubject,fcategory,question,option1,option2,
 						option3,option4,correctoption,isMultiple, questionLang, optionLang1, optionLang2, optionLang3, optionLang4, weightage, negativeWeightage,
 						videoUrl, videoUrlId, explaination, explainationLang) values 
-						(${data.insertId},${test.subTopicId} ,${test.subjectId} ,${test.categoryId} ,${test.stateId},
+						(${data.insertId}, ${test.subTopicId}, ${test.subjectId}, ${test.categoryId},
 							'${question.question.toString()}','${question.option1.toString()}','${question.option2.toString()}',
 							'${question.option3.toString()}','${question.option4.toString()}',
 							'${question.correctOption.toString()}',${question.isMultiple},'${question.questionLang}',

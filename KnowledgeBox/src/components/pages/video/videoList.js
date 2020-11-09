@@ -9,6 +9,7 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
+  RefreshControl,
 } from 'react-native';
 import ContainerList from '../../../widgets/List/containerList';
 import * as Constants from '../../../constants/constants';
@@ -19,28 +20,29 @@ import Icon2 from 'react-native-vector-icons/Feather';
 
 const VideoList = (props) => {
   const [list, setList] = useState([]);
-  const {
-    SubTopicId,
-    title,
-    user,
-    stateId,
-    catergoryId,
-    subjectId,
-  } = props.route.params;
+  const {SubTopicId, title, user, catergoryId, subjectId} = props.route.params;
   /*const SubTopicId = 1;
 	const title = 'RAS';
 	const user = { id: 1, isAdmin: 1 };
-	const stateId = 1;
 	const categoryId = 1;
 	const subjectId = 1;*/
 
   const [editMode, setEditMode] = useState(false);
   const [videoName, setVideoName] = useState('');
   const [videoUrl, setVideoUrl] = useState('');
+  const [refreshing, setRefreshing] = useState(false);
+
+  useEffect(() => {
+    onRefresh();
+  }, []);
+
+  const onRefresh = () => {
+    fetchAllTopics();
+  };
 
   const fetchAllTopics = () => {
     axios
-      .get('/Video/getVideoList', {
+      .get('/video/getVideoList', {
         params: {
           id: SubTopicId,
         },
@@ -56,16 +58,12 @@ const VideoList = (props) => {
         console.log(err);
       });
   };
-  useEffect(() => {
-    fetchAllTopics();
-  }, []);
 
   const openDetail = (index, evt) => {
     props.navigation.navigate('VideoPlayback', {
       videoId: index.urlVideoId,
       title: index.value,
       user: user,
-      stateId: stateId,
       catergoryId: catergoryId,
     });
   };
@@ -101,7 +99,6 @@ const VideoList = (props) => {
         subTopicId: SubTopicId,
         subjectId: subjectId,
         categoryId: catergoryId,
-        stateId: stateId,
         videoName: videoName,
         videoUrl: videoUrl,
       })
@@ -119,7 +116,11 @@ const VideoList = (props) => {
     <ContainerList
       title={title + ' videos'}
       onPress={() => props.navigation.goBack()}>
-      <ScrollView style={{marginBottom: 30}}>
+      <ScrollView
+        style={{marginBottom: 30}}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
         <View style={styles.Container}>
           {list.map((l) => {
             return (

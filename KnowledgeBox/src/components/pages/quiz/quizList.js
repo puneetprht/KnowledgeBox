@@ -7,7 +7,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  Alert,
+  RefreshControl,
 } from 'react-native';
 import ContainerList from '../../../widgets/List/containerList';
 import * as Constants from '../../../constants/constants';
@@ -17,15 +17,18 @@ import Icon from 'react-native-vector-icons/AntDesign';
 
 const QuizList = (props) => {
   const [list, setList] = useState([]);
-  const {
-    SubTopicId,
-    title,
-    user,
-    stateId,
-    catergoryId,
-    subjectId,
-  } = props.route.params;
+  const {SubTopicId, title, user, catergoryId, subjectId} = props.route.params;
   let {refresh} = props.route.params;
+  const [refreshing, setRefreshing] = useState(false);
+
+  useEffect(() => {
+    onRefresh();
+    refresh = false;
+  }, [refresh]);
+
+  const onRefresh = () => {
+    fetchAllTopics();
+  };
 
   const fetchAllTopics = () => {
     axios
@@ -45,17 +48,12 @@ const QuizList = (props) => {
         console.log(err);
       });
   };
-  useEffect(() => {
-    fetchAllTopics();
-    refresh = false;
-  }, [refresh]);
 
   const openDetail = (index, evt) => {
     props.navigation.navigate('QuizQuestionnaire', {
       quizId: index.id,
       title: index.value,
       user: user,
-      stateId: stateId,
       catergoryId: catergoryId,
     });
   };
@@ -80,7 +78,6 @@ const QuizList = (props) => {
   const addQuiz = () => {
     props.navigation.navigate('QuizAdmin', {
       user: user,
-      stateId: stateId,
       catergoryId: catergoryId,
       subjectId: subjectId,
       subTopicId: SubTopicId,
@@ -92,7 +89,11 @@ const QuizList = (props) => {
     <ContainerList
       title={title + ' quizes'}
       onPress={() => props.navigation.goBack()}>
-      <ScrollView style={{marginBottom: 30}}>
+      <ScrollView
+        style={{marginBottom: 30}}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
         <View style={styles.Container}>
           {list.map((l) => {
             return (

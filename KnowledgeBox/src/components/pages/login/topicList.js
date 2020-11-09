@@ -72,7 +72,6 @@ const TopicList = (props) => {
     axios
       .post('/common/postCategory', {
         id: id,
-        stateId: stateId,
         categoryName: newCategory,
       })
       .then((response) => {

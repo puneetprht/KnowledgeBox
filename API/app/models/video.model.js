@@ -136,15 +136,15 @@ Video.getVideoList = (id, result) => {
 Video.postVideo = (body, result) => {
 	console.log(body);
 	let urlVideoId = getQueryParams('v', body.videoUrl);
-	if (urlVideoId) {
+	if (!urlVideoId) {
 		urlVideoId = body.videoUrl.split('.be/')[1];
 	  }
 	console.log(urlVideoId);
 	if (urlVideoId) {
 		console.log('posting video data');
 		sql.query(
-			`insert into video (videoname,url,fsubtopic,fsubject,fcategory,fstate,urlVideoId)
-        value ('${body.videoName}', '${body.videoUrl}', ${body.subTopicId},${body.subjectId},${body.categoryId},${body.stateId},'${urlVideoId}')`,
+			`insert into video (videoname,url,fsubtopic,fsubject,fcategory,urlVideoId)
+        value ('${body.videoName}', '${body.videoUrl}', ${body.subTopicId},${body.subjectId},${body.categoryId},'${urlVideoId}')`,
 			(err, res) => {
 				if (err) {
 					console.log('error: ', err);

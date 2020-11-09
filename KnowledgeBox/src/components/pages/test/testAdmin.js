@@ -26,7 +26,6 @@ const TestAdmin = (props) => {
   const [key, setKey] = useState(0);
   const {
     user,
-    stateId,
     catergoryId,
     subjectId,
     subTopicId,
@@ -124,7 +123,6 @@ const TestAdmin = (props) => {
         subTopicId: subTopicId,
         subjectId: subjectId,
         categoryId: catergoryId,
-        stateId: stateId,
         questions: questionsList,
         testName: testName,
         testId: testId,
@@ -137,7 +135,6 @@ const TestAdmin = (props) => {
           SubTopicId: subTopicId,
           title: title,
           user: user,
-          stateId: stateId,
           catergoryId: catergoryId,
           subjectId: subjectId,
           refresh: true,

@@ -6,7 +6,7 @@ const Common = function(common) {};
 	console.log('we are trying to make a middleware lets hope it works.');
 	next();
 });*/
-
+/*
 Common.getDropdownData = (id, stateid, result) => {
 	console.log('Dropdown data: UserId: ', id, ' StateId: ', stateid);
 	sql.query(
@@ -145,6 +145,7 @@ Common.deleteSubject = (body, result) => {
 		}
 	);
 };
+*/
 
 Common.addSubTopic = (body, result) => {
 	console.log(body);
@@ -203,58 +204,6 @@ Common.getCategoryList = (result) => {
 	);
 };
 
-Common.postCategoryForUser = (category, result) => {
-	console.log(category);
-	sql.query(
-		`delete from categoryxref where fstate = ${category.stateId} and fuser = ${category.userId}`,
-		(err, res) => {
-			category.selectedTopic.forEach(async (topic) => {
-				sql.query(
-					`select hmy from categoryXref where fcategory = ${topic} and fstate =${category.stateId} and fuser = ${category.userId}  LIMIT 1`,
-					(err, res) => {
-						if (!res) {
-							sql.query(
-								`insert into categoryxref (fcategory,fstate,fuser)
-			values(${topic},${category.stateId},${category.userId})`,
-								(err, res) => {
-									if (err) {
-										console.log('error: ', err);
-										result(err, null);
-										return;
-									}
-								}
-							);
-						}
-					}
-				);
-			});
-			result(null, null);
-			return;
-		}
-	);
-};
-
-const fetchCategoryXref = async (categoryId, stateId, userId) => {
-	await sql.query(
-		`select hmy from categoryXref where fcategory = ${categoryId} and fstate =${stateId} and fuser = ${userId}  LIMIT 1`,
-		(err, res) => {
-			if (err) {
-				console.log('error: ', err);
-				return 0;
-			} else {
-				res = JSON.parse(JSON.stringify(res));
-				console.log(res);
-				if (res[0]) {
-					console.log(res[0].hmy);
-					return parseInt(res[0].hmy);
-				} else {
-					return false;
-				}
-			}
-		}
-	);
-};
-
 Common.postCategory = (body, result) => {
 	if (body.id) {
 		sql.query(`update category set categoryName = '${body.categoryName}' where hmy = ${body.id}`, (err, res) => {
@@ -268,7 +217,7 @@ Common.postCategory = (body, result) => {
 		});
 	} else {
 		sql.query(
-			`insert into category (categoryName,fstate) values ('${body.categoryName}', ${body.stateId})`,
+			`insert into category (categoryName) values ('${body.categoryName}')`,
 			(err, res) => {
 				if (err) {
 					console.log('error: ', err);
