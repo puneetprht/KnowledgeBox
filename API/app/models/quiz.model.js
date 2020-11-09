@@ -2,6 +2,91 @@ const sql = require('./db.js');
 
 const Quiz = function(quiz) {};
 
+Quiz.getAllSubjects = (categories, result) => {
+	console.log('categories:', categories);
+	sql.query(
+		`select s.hmy as id,concat(subjectname,'(',categoryname,')') as subject, 
+		count(stp.hmy) as count, c.hmy as category from  subject s 
+		left outer join subtopic stp on stp.fsubject = s.hmy
+		inner join category c on c.hmy = s.fcategory where c.hmy in (${categories}) 	and s.objectType = 1 group by s.hmy`,
+		(err, res) => {
+			if (err) {
+				console.log('error: ', err);
+				result(err, null);
+				return;
+			}
+			if (res.length) {
+				res = JSON.parse(JSON.stringify(res));
+				//console.log(res);
+				result(null, res);
+				return;
+			}
+			result(null, null);
+			return;
+		}
+	);
+};
+
+Quiz.getSubject = (Categoryid, result) => {
+	sql.query(
+		`select s.hmy as id,subjectname as subject,count(stp.hmy) as count, s.fcategory as category
+		from subtopic stp 
+		right outer join subject s on stp.fsubject = s.hmy 
+		where s.fcategory = ${Categoryid} and s.objectType = 1 group by s.hmy `,
+		(err, res) => {
+			if (err) {
+				console.log('error: ', err);
+				result(err, null);
+				return;
+			}
+
+			if (res.length) {
+				res = JSON.parse(JSON.stringify(res));
+				//console.log(res);
+				result(null, res);
+				return;
+			}
+
+			result(null, null);
+			return;
+		}
+	);
+};
+
+Quiz.addSubject = (body, result) => {
+	sql.query(
+		`insert into  subject (subjectname, fcategory, objectType) 
+		values ('${body.subjectName}',${body.categoryId}, 1 )`,
+		(err, res) => {
+			if (err) {
+				console.log('error: ', err);
+				result(err, null);
+				return;
+			}
+
+			result(null, null);
+			return;
+		}
+	);
+};
+
+Quiz.deleteSubject = (body, result) => {
+	sql.query(
+		`delete from subject
+		where hmy = ${body.id}`,
+		(err, res) => {
+			if (err) {
+				console.log('error: ', err);
+				result(err, null);
+				return;
+			}
+
+			result(null, null);
+			return;
+		}
+	);
+};
+
 Quiz.getSubTopicList = (id, result) => {
 	//console.log('SubjectId: ', id);
 	sql.query(

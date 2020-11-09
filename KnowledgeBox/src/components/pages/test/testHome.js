@@ -28,7 +28,6 @@ const TestHome = (props) => {
     {value: 0, label: 'No categories'},
   ]);
   const [user, setUser] = useState(global.user || {id: 1, isAdmin: 0});
-  const [state, setState] = useState(global.stateId || 1);
   const [editMode, setEditMode] = useState(false);
   const [newSubject, setNewSubject] = useState('');
   const [refreshing, setRefreshing] = useState(false);
@@ -38,80 +37,45 @@ const TestHome = (props) => {
   }, []);
 
   const onRefresh = () => {
-    /*if (user && 0) {
-      axios
-        .get('/common/getDropdown', {
-          params: {
-            userId: user.id,
-            stateId: state,
-          },
-        })
-        .then(response => {
-          setDropdownList(response.data);
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    } else if (!user /*&& global.selectedTopic.length*/ //) {
     var topic = [{value: 0, label: 'All'}];
-    global.selectedTopic.forEach((element) => {
-      topic.push({value: element.id, label: element.name});
-    });
+    if (global.selectedTopic) {
+      global.selectedTopic.forEach((element) => {
+        topic.push({value: element.id, label: element.name});
+      });
+    }
     setDropdownList(topic);
-    //}
     fetchAllSubjects();
   };
 
   const fetchAllSubjects = () => {
-    /*if (user) {
-			axios
-				.get('/common/getAllSubjectForUser', {
-					params: {
-						userId: user.id,
-						stateId: state
-					}
-				})
-				.then((response) => {
-					//console.log(response);
-					if (response.data) {
-						setList(response.data);
-					} else {
-						setList([]);
-					}
-				})
-				.catch((err) => {
-					console.log(err);
-				});
-		} else { */
-    axios
-      .get('/common/getAllSubjectForNoUser', {
-        params: {
-          selectedCategory: JSON.stringify(global.selectedTopic),
-          stateId: state,
-        },
-      })
-      .then((response) => {
-        if (response.data) {
-          setList(response.data);
-        } else {
-          setList([]);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    //}
+    if (global.selectedTopic) {
+      axios
+        .get('/test/getAllSubjects', {
+          params: {
+            selectedCategory: JSON.stringify(global.selectedTopic),
+          },
+        })
+        .then((response) => {
+          if (response.data) {
+            setList(response.data);
+          } else {
+            setList([]);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   };
 
   const fetchSubjectList = (categoryId) => {
     axios
-      .get('/common/getSubjectList', {
+      .get('/test/getSubject', {
         params: {
           id: categoryId,
         },
       })
       .then((response) => {
-        //console.log(response);
         if (response.data) {
           setList(response.data);
         } else {
@@ -141,13 +105,12 @@ const TestHome = (props) => {
     });
   };
 
-  const saveSubject = (value) => {
+  const addSubject = (value) => {
     if (value) {
       axios
-        .post('/common/addSubject', {
+        .post('/test/addSubject', {
           subjectName: value,
           categoryId: category,
-          stateId: state,
         })
         .then((response) => {
           setNewSubject('');
@@ -162,7 +125,7 @@ const TestHome = (props) => {
   const deleteSubject = (id) => {
     if (id) {
       axios
-        .delete('/common/deleteSubject', {
+        .delete('/test/deleteSubject', {
           data: {
             id: id,
           },
@@ -296,7 +259,7 @@ const TestHome = (props) => {
                   </View>
                   <View flexDirection="row" style={styles.boxRightOptions}>
                     <TouchableOpacity
-                      onPress={saveSubject.bind(this, newSubject)}
+                      onPress={addSubject.bind(this, newSubject)}
                       style={{...styles.icon, backgroundColor: '#1fc281'}}>
                       <Icon name="check" style={{color: 'white'}} size={25} />
                     </TouchableOpacity>
