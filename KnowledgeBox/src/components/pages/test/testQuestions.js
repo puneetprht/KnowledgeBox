@@ -70,14 +70,14 @@ const TestQuestionnaire = (props) => {
   }, [introDone]);
 
   const setTimer = () => {
-    interrupt = setInterval(() => {
+    /*interrupt = setInterval(() => {
       const time = parseInt(timeDuration);
       //if (introDone && questionsList.length) {
       setTimeDuration((time) => time - 1);
       /*const questions = JSON.parse(JSON.stringify(questionsList));
 			const tempTime = questionsList[key].time;
 			questions[key].time = tempTime + 1;
-			setQuestionsList(questions);*/
+			setQuestionsList(questions);
       //}
       if (parseInt(time) == 60) {
         Alert.alert('Will auto-submit the test once time is over.');
@@ -85,7 +85,7 @@ const TestQuestionnaire = (props) => {
       if (time <= 0) {
         clearInterval(interrupt.current);
       }
-    }, 1000);
+    }, 1000);*/
   };
 
   const onOptionPress = (index) => {

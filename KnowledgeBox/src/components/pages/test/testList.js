@@ -472,16 +472,6 @@ const TestList = (props) => {
                   />
                 </TouchableOpacity>
               </View>
-              <WebView
-                style={{flex: 1, width: 400, height: 225}}
-                javaScriptEnabled={true}
-                allowsFullscreenVideo={true}
-                source={{
-                  uri:
-                    'https://www.youtube.com/embed/xiumTLv93pY?rel=0&autoplay=0&showinfo=1&fullscreen=1&controls=1&modestbranding=1&iv_load_policy=3',
-                }}
-                injectedJavaScript={runFirst}
-              />
             </View>
           ) : (
             <View />

@@ -16,40 +16,8 @@ const Referral = (props) => {
       title="Referrals"
       onPress={() => props.navigation.navigate('HomeTab')}>
       <ScrollView style={{backgroundColor: 'white'}}>
-        <View style={styles.container}>
-          <Image
-            source={require('../../../assets/avatar.jpg')}
-            style={{
-              alignSelf: 'center',
-              width: 100,
-              height: 100,
-              marginTop: 10,
-            }}
-          />
-        </View>
-        <View style={styles.containerText}>
-          <Text style={styles.textField}>First Name:</Text>
-          <Text style={styles.textObject}>
-            {global.user.firstName || global.user.firstname}
-          </Text>
-        </View>
-        <View style={styles.containerText}>
-          <Text style={styles.textField}>Last Name:</Text>
-          <Text style={styles.textObject}>
-            {global.user.lastName || global.user.lastname}
-          </Text>
-        </View>
-        <View style={styles.containerText}>
-          <Text style={styles.textField}>Email Id:</Text>
-          <Text style={styles.textObject}>{global.user.email}</Text>
-        </View>
-        <View style={styles.containerText}>
-          <Text style={styles.textField}>Phone Number:</Text>
-          <Text style={styles.textObject}>
-            {global.user.phone ||
-              global.user.phoneNumber ||
-              global.user.phonenumber}
-          </Text>
+        <View style={{justifyContent: 'center', alignItems: 'center'}}>
+          <Text style={styles.textField}>Will update soon.</Text>{' '}
         </View>
       </ScrollView>
     </ContainerList>
@@ -66,6 +34,7 @@ const styles = StyleSheet.create({
     color: Constants.textColor1,
     fontFamily: 'Roboto-Medium',
     fontSize: 14,
+    textAlign: 'center',
   },
   textObject: {
     marginTop: 5,

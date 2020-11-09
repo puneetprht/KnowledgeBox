@@ -24,7 +24,6 @@ const VideoPlayback = (props) => {
     <ContainerList title={title} onPress={() => props.navigation.goBack()}>
       <View
         style={{
-          marginTop: 10,
           flex: 1,
           width: Math.floor(Dimensions.get('window').width / 16) * 16,
           height: Math.floor(Dimensions.get('window').width / 16) * 9,
