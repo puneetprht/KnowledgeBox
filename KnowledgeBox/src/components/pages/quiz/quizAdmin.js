@@ -7,12 +7,13 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  Alert,
+  Image,
   TouchableOpacity,
   ActivityIndicator,
   KeyboardAvoidingView,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Octicons';
+import Icon2 from 'react-native-vector-icons/AntDesign';
 import LinearGradient from 'react-native-linear-gradient';
 import * as Constants from '../../../constants/constants';
 import PButton from '../../../widgets/Button/pButton';
@@ -21,40 +22,104 @@ import axios from '../../../services/axios';
 
 const QuizAdmin = (props) => {
   const [key, setKey] = useState(0);
-  const {user, catergoryId, subjectId, subTopicId, title} = props.route.params;
+  const {
+    user,
+    catergoryId,
+    subjectId,
+    subTopicId,
+    title,
+    quizId,
+    quizTime,
+    quizDetail,
+  } = props.route.params;
+  /*const user = {isAdmin: true};
+  const {
+    catergoryId,
+    subjectId,
+    subTopicId,
+    title,
+    quizId,
+    quizTime,
+    quizDetail,
+  } = {
+    catergoryId: 2,
+    subjectId: 2,
+    subTopicId: 2,
+    title: 'Hello',
+    quizId: 0,
+    quizTime: 5,
+    quizDetail: [],
+  };*/
+
   const [isSubmit, setIsSubmit] = useState(false);
   const [quizName, setQuizName] = useState('');
+  const [timeDuration, setTimeDuration] = useState(quizTime);
   const questionObject = {
     question: '',
     option1: '',
     option2: '',
     option3: '',
     option4: '',
-    isCorrect: [],
+    questionLang: '',
+    optionLang1: '',
+    optionLang2: '',
+    optionLang3: '',
+    optionLang4: '',
+    explaination: '',
+    explainationLang: '',
+    videoUrl: '',
+    videoUrlId: '',
+    correctOption: [],
     isMultiple: false,
-    isValid: false,
   };
   const [questionsList, setQuestionsList] = useState([questionObject]);
+  const [languageFlag, setLanguage] = useState(false);
+
+  useEffect(() => {
+    if (quizId) {
+      axios
+        .get('/quiz/getQuizDetail', {
+          params: {
+            id: quizId,
+          },
+        })
+        .then((response) => {
+          if (response.data) {
+            setQuestionsList(response.data);
+          }
+          //alert('Gettings');
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else if (quizDetail.length) {
+      console.log('setQuestionsList:', quizDetail);
+      setQuestionsList(quizDetail);
+    }
+  }, []);
 
   const onOptionPress = (index) => {
     const questions = JSON.parse(JSON.stringify(questionsList));
-    if (questions[key].isCorrect.includes(index) && questions[key].isMultiple) {
-      questions[key].isCorrect.splice(
-        questions[key].isCorrect.indexOf(index),
+    if (
+      questions[key].correctOption.includes(index) &&
+      questions[key].isMultiple
+    ) {
+      questions[key].correctOption.splice(
+        questions[key].correctOption.indexOf(index),
         1,
       );
     } else if (
-      questions[key].isCorrect.includes(index) &&
+      questions[key].correctOption.includes(index) &&
       !questions[key].isMultiple
     ) {
-      questions[key].isCorrect = [];
+      questions[key].correctOption = [];
     } else {
       if (questions[key].isMultiple) {
-        questions[key].isCorrect.push(index);
-        questions[key].isCorrect.sort();
+        questions[key].correctOption.push(index);
+        questions[key].correctOption.sort();
       } else {
-        questions[key].isCorrect = [];
-        questions[key].isCorrect.push(index);
+        questions[key].correctOption = [];
+        questions[key].correctOption.push(index);
       }
     }
     setQuestionsList(questions);
@@ -62,7 +127,6 @@ const QuizAdmin = (props) => {
 
   const submitQuiz = () => {
     setIsSubmit(true);
-    const submitAnswers = [];
     axios
       .post('/quiz/postQuiz', {
         subTopicId: subTopicId,
@@ -70,6 +134,7 @@ const QuizAdmin = (props) => {
         categoryId: catergoryId,
         questions: questionsList,
         quizName: quizName,
+        quizTime: parseFloat(timeDuration),
       })
       .then((response) => {
         setIsSubmit(false);
@@ -111,14 +176,70 @@ const QuizAdmin = (props) => {
 
   const saveQuestion = (val) => {
     const questions = JSON.parse(JSON.stringify(questionsList));
-    questions[key].question = val;
+    if (languageFlag) {
+      questions[key].questionLang = val;
+    } else {
+      questions[key].question = val;
+    }
     setQuestionsList(questions);
   };
 
   const saveOption = (val, index) => {
     const questions = JSON.parse(JSON.stringify(questionsList));
-    questions[key]['option' + index] = val;
+    if (languageFlag) {
+      questions[key]['optionLang' + index] = val;
+    } else {
+      questions[key]['option' + index] = val;
+    }
     setQuestionsList(questions);
+  };
+
+  const saveExplanation = (val) => {
+    const questions = JSON.parse(JSON.stringify(questionsList));
+    if (languageFlag) {
+      questions[key].explainationLang = val;
+    } else {
+      questions[key].explaination = val;
+    }
+    setQuestionsList(questions);
+  };
+
+  const getQueryParams = (params, url) => {
+    let href = url;
+    //this expression is to get the query strings
+    let reg = new RegExp('[?&]' + params + '=([^&#]*)', 'i');
+    let queryString = reg.exec(href);
+    return queryString ? queryString[1] : null;
+  };
+
+  const saveVideoUrl = (val) => {
+    const questions = JSON.parse(JSON.stringify(questionsList));
+    questions[key].videoUrl = val;
+    questions[key].videoUrlId = getQueryParams('v', val);
+    if (!questions[key].videoUrlId) {
+      questions[key].videoUrlId = val.split('.be/')[1];
+    }
+    setQuestionsList(questions);
+  };
+
+  const validateQuiz = () => {
+    return true; /*return (
+      questionsList[key].question &&
+      questionsList[key].option1 &&
+      questionsList[key].option2 &&
+      questionsList[key].option3 &&
+      questionsList[key].option4 &&
+      questionsList[key].correctOption.length
+    );*/
+  };
+
+  const deleteQuestion = (index) => {
+    const questions = JSON.parse(JSON.stringify(questionsList));
+    console.log(questions);
+    questions.splice(index, 1);
+    console.log(questions);
+    setQuestionsList(questions);
+    setKey(index - 1);
   };
 
   return (
@@ -133,16 +254,47 @@ const QuizAdmin = (props) => {
           }}>
           <View>
             <View style={{flex: 1, justifyContent: 'center'}}>
-              <TextInput
-                textAlign="center"
-                style={{
-                  ...styles.textArea2,
-                  width: '70%',
-                  alignSelf: 'center',
-                }}
-                placeholder="Enter Quiz Name"
-                onChangeText={(val) => setQuizName(val)}
-              />
+              <View
+                style={{marginLeft: 40, justifyContent: 'space-around'}}
+                flexDirection="row">
+                <TextInput
+                  textAlign="center"
+                  style={{
+                    ...styles.textArea2,
+                    width: '70%',
+                    alignSelf: 'center',
+                  }}
+                  placeholder="Enter Quiz Name"
+                  onChangeText={(val) => setQuizName(val)}
+                />
+                <TextInput
+                  textAlign="center"
+                  style={{
+                    ...styles.textArea2,
+                    marginLeft: 20,
+                    width: '15%',
+                    alignSelf: 'center',
+                  }}
+                  value={
+                    timeDuration ? String(timeDuration) : String(timeDuration)
+                  }
+                  keyboardType="number-pad"
+                  placeholder="Time"
+                  placeholderTextColor={'white'}
+                  onChangeText={(val) => setTimeDuration(val)}
+                />
+                <TouchableOpacity onPress={() => setLanguage(!languageFlag)}>
+                  <Image
+                    source={require('../../../assets/language.png')}
+                    style={{
+                      width: 30,
+                      height: 30,
+                      marginLeft: 20,
+                      margin: 10,
+                    }}
+                  />
+                </TouchableOpacity>
+              </View>
               <View style={{position: 'absolute', paddingLeft: 15}}>
                 <TouchableOpacity onPress={() => props.navigation.goBack()}>
                   <Icon
@@ -170,13 +322,18 @@ const QuizAdmin = (props) => {
             <TextInput
               textAlign="left"
               style={styles.textArea2}
-              placeholder="Enter Question"
+              placeholderTextColor={'white'}
+              placeholder={!languageFlag ? 'Enter Question' : 'प्रश्न लिखिए '}
               multiline={true}
               scrollEnabled={true}
               numberOfLines={5}
               maxLength={1000}
               onChangeText={(val) => saveQuestion(val)}
-              value={questionsList[key].question}
+              value={
+                languageFlag
+                  ? questionsList[key].questionLang
+                  : questionsList[key].question
+              }
             />
           </View>
         </LinearGradient>
@@ -188,7 +345,7 @@ const QuizAdmin = (props) => {
           }}>
           <View
             style={{
-              width: '40%',
+              width: '30%',
               backgroundColor: !questionsList[key].isMultiple
                 ? 'orange'
                 : 'white',
@@ -201,7 +358,7 @@ const QuizAdmin = (props) => {
                   color: !questionsList[key].isMultiple ? 'white' : 'black',
                   textAlign: 'center',
                   fontFamily: 'Roboto-Medium',
-                  fontSize: 20,
+                  fontSize: 13,
                   margin: 3,
                 }}>
                 Single Choice
@@ -210,7 +367,7 @@ const QuizAdmin = (props) => {
           </View>
           <View
             style={{
-              width: '40%',
+              width: '30%',
               backgroundColor: questionsList[key].isMultiple
                 ? 'orange'
                 : 'white',
@@ -223,7 +380,7 @@ const QuizAdmin = (props) => {
                   color: !questionsList[key].isMultiple ? 'black' : 'white',
                   textAlign: 'center',
                   fontFamily: 'Roboto-Medium',
-                  fontSize: 20,
+                  fontSize: 13,
                   margin: 3,
                 }}>
                 Multiple Choice
@@ -235,14 +392,14 @@ const QuizAdmin = (props) => {
           flexDirection="row"
           style={{
             marginHorizontal: 10,
-            marginVertical: 5,
+            marginVertical: 10,
             justifyContent: 'space-evenly',
           }}>
           <ElevatedView
             elevation={5}
             style={{
               ...styles.elevatedStyle,
-              borderColor: questionsList[key].isCorrect.includes(1)
+              borderColor: questionsList[key].correctOption.includes(1)
                 ? Constants.textColor1
                 : 'white',
             }}>
@@ -262,7 +419,7 @@ const QuizAdmin = (props) => {
             elevation={5}
             style={{
               ...styles.elevatedStyle,
-              borderColor: questionsList[key].isCorrect.includes(2)
+              borderColor: questionsList[key].correctOption.includes(2)
                 ? Constants.textColor1
                 : 'white',
             }}>
@@ -282,7 +439,7 @@ const QuizAdmin = (props) => {
             elevation={5}
             style={{
               ...styles.elevatedStyle,
-              borderColor: questionsList[key].isCorrect.includes(3)
+              borderColor: questionsList[key].correctOption.includes(3)
                 ? Constants.textColor1
                 : 'white',
             }}>
@@ -302,7 +459,7 @@ const QuizAdmin = (props) => {
             elevation={5}
             style={{
               ...styles.elevatedStyle,
-              borderColor: questionsList[key].isCorrect.includes(4)
+              borderColor: questionsList[key].correctOption.includes(4)
                 ? Constants.textColor1
                 : 'white',
             }}>
@@ -324,7 +481,7 @@ const QuizAdmin = (props) => {
             style={{
               ...styles.stayElevated,
               borderWidth: 3,
-              borderColor: questionsList[key].isCorrect.includes(1)
+              borderColor: questionsList[key].correctOption.includes(1)
                 ? Constants.textColor1
                 : 'white',
             }}>
@@ -332,13 +489,17 @@ const QuizAdmin = (props) => {
               <TextInput
                 textAlign="left"
                 style={styles.textArea}
-                placeholder="Enter Question"
+                placeholder={!languageFlag ? 'Enter Option 1' : 'विकल्प १'}
                 multiline={true}
                 scrollEnabled={true}
                 numberOfLines={2}
                 maxLength={200}
                 onChangeText={(val) => saveOption(val, 1)}
-                value={questionsList[key].option1}
+                value={
+                  languageFlag
+                    ? questionsList[key].optionLang1
+                    : questionsList[key].option1
+                }
               />
             </ElevatedView>
           </View>
@@ -346,7 +507,7 @@ const QuizAdmin = (props) => {
             style={{
               ...styles.stayElevated,
               borderWidth: 3,
-              borderColor: questionsList[key].isCorrect.includes(2)
+              borderColor: questionsList[key].correctOption.includes(2)
                 ? Constants.textColor1
                 : 'white',
             }}>
@@ -354,13 +515,17 @@ const QuizAdmin = (props) => {
               <TextInput
                 textAlign="left"
                 style={styles.textArea}
-                placeholder="Enter Question"
+                placeholder={!languageFlag ? 'Enter Option 2' : 'विकल्प २'}
                 multiline={true}
                 scrollEnabled={true}
                 numberOfLines={2}
                 maxLength={200}
                 onChangeText={(val) => saveOption(val, 2)}
-                value={questionsList[key].option2}
+                value={
+                  languageFlag
+                    ? questionsList[key].optionLang2
+                    : questionsList[key].option2
+                }
               />
             </ElevatedView>
           </View>
@@ -368,7 +533,7 @@ const QuizAdmin = (props) => {
             style={{
               ...styles.stayElevated,
               borderWidth: 3,
-              borderColor: questionsList[key].isCorrect.includes(3)
+              borderColor: questionsList[key].correctOption.includes(3)
                 ? Constants.textColor1
                 : 'white',
             }}>
@@ -376,13 +541,17 @@ const QuizAdmin = (props) => {
               <TextInput
                 textAlign="left"
                 style={styles.textArea}
-                placeholder="Enter Question"
+                placeholder={!languageFlag ? 'Enter Option 3' : 'विकल्प ३'}
                 multiline={true}
                 scrollEnabled={true}
                 numberOfLines={2}
                 maxLength={200}
                 onChangeText={(val) => saveOption(val, 3)}
-                value={questionsList[key].option3}
+                value={
+                  languageFlag
+                    ? questionsList[key].optionLang3
+                    : questionsList[key].option3
+                }
               />
             </ElevatedView>
           </View>
@@ -390,7 +559,7 @@ const QuizAdmin = (props) => {
             style={{
               ...styles.stayElevated,
               borderWidth: 3,
-              borderColor: questionsList[key].isCorrect.includes(4)
+              borderColor: questionsList[key].correctOption.includes(4)
                 ? Constants.textColor1
                 : 'white',
             }}>
@@ -398,13 +567,85 @@ const QuizAdmin = (props) => {
               <TextInput
                 textAlign="left"
                 style={styles.textArea}
-                placeholder="Enter Question"
+                placeholder={!languageFlag ? 'Enter Option 4' : 'विकल्प ४ '}
                 multiline={true}
                 scrollEnabled={true}
                 numberOfLines={2}
                 maxLength={200}
                 onChangeText={(val) => saveOption(val, 4)}
-                value={questionsList[key].option4}
+                value={
+                  languageFlag
+                    ? questionsList[key].optionLang4
+                    : questionsList[key].option4
+                }
+              />
+            </ElevatedView>
+          </View>
+          <View
+            style={{
+              width: '30%',
+              backgroundColor: 'orange',
+              borderTopRightRadius: 15,
+              borderTopLeftRadius: 15,
+              marginTop: 15,
+            }}>
+            <Text
+              style={{
+                color: 'white',
+                textAlign: 'center',
+                fontFamily: 'Roboto-Medium',
+                fontSize: 15,
+                margin: 3,
+              }}>
+              Video URL
+            </Text>
+          </View>
+          <View style={{...styles.stayElevated, marginTop: 0}}>
+            <ElevatedView elevation={5} style={{borderRadius: 10}}>
+              <TextInput
+                textAlign="left"
+                style={styles.textArea}
+                multiline={true}
+                scrollEnabled={true}
+                maxLength={500}
+                onChangeText={(val) => saveVideoUrl(val)}
+                value={questionsList[key].videoUrl}
+              />
+            </ElevatedView>
+          </View>
+          <View
+            style={{
+              width: '30%',
+              backgroundColor: 'orange',
+              borderTopRightRadius: 15,
+              borderTopLeftRadius: 15,
+              marginTop: 15,
+            }}>
+            <Text
+              style={{
+                color: 'white',
+                textAlign: 'center',
+                fontFamily: 'Roboto-Medium',
+                fontSize: 15,
+                margin: 3,
+              }}>
+              {!languageFlag ? 'Explanation' : 'विवरण'}
+            </Text>
+          </View>
+          <View style={{...styles.stayElevated, marginTop: 0}}>
+            <ElevatedView elevation={5} style={{borderRadius: 10}}>
+              <TextInput
+                textAlign="left"
+                style={styles.textArea}
+                multiline={true}
+                scrollEnabled={true}
+                maxLength={1000}
+                onChangeText={(val) => saveExplanation(val)}
+                value={
+                  !languageFlag
+                    ? questionsList[key].explaination
+                    : questionsList[key].explainationLang
+                }
               />
             </ElevatedView>
           </View>
@@ -421,28 +662,11 @@ const QuizAdmin = (props) => {
             {key ? (
               <TouchableOpacity
                 onPress={prevQuestion.bind(this, key)}
-                disabled={
-                  !(
-                    questionsList[key].question &&
-                    questionsList[key].option1 &&
-                    questionsList[key].option2 &&
-                    questionsList[key].option3 &&
-                    questionsList[key].option4 &&
-                    questionsList[key].isCorrect.length
-                  )
-                }>
+                disabled={!validateQuiz()}>
                 <Icon
                   name="chevron-left"
                   style={{
-                    color:
-                      questionsList[key].question &&
-                      questionsList[key].option1 &&
-                      questionsList[key].option2 &&
-                      questionsList[key].option3 &&
-                      questionsList[key].option4 &&
-                      questionsList[key].isCorrect.length
-                        ? Constants.textColor1
-                        : '#acc3f8',
+                    color: validateQuiz() ? Constants.textColor1 : '#acc3f8',
                     justifyContent: 'center',
                     alignItems: 'center',
                   }}
@@ -453,6 +677,23 @@ const QuizAdmin = (props) => {
               <View />
             )}
           </View>
+          {key ? (
+            <View style={{justifyContent: 'center', alignContent: 'center'}}>
+              <TouchableOpacity
+                onPress={deleteQuestion.bind(this, key)}
+                style={{
+                  padding: 10,
+                  borderRadius: 100,
+                  justifyContent: 'center',
+                  alignContent: 'center',
+                  backgroundColor: '#de3500',
+                }}>
+                <Icon2 name="delete" style={{color: 'white'}} size={15} />
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <View />
+          )}
           <View>
             {isSubmit ? (
               <View style={{justifyContent: 'center', alignContent: 'center'}}>
@@ -462,56 +703,29 @@ const QuizAdmin = (props) => {
               <PButton
                 title={'Submit Quiz'}
                 onPress={() => submitQuiz()}
-                disable={
-                  !(
-                    questionsList[key].question &&
-                    questionsList[key].option1 &&
-                    questionsList[key].option2 &&
-                    questionsList[key].option3 &&
-                    questionsList[key].option4 &&
-                    questionsList[key].isCorrect.length
-                  )
-                }
+                disable={!validateQuiz()}
                 viewStyle={{
-                  backgroundColor:
-                    questionsList[key].question &&
-                    questionsList[key].option1 &&
-                    questionsList[key].option2 &&
-                    questionsList[key].option3 &&
-                    questionsList[key].option4 &&
-                    questionsList[key].isCorrect.length
-                      ? Constants.textColor1
-                      : '#acc3f8',
+                  backgroundColor: validateQuiz()
+                    ? Constants.textColor1
+                    : '#acc3f8',
                   flexDirection: 'row',
                   justifyContent: 'center',
                 }}
-                elementStyle={{flexDirection: 'row', justifyContent: 'center'}}
+                elementStyle={{
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                }}
               />
             )}
           </View>
           <PButton
             title={key == questionsList.length - 1 ? 'Add' : 'Next'}
             onPress={nextQuestion.bind(this, key)}
-            disable={
-              !(
-                questionsList[key].question &&
-                questionsList[key].option1 &&
-                questionsList[key].option2 &&
-                questionsList[key].option3 &&
-                questionsList[key].option4 &&
-                questionsList[key].isCorrect.length
-              )
-            }
+            disable={!validateQuiz()}
             viewStyle={{
-              backgroundColor:
-                questionsList[key].question &&
-                questionsList[key].option1 &&
-                questionsList[key].option2 &&
-                questionsList[key].option3 &&
-                questionsList[key].option4 &&
-                questionsList[key].isCorrect.length
-                  ? Constants.textColor1
-                  : '#acc3f8',
+              backgroundColor: validateQuiz()
+                ? Constants.textColor1
+                : '#acc3f8',
               flexDirection: 'row',
               justifyContent: 'center',
             }}

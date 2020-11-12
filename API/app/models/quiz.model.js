@@ -242,39 +242,105 @@ Quiz.postQuizAnswers = (quizResult, result) => {
 
 Quiz.postQuiz = (quiz, result) => {
 	console.log(quiz);
-	sql.query(
-		`insert into quiz (quizname,fsubtopic,fsubject,fcategory) values 
-		('${quiz.quizName}',${quiz.subTopicId} ,${quiz.subjectId} ,${quiz.categoryId} )`,
-		(err, data) => {
-			if (err) {
-				console.log('error: ', err);
-				result(err, null);
+	if (quiz.quizId) {
+		sql.query(
+			`update quiz SET quizname = '${quiz.quizName}', duration = ${quiz.quizTime} where hmy = ${quiz.quizId}`,
+			(err, data) => {
+				if (err) {
+					console.log('error2: ', err);
+					result(err, null);
+					return;
+				}
+				console.log(data.insertId);
+				console.log(quiz.questions);
+
+				quiz.questions.forEach((question) => {
+					if (question.id) {
+						sql.query(
+							`update quizdetail set question = '${question.question.toString()}',option1 = '${question.option1.toString()}',
+						option2='${question.option2.toString()}',
+							option3 = '${question.option3.toString()}',option4 = '${question.option4.toString()}'
+							,correctoption = '${question.correctOption.toString()}',isMultiple = ${question.isMultiple} 
+							,questionLang=${toSqlString(question.questionLang)},
+							optionLang1=${toSqlString(question.optionLang1)},optionLang2=${toSqlString(question.optionLang2)},
+							optionLang3=${toSqlString(question.optionLang3)}, optionLang4=${toSqlString(question.optionLang4)},
+							videoUrl=${toSqlString(question.videoUrl)},
+							videoUrlId=${toSqlString(question.videoUrlId)}, explaination=${toSqlString(
+								question.explaination
+							)}, explainationLang=${toSqlString(
+								question.explainationLang
+							)} where hmy = ${question.id}`,
+							(err, res) => {
+								if (err) {
+									console.log('error: ', err);
+									result(err, null);
+									return;
+								}
+							}
+						);
+					} else {
+						sql.query(
+							`insert into quizdetail (fquiz,fsubtopic,fsubject,fcategory,question,option1,option2,
+								option3,option4,correctoption,isMultiple, questionLang, optionLang1, optionLang2, optionLang3, optionLang4,
+								videoUrl, videoUrlId, explaination, explainationLang) values 
+								(${data.insertId}, ${quiz.subTopicId}, ${quiz.subjectId}, ${quiz.categoryId},
+									'${question.question.toString()}','${question.option1.toString()}','${question.option2.toString()}',
+									'${question.option3.toString()}','${question.option4.toString()}',
+									'${question.correctOption.toString()}',${question.isMultiple},'${question.questionLang}',
+									'${question.optionLang1}','${question.optionLang2}','${question.optionLang3}','${question.optionLang4}',
+									'${question.videoUrl}','${question.videoUrlId}','${question.explaination}','${question.explainationLang}')`,
+							(err, res) => {
+								if (err) {
+									console.log('error: ', err);
+									result(err, null);
+									return;
+								}
+							}
+						);
+					}
+				});
+				result(null, null);
 				return;
 			}
-			console.log(data.insertId);
-			console.log(quiz.questions);
-
-			quiz.questions.forEach((question) => {
-				sql.query(
-					`insert into quizdetail (fquiz,fsubtopic,fsubject,fcategory,question,option1,option2,
-						option3,option4,correctoption,isMultiple) values 
-						(${data.insertId},${quiz.subTopicId} ,${quiz.subjectId} ,${quiz.categoryId} ,
+		);
+	} else {
+		sql.query(
+			`insert into quiz (quizname,fsubtopic,fsubject,fcategory,duration ) values 
+		('${quiz.quizName}', ${quiz.subTopicId}, ${quiz.subjectId}, ${quiz.categoryId}, ${quiz.quizTime})`,
+			(err, data) => {
+				if (err) {
+					console.log('error1 : ', err);
+					result(err, null);
+					return;
+				}
+				console.log(data.insertId);
+				console.log(quiz.questions);
+				
+				quiz.questions.forEach((question) => {
+					sql.query(
+						`insert into quizdetail (fquiz,fsubtopic,fsubject,fcategory,question,option1,option2,
+						option3,option4,correctoption,isMultiple, questionLang, optionLang1, optionLang2, optionLang3, optionLang4,
+						videoUrl, videoUrlId, explaination, explainationLang) values 
+						(${data.insertId}, ${quiz.subTopicId}, ${quiz.subjectId}, ${quiz.categoryId},
 							'${question.question.toString()}','${question.option1.toString()}','${question.option2.toString()}',
 							'${question.option3.toString()}','${question.option4.toString()}',
-							'${question.isCorrect.toString()}',${question.isMultiple})`,
-					(err, res) => {
-						if (err) {
-							console.log('error: ', err);
-							result(err, null);
-							return;
+							'${question.correctOption.toString()}',${question.isMultiple},'${question.questionLang}',
+							'${question.optionLang1}','${question.optionLang2}','${question.optionLang3}','${question.optionLang4}',
+							'${question.videoUrl}','${question.videoUrlId}','${question.explaination}','${question.explainationLang}')`,
+						(err, res) => {
+							if (err) {
+								console.log('error: ', err);
+								result(err, null);
+								return;
+							}
 						}
-					}
-				);
-			});
-			result(null, null);
-			return;
-		}
-	);
+					);
+				});
+				result(null, null);
+				return;
+			}
+		);
+	}
 };
 
 module.exports = Quiz;

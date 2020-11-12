@@ -17,7 +17,7 @@ const Referral = (props) => {
       onPress={() => props.navigation.navigate('HomeTab')}>
       <ScrollView style={{backgroundColor: 'white'}}>
         <View style={{justifyContent: 'center', alignItems: 'center'}}>
-          <Text style={styles.textField}>Will update soon.</Text>{' '}
+          <Text style={styles.textField}>Coming very soon.</Text>
         </View>
       </ScrollView>
     </ContainerList>

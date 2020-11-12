@@ -263,7 +263,7 @@ Test.postTestAnswers = (testResult, result) => {
 };
 
 Test.postTest = (test, result) => {
-	console.log(test);
+	console.log("This is test:", test);
 	if (test.testId) {
 		sql.query(
 			`update test SET testname = '${test.testName}', duration = ${test.testTime}, instructions = '${test.testInstructions}'	 where hmy = ${test.testId}`,
