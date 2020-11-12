@@ -223,7 +223,7 @@ const TestQuestionnaire = (props) => {
                     style={{
                       color: 'grey',
                       fontFamily: 'Roboto-Medium',
-                      fontSize: 16,
+                      fontSize: 15,
                     }}>
                     * {line}
                   </Text>
@@ -262,7 +262,7 @@ const TestQuestionnaire = (props) => {
                         textAlignVertical: 'center',
                         flex: 1,
                         fontFamily: 'Roboto-Medium',
-                        fontSize: 25,
+                        fontSize: 22,
                       }}>
                       {title}
                     </Text>
@@ -336,7 +336,7 @@ const TestQuestionnaire = (props) => {
                     style={{
                       alignSelf: 'center',
                       fontFamily: 'Roboto-Medium',
-                      fontSize: 20,
+                      fontSize: 18,
                       marginTop: 10,
                       color: 'white',
                     }}>
@@ -362,7 +362,7 @@ const TestQuestionnaire = (props) => {
                       style={{
                         marginLeft: 5,
                         fontFamily: 'Roboto-Medium',
-                        fontSize: 20,
+                        fontSize: 18,
                         marginTop: 3,
                         color: 'white',
                       }}>
@@ -374,7 +374,7 @@ const TestQuestionnaire = (props) => {
                         marginLeft: 1,
                         marginTop: 5,
                         fontFamily: 'Roboto-Medium',
-                        fontSize: 17,
+                        fontSize: 16,
                         color: 'white',
                       }}>
                       {questionsList[key].weightage}
@@ -383,7 +383,7 @@ const TestQuestionnaire = (props) => {
                       style={{
                         marginLeft: 10,
                         fontFamily: 'Roboto-Medium',
-                        fontSize: 25,
+                        fontSize: 22,
                         color: 'white',
                       }}>
                       {' '}
@@ -394,7 +394,7 @@ const TestQuestionnaire = (props) => {
                         marginLeft: 1,
                         marginTop: 5,
                         fontFamily: 'Roboto-Medium',
-                        fontSize: 17,
+                        fontSize: 16,
                         color: 'white',
                       }}>
                       {questionsList[key].negativeWeightage}
@@ -564,7 +564,7 @@ const renderTimer = (time, showFull = true) => {
     <Text
       style={{
         fontFamily: 'Roboto-Medium',
-        fontSize: 20,
+        fontSize: 18,
         margin: 5,
         fontWeight: 'bold',
         justifyContent: 'center',

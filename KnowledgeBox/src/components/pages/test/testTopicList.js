@@ -169,7 +169,8 @@ const TestTopicList = (props) => {
                   title="Add"
                   onPress={() => setEditMode(true)}
                   viewStyle={{
-                    width: '55%',
+                    width: '65%',
+                    paddingHorizontal: 15,
                     flexDirection: 'row',
                     justifyContent: 'center',
                   }}

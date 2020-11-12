@@ -223,14 +223,14 @@ const QuizAdmin = (props) => {
   };
 
   const validateQuiz = () => {
-    return true; /*return (
+    return (
       questionsList[key].question &&
       questionsList[key].option1 &&
       questionsList[key].option2 &&
       questionsList[key].option3 &&
       questionsList[key].option4 &&
       questionsList[key].correctOption.length
-    );*/
+    );
   };
 
   const deleteQuestion = (index) => {
@@ -313,7 +313,7 @@ const QuizAdmin = (props) => {
             <Text
               style={{
                 fontFamily: 'Roboto-Medium',
-                fontSize: 20,
+                fontSize: 18,
                 marginTop: 10,
                 color: 'white',
               }}>
@@ -358,7 +358,7 @@ const QuizAdmin = (props) => {
                   color: !questionsList[key].isMultiple ? 'white' : 'black',
                   textAlign: 'center',
                   fontFamily: 'Roboto-Medium',
-                  fontSize: 13,
+                  fontSize: 12,
                   margin: 3,
                 }}>
                 Single Choice
@@ -380,7 +380,7 @@ const QuizAdmin = (props) => {
                   color: !questionsList[key].isMultiple ? 'black' : 'white',
                   textAlign: 'center',
                   fontFamily: 'Roboto-Medium',
-                  fontSize: 13,
+                  fontSize: 12,
                   margin: 3,
                 }}>
                 Multiple Choice
@@ -782,21 +782,21 @@ const styles = StyleSheet.create({
   answerText: {
     textAlign: 'left',
     fontFamily: 'Roboto-Medium',
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     margin: 10,
   },
   answerText2: {
     textAlign: 'left',
     fontFamily: 'Roboto-Medium',
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
   },
   textArea: {
     color: Constants.textColor1,
     borderRadius: 5,
     fontFamily: 'Roboto-Medium',
-    fontSize: 20,
+    fontSize: 18,
   },
   textArea2: {
     borderWidth: 1,
@@ -805,7 +805,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     width: '90%',
     fontFamily: 'Roboto-Medium',
-    fontSize: 20,
+    fontSize: 18,
   },
   elevatedStyle: {
     borderWidth: 3,

@@ -133,7 +133,7 @@ const VideoList = (props) => {
                     title="Watch"
                     onPress={openDetail.bind(this, l)}
                     viewStyle={styles.button}
-                    textStyle={{fontFamily: 'Roboto-Medium', fontSize: 17}}
+                    textStyle={{fontFamily: 'Roboto-Medium', fontSize: 16}}
                     elementStyle={{
                       flexDirection: 'row',
                       justifyContent: 'center',
@@ -212,7 +212,8 @@ const VideoList = (props) => {
                   title="Add Video"
                   onPress={() => setEditMode(true)}
                   viewStyle={{
-                    width: '55%',
+                    width: '65%',
+                    paddingHorizontal: 15,
                     flexDirection: 'row',
                     justifyContent: 'center',
                   }}

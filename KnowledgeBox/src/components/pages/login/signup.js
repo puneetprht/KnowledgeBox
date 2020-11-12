@@ -328,7 +328,7 @@ const SignUp = (props) => {
               style={{
                 fontFamily: 'Roboto',
                 textAlign: 'center',
-                fontSize: 14,
+                fontSize: 13,
                 color: 'red',
               }}>
               Email already exists.

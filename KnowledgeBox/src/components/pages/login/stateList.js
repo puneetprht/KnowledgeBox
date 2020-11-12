@@ -258,7 +258,7 @@ const styles = StyleSheet.create({
   text: {
     color: 'white',
     fontFamily: 'Roboto-Medium',
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: 'bold',
     zIndex: 2,
     marginBottom: 10,

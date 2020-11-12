@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   textField: {
     color: Constants.textColor1,
     fontFamily: 'Roboto-Medium',
-    fontSize: 14,
+    fontSize: 13,
   },
   textObject: {
     marginTop: 5,

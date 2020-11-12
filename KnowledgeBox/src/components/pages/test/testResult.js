@@ -60,7 +60,7 @@ const TestResult = (props) => {
               textAlignVertical: 'center',
               flex: 1,
               fontFamily: 'Roboto-Medium',
-              fontSize: 25,
+              fontSize: 22,
             }}>
             Result and Explanation
           </Text>
@@ -83,7 +83,7 @@ const TestResult = (props) => {
             <Text
               style={{
                 fontFamily: 'Roboto-Medium',
-                fontSize: 25,
+                fontSize: 22,
                 color: 'white',
               }}>
               Your Score
@@ -112,7 +112,7 @@ const TestResult = (props) => {
               style={{
                 marginTop: 10,
                 fontFamily: 'Roboto-Medium',
-                fontSize: 25,
+                fontSize: 22,
                 color: 'white',
                 position: 'absolute',
               }}>
@@ -166,7 +166,7 @@ const TestResult = (props) => {
                   style={{
                     color: Constants.textColor1,
                     fontFamily: 'Roboto-Medium',
-                    fontSize: 17,
+                    fontSize: 16,
                   }}>
                   Time on question: {question.time} seconds
                 </Text>
@@ -244,7 +244,7 @@ const TestResult = (props) => {
                       title="Watch"
                       onPress={openDetail.bind(this, question.videoUrlId)}
                       viewStyle={(styles.button, {marginLeft: 10})}
-                      textStyle={{fontFamily: 'Roboto-Medium', fontSize: 17}}
+                      textStyle={{fontFamily: 'Roboto-Medium', fontSize: 16}}
                       elementStyle={{
                         flexDirection: 'row',
                         justifyContent: 'center',

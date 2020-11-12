@@ -163,7 +163,7 @@ const QuizQuestionnaire = (props) => {
                     textAlignVertical: 'center',
                     flex: 1,
                     fontFamily: 'Roboto-Medium',
-                    fontSize: 25,
+                    fontSize: 22,
                   }}>
                   {title}
                 </Text>
@@ -188,7 +188,7 @@ const QuizQuestionnaire = (props) => {
               <Text
                 style={{
                   fontFamily: 'Roboto-Medium',
-                  fontSize: 20,
+                  fontSize: 18,
                   marginTop: 10,
                   color: 'white',
                 }}>
@@ -221,7 +221,7 @@ const QuizQuestionnaire = (props) => {
                   color: 'white',
                   textAlign: 'center',
                   fontFamily: 'Roboto-Medium',
-                  fontSize: 17,
+                  fontSize: 16,
                   margin: 3,
                 }}>
                 {!questionsList[key].isMultiple

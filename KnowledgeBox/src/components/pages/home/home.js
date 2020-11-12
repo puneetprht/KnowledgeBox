@@ -175,7 +175,7 @@ const Home = (props) => {
                     textAlign: 'left',
                     textAlignVertical: 'center',
                     fontFamily: 'Roboto-Medium',
-                    fontSize: 16,
+                    fontSize: 15,
                     fontWeight: 'bold',
                   }}>
                   Change category
@@ -357,19 +357,19 @@ const styles = StyleSheet.create({
   },
   textObject: {
     fontFamily: 'Roboto-Medium',
-    fontSize: 30,
+    fontSize: 27,
     color: Constants.textColor1,
     textAlign: 'center',
   },
   textTitle: {
     fontWeight: 'bold',
     fontFamily: 'Roboto-Medium',
-    fontSize: 20,
+    fontSize: 18,
   },
   textTime: {
     color: 'gray',
     fontFamily: 'Roboto-Medium',
-    fontSize: 13,
+    fontSize: 12,
   },
   stayElevated: {
     margin: 12,
@@ -402,7 +402,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'white',
     fontFamily: 'Roboto-Medium',
-    fontSize: 17,
+    fontSize: 16,
     justifyContent: 'center',
   },
   topMenu: {

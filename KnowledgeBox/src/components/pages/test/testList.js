@@ -483,7 +483,7 @@ const TestList = (props) => {
                     title="Start"
                     onPress={openDetail.bind(this, l)}
                     viewStyle={styles.button}
-                    textStyle={{fontFamily: 'Roboto-Medium', fontSize: 17}}
+                    textStyle={{fontFamily: 'Roboto-Medium', fontSize: 16}}
                     elementStyle={{
                       flexDirection: 'row',
                       justifyContent: 'center',
@@ -532,6 +532,7 @@ const TestList = (props) => {
                   onPress={() => addTest()}
                   viewStyle={{
                     width: '65%',
+                    paddingHorizontal: 15,
                     flexDirection: 'row',
                     justifyContent: 'center',
                   }}

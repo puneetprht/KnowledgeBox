@@ -150,7 +150,7 @@ const SignIn = (props) => {
             style={{
               fontFamily: 'Roboto',
               textAlign: 'center',
-              fontSize: 14,
+              fontSize: 13,
               color: 'red',
             }}>
             Wrong Email or Password.

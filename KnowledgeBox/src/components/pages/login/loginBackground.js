@@ -13,7 +13,7 @@ const LoginBackground = () => {
         <Text
           style={{
             fontFamily: 'Roboto-Medium',
-            fontSize: 20,
+            fontSize: 18,
             marginTop: 20,
             color: 'white',
           }}>

@@ -48,7 +48,7 @@ const QuizResult = (props) => {
               textAlignVertical: 'center',
               flex: 1,
               fontFamily: 'Roboto-Medium',
-              fontSize: 25,
+              fontSize: 22,
             }}>
             Result and Explanation
           </Text>
@@ -71,7 +71,7 @@ const QuizResult = (props) => {
             <Text
               style={{
                 fontFamily: 'Roboto-Medium',
-                fontSize: 25,
+                fontSize: 22,
                 color: 'white',
               }}>
               Your Score
@@ -99,7 +99,7 @@ const QuizResult = (props) => {
               style={{
                 marginTop: 10,
                 fontFamily: 'Roboto-Medium',
-                fontSize: 25,
+                fontSize: 22,
                 color: 'white',
                 position: 'absolute',
               }}>
@@ -200,7 +200,7 @@ const QuizResult = (props) => {
                       style={{
                         color: Constants.textColor1,
                         fontFamily: 'Roboto-Medium',
-                        fontSize: 20,
+                        fontSize: 18,
                       }}>
                       Explanation: {question.explaination}
                     </Text>

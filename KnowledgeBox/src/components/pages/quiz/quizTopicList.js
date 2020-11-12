@@ -169,7 +169,8 @@ const QuizTopicList = (props) => {
                   title="Add"
                   onPress={() => setEditMode(true)}
                   viewStyle={{
-                    width: '55%',
+                    width: '65%',
+                    paddingHorizontal: 15,
                     flexDirection: 'row',
                     justifyContent: 'center',
                   }}
@@ -242,7 +243,7 @@ const styles = StyleSheet.create({
     borderColor: Constants.textColor1,
     width: '90%',
     fontFamily: 'Roboto-Medium',
-    fontSize: 20,
+    fontSize: 18,
   },
   icon: {
     padding: 10,

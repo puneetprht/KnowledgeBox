@@ -259,7 +259,7 @@ const QuizList = (props) => {
                     title="Start"
                     onPress={openDetail.bind(this, l)}
                     viewStyle={styles.button}
-                    textStyle={{fontFamily: 'Roboto-Medium', fontSize: 17}}
+                    textStyle={{fontFamily: 'Roboto-Medium', fontSize: 16}}
                     elementStyle={{
                       flexDirection: 'row',
                       justifyContent: 'center',
@@ -307,7 +307,8 @@ const QuizList = (props) => {
                   title="Add Quiz"
                   onPress={() => addQuiz()}
                   viewStyle={{
-                    width: '55%',
+                    width: '65%',
+                    paddingHorizontal: 15,
                     flexDirection: 'row',
                     justifyContent: 'center',
                   }}

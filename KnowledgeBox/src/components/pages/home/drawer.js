@@ -61,7 +61,7 @@ export function DrawerContent(props) {
                   });
                 }}
               />
-              <DrawerItem
+              {/* <DrawerItem
                 icon={({color, size}) => (
                   <Icon name="bookmark-outline" color={color} size={size} />
                 )}
@@ -69,7 +69,7 @@ export function DrawerContent(props) {
                 onPress={() => {
                   props.navigation.navigate('Referral');
                 }}
-              />
+              /> */}
             </Drawer.Section>
           ) : (
             <Drawer.Section style={styles.drawerSection}>
@@ -82,7 +82,7 @@ export function DrawerContent(props) {
                   props.navigation.navigate('HomeTab');
                 }}
               />
-              <DrawerItem
+              {/* <DrawerItem
                 icon={({color, size}) => (
                   <Icon name="bookmark-outline" color={color} size={size} />
                 )}
@@ -90,7 +90,7 @@ export function DrawerContent(props) {
                 onPress={() => {
                   props.navigation.navigate('Referral');
                 }}
-              />
+              />*/}
             </Drawer.Section>
           )}
         </View>
@@ -133,13 +133,13 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: 'Roboto-Medium',
-    fontSize: 16,
+    fontSize: 15,
     marginTop: 3,
     fontWeight: 'bold',
   },
   caption: {
     fontFamily: 'Roboto-Medium',
-    fontSize: 14,
+    fontSize: 13,
     lineHeight: 14,
   },
   row: {

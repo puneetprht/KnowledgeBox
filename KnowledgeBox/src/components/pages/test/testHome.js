@@ -153,7 +153,7 @@ const TestHome = (props) => {
               <Text
                 style={{
                   fontFamily: 'Roboto-Medium',
-                  fontSize: 20,
+                  fontSize: 18,
                   marginTop: 20,
                   color: 'white',
                 }}>
@@ -190,7 +190,7 @@ const TestHome = (props) => {
             }}
             labelStyle={{
               fontFamily: 'Roboto-Medium',
-              fontSize: 17,
+              fontSize: 16,
               textAlign: 'left',
               color: 'white',
             }}
@@ -277,7 +277,8 @@ const TestHome = (props) => {
                   title="Add"
                   onPress={() => setEditMode(true)}
                   viewStyle={{
-                    width: '55%',
+                    width: '65%',
+                    paddingHorizontal: 15,
                     flexDirection: 'row',
                     justifyContent: 'center',
                   }}

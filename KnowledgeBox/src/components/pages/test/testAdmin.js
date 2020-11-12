@@ -257,7 +257,7 @@ const TestAdmin = (props) => {
             <Text
               style={{
                 fontFamily: 'Roboto-Medium',
-                fontSize: 19,
+                fontSize: 17,
                 fontWeight: 'bold',
                 alignSelf: 'center',
               }}>
@@ -374,7 +374,7 @@ const TestAdmin = (props) => {
               <Text
                 style={{
                   fontFamily: 'Roboto-Medium',
-                  fontSize: 20,
+                  fontSize: 18,
                   marginTop: 10,
                   color: 'white',
                 }}>
@@ -391,7 +391,7 @@ const TestAdmin = (props) => {
                   style={{
                     marginLeft: 20,
                     fontFamily: 'Roboto-Medium',
-                    fontSize: 30,
+                    fontSize: 27,
                     color: 'white',
                   }}>
                   {' '}
@@ -480,7 +480,7 @@ const TestAdmin = (props) => {
                     color: !questionsList[key].isMultiple ? 'white' : 'black',
                     textAlign: 'center',
                     fontFamily: 'Roboto-Medium',
-                    fontSize: 13,
+                    fontSize: 12,
                     margin: 3,
                   }}>
                   Single Choice
@@ -502,7 +502,7 @@ const TestAdmin = (props) => {
                     color: !questionsList[key].isMultiple ? 'black' : 'white',
                     textAlign: 'center',
                     fontFamily: 'Roboto-Medium',
-                    fontSize: 13,
+                    fontSize: 12,
                     margin: 3,
                   }}>
                   Multiple Choice
@@ -906,21 +906,21 @@ const styles = StyleSheet.create({
   answerText: {
     textAlign: 'left',
     fontFamily: 'Roboto-Medium',
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     margin: 10,
   },
   answerText2: {
     textAlign: 'left',
     fontFamily: 'Roboto-Medium',
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
   },
   textArea: {
     color: Constants.textColor1,
     borderRadius: 5,
     fontFamily: 'Roboto-Medium',
-    fontSize: 17,
+    fontSize: 16,
   },
   textArea2: {
     borderWidth: 1,
@@ -929,7 +929,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     width: '90%',
     fontFamily: 'Roboto-Medium',
-    fontSize: 17,
+    fontSize: 16,
   },
   elevatedStyle: {
     borderWidth: 3,

@@ -23,13 +23,15 @@ const ContainerList = (props) => {
               textAlignVertical: 'center',
               flex: 1,
               fontFamily: 'Roboto-Medium',
-              fontSize: 30,
+              color: '#0d4255',
+              paddingLeft: 30,
+              fontSize: 23,
             }}>
             {props.title}
           </Text>
-          <View style={{position: 'absolute', paddingLeft: 15}}>
+          <View style={{position: 'absolute', paddingLeft: 12}}>
             <TouchableOpacity onPress={props.onPress}>
-              <Icon name="chevron-left" size={35} />
+              <Icon name="chevron-left" size={30} color={'#0d4255'} />
             </TouchableOpacity>
           </View>
         </View>
