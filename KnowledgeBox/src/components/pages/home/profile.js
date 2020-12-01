@@ -7,8 +7,8 @@ import {
   ScrollView,
   StyleSheet,
 } from 'react-native';
-import ContainerList from '../../../widgets/List/containerList';
 import * as Constants from '../../../constants/constants';
+import ContainerList from '../../../widgets/List/containerList';
 
 const Profile = (props) => {
   return (

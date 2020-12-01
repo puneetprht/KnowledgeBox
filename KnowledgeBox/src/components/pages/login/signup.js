@@ -14,6 +14,8 @@ import axios from '../../../services/axios';
 import PButton from '../../../widgets/Button/pButton';
 import * as Constants from '../../../constants/constants';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import * as AsyncStorage from '../../../services/asyncStorage';
+
 
 const SignUp = (props) => {
   const [firstName, setFirstName] = useState('');
@@ -40,8 +42,7 @@ const SignUp = (props) => {
         lastName: lastName,
         phoneNumber: phoneNumber,
       })
-      .then((response) => {
-        //await AsyncStorage.setItem('token', response.data.token);
+      .then(async (response) => {
         setIsSubmit(false);
         setFirstName('');
         setLastName('');
@@ -49,7 +50,8 @@ const SignUp = (props) => {
         setPassword('');
         setConfirmPassword('');
         setPhoneNumber('');
-        global.user = response;
+        await AsyncStorage.setStorage('user', response.data);
+        global.user = response.data;
         props.navigation.replace('State');
       })
       .catch((err) => {

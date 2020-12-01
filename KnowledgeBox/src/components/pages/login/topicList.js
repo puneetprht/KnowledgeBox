@@ -10,14 +10,15 @@ import {
   Dimensions,
   TouchableOpacity,
 } from 'react-native';
-import ContainerList from '../../../widgets/List/containerList';
-import LinearGradient from 'react-native-linear-gradient';
-import PButton from '../../../widgets/Button/pButton';
-import * as Constants from '../../../constants/constants';
+import axios from '../../../services/axios';
 import Icon from 'react-native-vector-icons/Entypo';
+import PButton from '../../../widgets/Button/pButton';
 import Icon3 from 'react-native-vector-icons/Feather';
 import Icon2 from 'react-native-vector-icons/AntDesign';
-import axios from '../../../services/axios';
+import LinearGradient from 'react-native-linear-gradient';
+import * as Constants from '../../../constants/constants';
+import * as AsyncStorage from '../../../services/asyncStorage';
+import ContainerList from '../../../widgets/List/containerList';
 
 const TopicList = (props) => {
   const [Topics, setTopics] = useState([]);
@@ -60,10 +61,11 @@ const TopicList = (props) => {
     setSelectedTopic(topic);
   };
 
-  const continueForm = (index, evt) => {
+  const continueForm = async (index, evt) => {
     global.selectedTopic = Topics.filter((topic) => {
       return selectedTopic.includes(topic.id);
     });
+    await AsyncStorage.setStorage('topics', global.selectedTopic);
     props.navigation.navigate('Tabs');
   };
 

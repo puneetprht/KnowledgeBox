@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import axios from '../../../services/axios';
+import * as AsyncStorage from '../../../services/asyncStorage';
 import ContainerList from '../../../widgets/List/containerList';
 
 const StateList = (props) => {
@@ -159,7 +160,7 @@ const StateList = (props) => {
     },
   ]);
 
-  const updateActive = (index, evt) => {
+  const updateActive = async (index, evt) => {
     const state = Array.from(states);
     if (!state[index.count - 1].isActive) {
       state.forEach((Element) => {
@@ -170,6 +171,8 @@ const StateList = (props) => {
     setStates(state);
     setUpdatedStates([...updatedStates, index.id]);
     if (state[index.count - 1].isActive) {
+      global.user.stateId = index.id;
+      await AsyncStorage.setStorage('user', global.user);
       axios
         .post('/user/PostUserState', {
           userId: user.id,

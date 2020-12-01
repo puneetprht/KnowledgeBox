@@ -10,10 +10,12 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
 } from 'react-native';
-import PButton from '../../../widgets/Button/pButton';
-import * as Constants from '../../../constants/constants';
 import axios from '../../../services/axios';
 import Icon from 'react-native-vector-icons/Ionicons';
+import PButton from '../../../widgets/Button/pButton';
+import * as Constants from '../../../constants/constants';
+import * as AsyncStorage from '../../../services/asyncStorage';
+
 
 const SignIn = (props) => {
   const [email, setEmail] = useState('');
@@ -31,8 +33,8 @@ const SignIn = (props) => {
         email: email,
         password: password,
       })
-      .then((response) => {
-        //AsyncStorage.setItem('token', response.data.token);
+      .then(async (response) => {
+        await AsyncStorage.setStorage('user', response.data);
         setEmail('');
         setPassword('');
         setFormValid(false);

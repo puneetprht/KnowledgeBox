@@ -1,12 +1,12 @@
 import React from 'react';
 import {View, StyleSheet, Alert} from 'react-native';
+import * as Constants from '../../../constants/constants';
+import * as AsyncStorage from '../../../services/asyncStorage';
 import {Avatar, Title, Caption, Drawer} from 'react-native-paper';
-import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {AuthContext} from '../../../services/context';
+import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
 
 export function DrawerContent(props) {
-  //const {signOut, toggleTheme} = React.useContext(AuthContext);
   const avatar = require('../../../assets/avatar.jpg');
   const user = global.user;
 
@@ -102,9 +102,10 @@ export function DrawerContent(props) {
               <Icon name="exit-to-app" color={color} size={size} />
             )}
             label="Sign Out"
-            onPress={() => {
-              //signOut();
+            onPress={async () => {
+              await AsyncStorage.clearStorage();
               global.user = null;
+              global.selectedTopic = null;
               props.navigation.replace('Auth', {screen: 'AuthPage'});
             }}
           />
@@ -160,7 +161,6 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   bottomDrawerSection: {
-    //marginBottom: 15,
     borderTopColor: '#f4f4f4',
     borderTopWidth: 1,
   },
