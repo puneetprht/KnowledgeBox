@@ -330,6 +330,7 @@ const TestQuestionnaire = (props) => {
                   />
                 </TouchableOpacity>
               </View>
+
               <View style={{justifyContent: 'center', marginTop: 10}}>
                 <View>
                   <Text
@@ -347,8 +348,30 @@ const TestQuestionnaire = (props) => {
                       position: 'absolute',
                       marginLeft: 10,
                       marginTop: 5,
-                    }}>
+                    }}
+                    flexDirection="row">
                     {renderTimer(questionsList[key].time, false)}
+                    <Text
+                      style={{
+                        marginLeft: 5,
+                        fontFamily: 'Roboto-Medium',
+                        fontSize: 18,
+                        marginTop: 3,
+                        color: Constants.success,
+                      }}>
+                      {' '}
+                      +{' '}
+                    </Text>
+                    <Text
+                      style={{
+                        marginLeft: 1,
+                        marginTop: 5,
+                        fontFamily: 'Roboto-Medium',
+                        fontSize: 16,
+                        color: Constants.success,
+                      }}>
+                      {questionsList[key].weightage}
+                    </Text>
                   </View>
                   <View
                     style={{
@@ -360,31 +383,10 @@ const TestQuestionnaire = (props) => {
                     flexDirection="row">
                     <Text
                       style={{
-                        marginLeft: 5,
-                        fontFamily: 'Roboto-Medium',
-                        fontSize: 18,
-                        marginTop: 3,
-                        color: 'white',
-                      }}>
-                      {' '}
-                      +{' '}
-                    </Text>
-                    <Text
-                      style={{
-                        marginLeft: 1,
-                        marginTop: 5,
-                        fontFamily: 'Roboto-Medium',
-                        fontSize: 16,
-                        color: 'white',
-                      }}>
-                      {questionsList[key].weightage}
-                    </Text>
-                    <Text
-                      style={{
                         marginLeft: 10,
                         fontFamily: 'Roboto-Medium',
                         fontSize: 22,
-                        color: 'white',
+                        color: Constants.error,
                       }}>
                       {' '}
                       -{' '}
@@ -395,7 +397,7 @@ const TestQuestionnaire = (props) => {
                         marginTop: 5,
                         fontFamily: 'Roboto-Medium',
                         fontSize: 16,
-                        color: 'white',
+                        color: Constants.error,
                       }}>
                       {questionsList[key].negativeWeightage}
                     </Text>
@@ -412,6 +414,7 @@ const TestQuestionnaire = (props) => {
                     </TouchableOpacity>
                   </View>
                 </View>
+
                 <Text
                   style={{
                     alignSelf: 'center',

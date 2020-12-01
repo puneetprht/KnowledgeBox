@@ -176,7 +176,7 @@ const TestList = (props) => {
         subTopicId: SubTopicId,
         title: title,
         testId: 0,
-        testTitle: test.testHeader[0].QuizName || '',
+        testTitle: test.testHeader[0].TestName || '',
         testTime: test.testHeader[0].Time || 0,
         testInstructions: test.testHeader[0].Instructions || '',
         testDetail: testObject,
