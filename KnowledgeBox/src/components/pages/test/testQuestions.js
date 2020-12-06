@@ -6,11 +6,9 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  Alert,
   TouchableOpacity,
   ActivityIndicator,
   Image,
-  FlatList,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Octicons';
 import IconAnt from 'react-native-vector-icons/AntDesign';
@@ -99,24 +97,31 @@ const TestQuestionnaire = (props) => {
         1,
       );
       questions[key].options[index - 1].isSelected = false;
+      questions[key].optionsLang[index - 1].isSelected = false;
     } else if (
       questions[key].selectedAnswer.includes(index) &&
       !questions[key].isMultiple
     ) {
       questions[key].selectedAnswer = [];
       questions[key].options[index - 1].isSelected = false;
+      questions[key].optionsLang[index - 1].isSelected = false;
     } else {
       if (questions[key].isMultiple) {
         questions[key].selectedAnswer.push(index);
         questions[key].selectedAnswer.sort();
         questions[key].options[index - 1].isSelected = true;
+        questions[key].optionsLang[index - 1].isSelected = true;
       } else {
         questions[key].selectedAnswer = [];
         questions[key].selectedAnswer.push(index);
         questions[key].options.forEach((element) => {
           element.isSelected = false;
         });
+        questions[key].optionsLang.forEach((element) => {
+          element.isSelected = false;
+        });
         questions[key].options[index - 1].isSelected = true;
+        questions[key].optionsLang[index - 1].isSelected = true;
       }
     }
     setQuestionsList(questions);
@@ -155,6 +160,7 @@ const TestQuestionnaire = (props) => {
         setIsSubmit(false);
         props.navigation.navigate('TestResult', {
           questionsList: questionsList,
+          languageFlag: languageFlag
         });
       })
       .catch((err) => {
@@ -169,13 +175,13 @@ const TestQuestionnaire = (props) => {
     } else {
       submitAnswers();
     }
-    setLanguage(false);
+    //setLanguage(false);
   };
 
   const prevQuestion = (index, evt) => {
     setKey(index - 1);
     setIsSubmit(false);
-    setLanguage(false);
+    //setLanguage(false);
   };
 
   const markStar = () => {
@@ -208,10 +214,10 @@ const TestQuestionnaire = (props) => {
                 backgroundColor: 'white',
               }}>
               <View flexDirection="row" justifyContent="space-between">
-                <Text style={{fontFamily: 'Roboto-Medium', fontSize: 18}}>
+                <Text style={{fontFamily: 'Roboto-Medium', fontSize: 15}}>
                   Time Duration: {testTime} mins.
                 </Text>
-                <Text style={{fontFamily: 'Roboto-Medium', fontSize: 18}}>
+                <Text style={{fontFamily: 'Roboto-Medium', fontSize: 15}}>
                   Maximum Marks:{' '}
                   {questionsList[questionsList.length - 1].maxMarks}
                 </Text>
@@ -223,7 +229,7 @@ const TestQuestionnaire = (props) => {
                     style={{
                       color: 'grey',
                       fontFamily: 'Roboto-Medium',
-                      fontSize: 15,
+                      fontSize: 13,
                     }}>
                     * {line}
                   </Text>
@@ -262,12 +268,12 @@ const TestQuestionnaire = (props) => {
                         textAlignVertical: 'center',
                         flex: 1,
                         fontFamily: 'Roboto-Medium',
-                        fontSize: 22,
+                        fontSize: 18,
                       }}>
                       {title}
                     </Text>
                   </View>
-                  <TouchableOpacity
+                  {/* <TouchableOpacity
                     onPress={() => openSideMenu()}
                     style={{
                       position: 'absolute',
@@ -284,7 +290,7 @@ const TestQuestionnaire = (props) => {
                         marginVertical: 5,
                       }}
                     />
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
                   <View style={{position: 'absolute', paddingLeft: 15}}>
                     <TouchableOpacity onPress={() => props.navigation.goBack()}>
                       <Icon
@@ -337,7 +343,7 @@ const TestQuestionnaire = (props) => {
                     style={{
                       alignSelf: 'center',
                       fontFamily: 'Roboto-Medium',
-                      fontSize: 18,
+                      fontSize: 15,
                       marginTop: 10,
                       color: 'white',
                     }}>
@@ -355,7 +361,8 @@ const TestQuestionnaire = (props) => {
                       style={{
                         marginLeft: 5,
                         fontFamily: 'Roboto-Medium',
-                        fontSize: 18,
+                        textAlignVertical:'center',
+                        fontSize: 15,
                         marginTop: 3,
                         color: Constants.success,
                       }}>
@@ -367,7 +374,8 @@ const TestQuestionnaire = (props) => {
                         marginLeft: 1,
                         marginTop: 5,
                         fontFamily: 'Roboto-Medium',
-                        fontSize: 16,
+                        fontSize: 15,
+                        textAlignVertical:'center',
                         color: Constants.success,
                       }}>
                       {questionsList[key].weightage}
@@ -385,7 +393,8 @@ const TestQuestionnaire = (props) => {
                       style={{
                         marginLeft: 10,
                         fontFamily: 'Roboto-Medium',
-                        fontSize: 22,
+                        fontSize: 15,
+                        textAlignVertical:'center',
                         color: Constants.error,
                       }}>
                       {' '}
@@ -396,7 +405,8 @@ const TestQuestionnaire = (props) => {
                         marginLeft: 1,
                         marginTop: 5,
                         fontFamily: 'Roboto-Medium',
-                        fontSize: 16,
+                        fontSize: 15,
+                        textAlignVertical:'center',
                         color: Constants.error,
                       }}>
                       {questionsList[key].negativeWeightage}
@@ -419,11 +429,11 @@ const TestQuestionnaire = (props) => {
                   style={{
                     alignSelf: 'center',
                     fontFamily: 'Roboto-Medium',
-                    fontSize: 18,
+                    fontSize: 15,
                     margin: 10,
                     color: 'white',
                   }}>
-                  {languageFlag
+                  {languageFlag && questionsList[key].questionLang
                     ? questionsList[key].questionLang
                     : questionsList[key].question}
                 </Text>
@@ -445,7 +455,7 @@ const TestQuestionnaire = (props) => {
                     color: 'white',
                     textAlign: 'center',
                     fontFamily: 'Roboto-Medium',
-                    fontSize: 18,
+                    fontSize: 15,
                     margin: 3,
                   }}>
                   {!questionsList[key].isMultiple
@@ -455,7 +465,7 @@ const TestQuestionnaire = (props) => {
               </View>
             </View>
             <View style={{alignItems: 'center', margin: 10, marginTop: 15}}>
-              {questionsList[key][languageFlag ? 'optionsLang' : 'options'].map(
+              {questionsList[key][languageFlag  && questionsList[key].questionLang ? 'optionsLang' : 'options'].map(
                 (option) => {
                   return (
                     <View
@@ -567,7 +577,7 @@ const renderTimer = (time, showFull = true) => {
     <Text
       style={{
         fontFamily: 'Roboto-Medium',
-        fontSize: 18,
+        fontSize: 15,
         margin: 5,
         fontWeight: 'bold',
         justifyContent: 'center',
@@ -629,7 +639,7 @@ const styles = StyleSheet.create({
   answerText: {
     textAlign: 'left',
     fontFamily: 'Roboto-Medium',
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: 'bold',
     margin: 10,
 

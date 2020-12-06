@@ -149,7 +149,7 @@ const TestHome = (props) => {
           <LinearGradient
             colors={[Constants.gradientColor1, Constants.gradientColor2]}
             style={{height: '100%'}}>
-            <View style={{alignItems: 'center'}}>
+            {/* <View style={{alignItems: 'center'}}>
               <Text
                 style={{
                   fontFamily: 'Roboto-Medium',
@@ -159,10 +159,10 @@ const TestHome = (props) => {
                 }}>
                 Test
               </Text>
-            </View>
-            <View style={{margin: 20, alignItems: 'center'}}>
+            </View> */}
+            <View style={{margin:20, height: '80%', width: '80%', justifyContent:'center', alignSelf:'center', alignItems: 'center'}}>
               <Image
-                style={{height: '80%', width: '80%'}}
+              ImageResizeMode="stretch"
                 source={require('../../../assets/testIcon.png')}
               />
             </View>
@@ -176,6 +176,7 @@ const TestHome = (props) => {
           }}>
           <DropDownPicker
             zindex={10}
+            arrowColor='white'
             items={dropdownList}
             defaultValue={category}
             containerStyle={{height: 50, width: '100%'}}
@@ -338,13 +339,13 @@ const styles = StyleSheet.create({
   },
   textLeft: {
     fontFamily: 'Roboto-Medium',
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: 'bold',
   },
   textRight: {
     color: Constants.textColor1,
     fontFamily: 'Roboto-Medium',
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: 'bold',
   },
   textArea: {
@@ -352,7 +353,7 @@ const styles = StyleSheet.create({
     borderColor: Constants.textColor1,
     width: '90%',
     fontFamily: 'Roboto-Medium',
-    fontSize: 18,
+    fontSize: 15,
   },
   icon: {
     padding: 10,

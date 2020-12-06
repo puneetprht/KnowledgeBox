@@ -18,16 +18,16 @@ import PButton from '../../../widgets/Button/pButton';
 import ElevatedView from 'react-native-elevated-view';
 
 const TestResult = (props) => {
-  const {questionsList} = props.route.params;
+  const {questionsList, languageFlag} = props.route.params;
   const [displaylist, setDisplayList] = useState(false);
 
   const correctAnswers = () => {
     let correct = 0;
     questionsList.forEach((element) => {
       if (element.selectedAnswer.toString() === element.correctOption) {
-        correct += element.weightage;
+        correct += parseFloat(element.weightage);
       } else {
-        correct -= element.negativeWeightage;
+        correct -= parseFloat(element.negativeWeightage);
       }
     });
     return correct;
@@ -60,14 +60,14 @@ const TestResult = (props) => {
               textAlignVertical: 'center',
               flex: 1,
               fontFamily: 'Roboto-Medium',
-              fontSize: 22,
+              fontSize: 18,
             }}>
             Result and Explanation
           </Text>
           <View style={{position: 'absolute', paddingLeft: 15}}>
             <TouchableOpacity
               onPress={() => props.navigation.navigate('TestHome')}>
-              <Icon name="chevron-left" size={35} />
+              <Icon name="chevron-left" size={32} />
             </TouchableOpacity>
           </View>
         </View>
@@ -83,7 +83,7 @@ const TestResult = (props) => {
             <Text
               style={{
                 fontFamily: 'Roboto-Medium',
-                fontSize: 22,
+                fontSize: 18,
                 color: 'white',
               }}>
               Your Score
@@ -91,7 +91,7 @@ const TestResult = (props) => {
             <Text
               style={{
                 fontFamily: 'Roboto-Medium',
-                fontSize: 35,
+                fontSize: 32,
                 color: 'white',
               }}>
               {correctAnswers()}/
@@ -112,7 +112,7 @@ const TestResult = (props) => {
               style={{
                 marginTop: 10,
                 fontFamily: 'Roboto-Medium',
-                fontSize: 22,
+                fontSize: 18,
                 color: 'white',
                 position: 'absolute',
               }}>
@@ -141,8 +141,7 @@ const TestResult = (props) => {
             elementStyle={{flexDirection: 'row', justifyContent: 'center'}}
           />
         </View>
-      </View>
-      <View style={{marginHorizontal: 20, marginTop: 15}}>
+        <View style={{marginHorizontal: 20, marginTop: 15}}>
         {displaylist ? (
           questionsList.map((question) => {
             return (
@@ -155,23 +154,25 @@ const TestResult = (props) => {
                     //margin: 10,
                     color: Constants.textColor1,
                     fontFamily: 'Roboto-Medium',
-                    fontSize: 18,
+                    fontSize: 15,
                     borderBottomColor: Constants.textColor1,
                     paddingBottom: 5,
                     borderBottomWidth: 1,
                   }}>
-                  {question.question}
+                  {languageFlag && question.questionLang
+                    ? question.questionLang
+                    : question.question}
                 </Text>
                 <Text
                   style={{
                     color: Constants.textColor1,
                     fontFamily: 'Roboto-Medium',
-                    fontSize: 16,
+                    fontSize: 14,
                   }}>
                   Time on question: {question.time} seconds
                 </Text>
                 <View style={{alignItems: 'center'}}>
-                  {question.options.map((option) => {
+                  {question[languageFlag && question.questionLang ? 'optionsLang' : 'options'].map((option) => {
                     return (
                       <View
                         key={option.id}
@@ -215,15 +216,15 @@ const TestResult = (props) => {
                     );
                   })}
                 </View>
-                {question.explaination ? (
+                {question[languageFlag && question.explainationLang ? 'explainationLang' : 'explaination']? (
                   <View>
                     <Text
                       style={{
                         color: Constants.textColor1,
                         fontFamily: 'Roboto-Medium',
-                        fontSize: 18,
+                        fontSize: 15,
                       }}>
-                      Explanation: {question.explaination}
+                      {languageFlag && question.explainationLang? 'विवरण:':'Explanation:' } {question[languageFlag && question.explainationLang ? 'explainationLang' : 'explaination']}
                     </Text>
                   </View>
                 ) : (
@@ -235,7 +236,7 @@ const TestResult = (props) => {
                       style={{
                         color: Constants.textColor1,
                         fontFamily: 'Roboto-Medium',
-                        fontSize: 18,
+                        fontSize: 15,
                         marginTop: 8,
                       }}>
                       Video Solution:{' '}
@@ -244,7 +245,7 @@ const TestResult = (props) => {
                       title="Watch"
                       onPress={openDetail.bind(this, question.videoUrlId)}
                       viewStyle={(styles.button, {marginLeft: 10})}
-                      textStyle={{fontFamily: 'Roboto-Medium', fontSize: 16}}
+                      textStyle={{fontFamily: 'Roboto-Medium', fontSize: 14}}
                       elementStyle={{
                         flexDirection: 'row',
                         justifyContent: 'center',
@@ -260,6 +261,7 @@ const TestResult = (props) => {
         ) : (
           <View />
         )}
+        </View>
       </View>
     </ScrollView>
   );
@@ -275,7 +277,7 @@ const styles = StyleSheet.create({
   answerText: {
     textAlign: 'left',
     fontFamily: 'Roboto-Medium',
-    fontSize: 18,
+    fontSize: 15,
     //fontWeight: 'bold',
     margin: 10,
   },

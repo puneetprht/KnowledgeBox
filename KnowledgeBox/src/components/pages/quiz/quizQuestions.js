@@ -3,25 +3,25 @@
 import React, {useState, useEffect} from 'react';
 import {
   View,
+  Text,
+  Image,
   ScrollView,
   StyleSheet,
-  Text,
-  Alert,
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
+import axios from '../../../services/axios';
+import PButton from '../../../widgets/Button/pButton';
+import ElevatedView from 'react-native-elevated-view';
 import Icon from 'react-native-vector-icons/Octicons';
 import LinearGradient from 'react-native-linear-gradient';
 import * as Constants from '../../../constants/constants';
-import PButton from '../../../widgets/Button/pButton';
-import ElevatedView from 'react-native-elevated-view';
-import axios from '../../../services/axios';
 
 const QuizQuestionnaire = (props) => {
   const [key, setKey] = useState(0);
-  const {quizId, title, user, catergoryId} = props.route.params;
+  const {quizId, title, user} = props.route.params;
   const [isSubmit, setIsSubmit] = useState(false);
-
+  const [languageFlag, setLanguage] = useState(false);
   const [questionsList, setQuestionsList] = useState([]);
   const fetchQuizDetail = (quizId) => {
     axios
@@ -57,24 +57,31 @@ const QuizQuestionnaire = (props) => {
         1,
       );
       questions[key].options[index - 1].isSelected = false;
+      questions[key].optionsLang[index - 1].isSelected = false;
     } else if (
       questions[key].selectedAnswer.includes(index) &&
       !questions[key].isMultiple
     ) {
       questions[key].selectedAnswer = [];
       questions[key].options[index - 1].isSelected = false;
+      questions[key].optionsLang[index - 1].isSelected = false;
     } else {
       if (questions[key].isMultiple) {
         questions[key].selectedAnswer.push(index);
         questions[key].selectedAnswer.sort();
         questions[key].options[index - 1].isSelected = true;
+        questions[key].optionsLang[index - 1].isSelected = true;
       } else {
         questions[key].selectedAnswer = [];
         questions[key].selectedAnswer.push(index);
         questions[key].options.forEach((element) => {
           element.isSelected = false;
         });
+        questions[key].optionsLang.forEach((element) => {
+          element.isSelected = false;
+        });
         questions[key].options[index - 1].isSelected = true;
+        questions[key].optionsLang[index - 1].isSelected = true;
       }
     }
     setQuestionsList(questions);
@@ -114,6 +121,7 @@ const QuizQuestionnaire = (props) => {
           setIsSubmit(false);
           props.navigation.navigate('QuizResult', {
             questionsList: questionsList,
+            languageFlag: languageFlag
           });
         })
         .catch((err) => {
@@ -124,6 +132,7 @@ const QuizQuestionnaire = (props) => {
       setIsSubmit(false);
       props.navigation.navigate('QuizResult', {
         questionsList: questionsList,
+        languageFlag: languageFlag
       });
     }
   };
@@ -149,8 +158,6 @@ const QuizQuestionnaire = (props) => {
             colors={[Constants.gradientColor1, Constants.gradientColor2]}
             style={{
               paddingVertical: 10,
-              //height: '100%',
-              //minHeight: 250,
               borderBottomLeftRadius: 15,
               borderBottomRightRadius: 15,
             }}>
@@ -178,11 +185,31 @@ const QuizQuestionnaire = (props) => {
                 </View>
               </View>
             </View>
-            <View style={{alignItems: 'center'}}>
-              {renderProgressBar(
-                questionsList.length,
-                questionsList[key].count,
-              )}
+            <View>
+              <View style={{alignItems: 'center'}}>
+                {renderProgressBar(
+                  questionsList.length,
+                  questionsList[key].count,
+                )}
+              </View>
+              <TouchableOpacity
+                style={{
+                  position: 'absolute',
+                  justifyContent: 'center',
+                  alignSelf: 'flex-end',
+                  paddingLeft: 5,
+                }}
+                onPress={() => setLanguage(!languageFlag)}>
+                <Image
+                  source={require('../../../assets/language.png')}
+                  style={{
+                    width: 30,
+                    height: 30,
+                    marginHorizontal: 15,
+                    marginVertical: 5,
+                  }}
+                />
+              </TouchableOpacity>
             </View>
             <View style={{alignItems: 'center', justifyContent: 'center'}}>
               <Text
@@ -201,7 +228,9 @@ const QuizQuestionnaire = (props) => {
                   margin: 10,
                   color: 'white',
                 }}>
-                {questionsList[key].question}
+                {languageFlag && questionsList[key].questionLang
+                    ? questionsList[key].questionLang
+                    : questionsList[key].question}
               </Text>
             </View>
           </LinearGradient>
@@ -231,7 +260,7 @@ const QuizQuestionnaire = (props) => {
             </View>
           </View>
           <View style={{alignItems: 'center', margin: 10, marginTop: 15}}>
-            {questionsList[key].options.map((option) => {
+            {questionsList[key][languageFlag && questionsList[key].questionLang ? 'optionsLang' : 'options'].map((option) => {
               return (
                 <View
                   key={option.id}
@@ -347,9 +376,7 @@ const renderProgressBar = (length, inFocus) => {
 const styles = StyleSheet.create({
   stayElevated: {
     width: '100%',
-    //height: 10,
     margin: 10,
-    //padding: 10,
     backgroundColor: 'white',
     borderRadius: 10,
   },
@@ -357,10 +384,7 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     fontFamily: 'Roboto-Medium',
     fontSize: 18,
-    //fontWeight: 'bold',
     margin: 10,
-
-    //color:
   },
 });
 

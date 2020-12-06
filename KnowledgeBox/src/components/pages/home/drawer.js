@@ -2,7 +2,7 @@ import React from 'react';
 import {View, StyleSheet, Alert} from 'react-native';
 import * as Constants from '../../../constants/constants';
 import * as AsyncStorage from '../../../services/asyncStorage';
-import {Avatar, Title, Caption, Drawer} from 'react-native-paper';
+import {Avatar, Title, Drawer} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
 
@@ -137,16 +137,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     marginTop: 3,
     fontWeight: 'bold',
-  },
-  caption: {
-    fontFamily: 'Roboto-Medium',
-    fontSize: 13,
-    lineHeight: 14,
-  },
-  row: {
-    marginTop: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
   },
   section: {
     flexDirection: 'row',

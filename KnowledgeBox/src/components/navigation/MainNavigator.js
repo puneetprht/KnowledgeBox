@@ -86,7 +86,8 @@ const TabsScreen = (props) => (
 const getTabBarVisibility = (route) => {
 	const routeName = route.state ? route.state.routes[route.state.index].name : '';
 
-	if (routeName === 'QuizQuestionnaire' || routeName === 'VideoPlayback' || routeName === 'TestQuestionnaire') {
+	if (routeName === 'QuizQuestionnaire' || routeName === 'VideoPlayback' || routeName === 'TestQuestionnaire' || routeName === 'QuizAdmin'
+	|| routeName === 'QuizResult' || routeName === 'TestAdmin' || routeName === 'TestResult') {
 		return false;
 	}
 

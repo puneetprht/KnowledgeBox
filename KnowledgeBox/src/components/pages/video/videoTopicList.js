@@ -228,13 +228,13 @@ const styles = StyleSheet.create({
   },
   textLeft: {
     fontFamily: 'Roboto-Medium',
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: 'bold',
   },
   textRight: {
     color: Constants.textColor1,
     fontFamily: 'Roboto-Medium',
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: 'bold',
   },
   textArea: {
@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
     borderColor: Constants.textColor1,
     width: '90%',
     fontFamily: 'Roboto-Medium',
-    fontSize: 18,
+    fontSize: 15,
   },
   icon: {
     padding: 10,

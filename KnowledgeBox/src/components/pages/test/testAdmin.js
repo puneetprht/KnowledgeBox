@@ -257,7 +257,7 @@ const TestAdmin = (props) => {
             <Text
               style={{
                 fontFamily: 'Roboto-Medium',
-                fontSize: 17,
+                fontSize: 16,
                 fontWeight: 'bold',
                 alignSelf: 'center',
               }}>
@@ -374,7 +374,7 @@ const TestAdmin = (props) => {
               <Text
                 style={{
                   fontFamily: 'Roboto-Medium',
-                  fontSize: 18,
+                  fontSize: 15,
                   marginTop: 10,
                   color: 'white',
                 }}>
@@ -391,7 +391,7 @@ const TestAdmin = (props) => {
                   style={{
                     marginLeft: 20,
                     fontFamily: 'Roboto-Medium',
-                    fontSize: 27,
+                    fontSize: 22,
                     color: 'white',
                   }}>
                   {' '}
@@ -417,7 +417,7 @@ const TestAdmin = (props) => {
                   style={{
                     marginLeft: 20,
                     fontFamily: 'Roboto-Medium',
-                    fontSize: 35,
+                    fontSize: 22,
                     color: 'white',
                   }}>
                   {' '}
@@ -906,21 +906,21 @@ const styles = StyleSheet.create({
   answerText: {
     textAlign: 'left',
     fontFamily: 'Roboto-Medium',
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: 'bold',
     margin: 10,
   },
   answerText2: {
     textAlign: 'left',
     fontFamily: 'Roboto-Medium',
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: 'bold',
   },
   textArea: {
     color: Constants.textColor1,
     borderRadius: 5,
     fontFamily: 'Roboto-Medium',
-    fontSize: 16,
+    fontSize: 15,
   },
   textArea2: {
     borderWidth: 1,
@@ -929,7 +929,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     width: '90%',
     fontFamily: 'Roboto-Medium',
-    fontSize: 16,
+    fontSize: 15,
   },
   elevatedStyle: {
     borderWidth: 3,

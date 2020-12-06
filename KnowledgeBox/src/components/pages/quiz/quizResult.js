@@ -18,7 +18,7 @@ import PButton from '../../../widgets/Button/pButton';
 import ElevatedView from 'react-native-elevated-view';
 
 const QuizResult = (props) => {
-  const {questionsList} = props.route.params;
+  const {questionsList, languageFlag} = props.route.params;
   const [displaylist, setDisplayList] = useState(false);
 
   const correctAnswers = () => {
@@ -48,14 +48,14 @@ const QuizResult = (props) => {
               textAlignVertical: 'center',
               flex: 1,
               fontFamily: 'Roboto-Medium',
-              fontSize: 22,
+              fontSize: 18,
             }}>
             Result and Explanation
           </Text>
           <View style={{position: 'absolute', paddingLeft: 15}}>
             <TouchableOpacity
               onPress={() => props.navigation.navigate('QuizHome')}>
-              <Icon name="chevron-left" size={35} />
+              <Icon name="chevron-left" size={25} />
             </TouchableOpacity>
           </View>
         </View>
@@ -99,7 +99,7 @@ const QuizResult = (props) => {
               style={{
                 marginTop: 10,
                 fontFamily: 'Roboto-Medium',
-                fontSize: 22,
+                fontSize: 18,
                 color: 'white',
                 position: 'absolute',
               }}>
@@ -128,8 +128,7 @@ const QuizResult = (props) => {
             elementStyle={{flexDirection: 'row', justifyContent: 'center'}}
           />
         </View>
-      </View>
-      <View style={{marginHorizontal: 20, marginTop: 15}}>
+        <View style={{width: '90%',marginTop: 15}}>
         {displaylist ? (
           questionsList.map((question) => {
             return (
@@ -142,15 +141,17 @@ const QuizResult = (props) => {
                     //margin: 10,
                     color: Constants.textColor1,
                     fontFamily: 'Roboto-Medium',
-                    fontSize: 18,
+                    fontSize: 15,
                     borderBottomColor: Constants.textColor1,
                     paddingBottom: 5,
                     borderBottomWidth: 1,
                   }}>
-                  {question.question}
+                  {languageFlag && question.questionLang
+                    ? question.questionLang
+                    : question.question}
                 </Text>
                 <View style={{alignItems: 'center'}}>
-                  {question.options.map((option) => {
+                  {question[languageFlag && question.questionLang ? 'optionsLang' : 'options'].map((option) => {
                     return (
                       <View
                         key={option.id}
@@ -194,15 +195,15 @@ const QuizResult = (props) => {
                     );
                   })}
                 </View>
-                {question.explaination ? (
+                {question[languageFlag && question.explainationLang ? 'explainationLang' : 'explaination']? (
                   <View>
                     <Text
                       style={{
                         color: Constants.textColor1,
                         fontFamily: 'Roboto-Medium',
-                        fontSize: 18,
+                        fontSize: 15,
                       }}>
-                      Explanation: {question.explaination}
+                      {languageFlag && question.explainationLang? 'विवरण:':'Explanation:' } {question[languageFlag && question.explainationLang ? 'explainationLang' : 'explaination']}
                     </Text>
                   </View>
                 ) : (
@@ -214,6 +215,7 @@ const QuizResult = (props) => {
         ) : (
           <View />
         )}
+      </View>
       </View>
     </ScrollView>
   );
@@ -229,7 +231,7 @@ const styles = StyleSheet.create({
   answerText: {
     textAlign: 'left',
     fontFamily: 'Roboto-Medium',
-    fontSize: 18,
+    fontSize: 15,
     //fontWeight: 'bold',
     margin: 10,
   },

@@ -27,7 +27,7 @@ var styles = StyleSheet.create({
   buttonText: {
     color: '#ffffff',
     fontFamily: 'Roboto-Medium',
-    fontSize: 17,
+    fontSize: 15 ,
   },
 });
 

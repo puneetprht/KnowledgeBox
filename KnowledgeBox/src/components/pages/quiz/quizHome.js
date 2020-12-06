@@ -48,6 +48,7 @@ const QuizHome = (props) => {
 
   const fetchAllSubjects = () => {
     if (global.selectedTopic) {
+      console.log(JSON.stringify(global.selectedTopic));
       axios
         .get('/quiz/getAllSubjects', {
           params: {
@@ -150,7 +151,7 @@ const QuizHome = (props) => {
           <LinearGradient
             colors={[Constants.gradientColor1, Constants.gradientColor2]}
             style={{height: '100%'}}>
-            <View style={{alignItems: 'center'}}>
+            {/* <View style={{alignItems: 'center'}}>
               <Text
                 style={{
                   fontFamily: 'Roboto-Medium',
@@ -160,10 +161,10 @@ const QuizHome = (props) => {
                 }}>
                 Quiz
               </Text>
-            </View>
-            <View style={{margin: 20, alignItems: 'center'}}>
+            </View> */}
+            <View style={{height: '80%', width: '80%',margin: 20, justifyContent:'center',alignSelf:'center', alignItems: 'center'}}>
               <Image
-                style={{height: '80%', width: '80%'}}
+                ImageResizeMode="stretch"
                 source={require('../../../assets/quiz.png')}
               />
             </View>
@@ -177,6 +178,7 @@ const QuizHome = (props) => {
           }}>
           <DropDownPicker
             zindex={10}
+            arrowColor='white'
             items={dropdownList}
             defaultValue={category}
             containerStyle={{height: 50, width: '100%'}}
@@ -339,13 +341,13 @@ const styles = StyleSheet.create({
   },
   textLeft: {
     fontFamily: 'Roboto-Medium',
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: 'bold',
   },
   textRight: {
     color: Constants.textColor1,
     fontFamily: 'Roboto-Medium',
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: 'bold',
   },
   textArea: {
@@ -353,7 +355,7 @@ const styles = StyleSheet.create({
     borderColor: Constants.textColor1,
     width: '90%',
     fontFamily: 'Roboto-Medium',
-    fontSize: 18,
+    fontSize: 15,
   },
   icon: {
     padding: 10,

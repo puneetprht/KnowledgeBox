@@ -2,6 +2,11 @@ const sql = require('./db.js');
 
 const Quiz = function(quiz) {};
 
+const toSqlString = (string) => {
+	if (string) return `'${string.toString()}'`;
+	else return null;
+};
+
 Quiz.getAllSubjects = (categories, result) => {
 	console.log('categories:', categories);
 	sql.query(
@@ -114,7 +119,7 @@ Quiz.getSubTopicList = (id, result) => {
 
 Quiz.getQuizList = (id, result) => {
 	sql.query(
-		`select q.hmy as id,quizname as value from quiz q
+		`select q.hmy as id,quizname as value, q.duration as time from quiz q
 		inner join subtopic st on st.hmy = q.fsubtopic
 		where st.hmy = ${id} `,
 		(err, res) => {
@@ -172,7 +177,9 @@ Quiz.deleteQuiz = (body, result) => {
 Quiz.getQuizDetail = (id, result) => {
 	console.log(id, ' Time: ', new Date());
 	sql.query(
-		`select qd.hmy as id,question , option1, option2, option3, option4, explaination,correctOption, isMultiple from quizdetail qd
+		`select qd.hmy as id,question , option1, option2, option3, option4, explaination,correctOption, isMultiple,questionLang, 
+		optionLang1, optionLang2, optionLang3, optionLang4, explainationLang,
+		videoUrl, videoUrlId from quizdetail qd
 		inner join quiz q on q.hmy = qd.fquiz
 		where q.hmy = ${id} `,
 		(err, res) => {
@@ -186,6 +193,7 @@ Quiz.getQuizDetail = (id, result) => {
 				res = JSON.parse(JSON.stringify(res));
 				res.forEach((element) => {
 					element.options = [];
+					element.optionsLang = [];
 					element.count = count++;
 					for (let i = 1; i <= 4; i++) {
 						element.options.push({
@@ -193,7 +201,11 @@ Quiz.getQuizDetail = (id, result) => {
 							value: element['option' + i],
 							isSelected: false
 						});
-						delete element['option' + i];
+						element.optionsLang.push({
+							id: i,
+							value: element['optionLang' + i],
+							isSelected: false
+						});
 					}
 					element.answer = element.correctOption.split(',').sort();
 					element.selectedAnswer = [];

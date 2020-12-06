@@ -307,7 +307,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontFamily: 'Roboto-Medium',
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: 'bold',
     marginBottom: 10,
   },

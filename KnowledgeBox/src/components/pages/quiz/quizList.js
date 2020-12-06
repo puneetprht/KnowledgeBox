@@ -61,7 +61,6 @@ const QuizList = (props) => {
       title: index.value,
       quizTime: index.time || 0,
       user: user,
-      catergoryId: catergoryId,
     });
   };
 
@@ -102,6 +101,7 @@ const QuizList = (props) => {
       subjectId: subjectId,
       subTopicId: SubTopicId,
       title: title,
+      quizTitle:index.value,
       quizId: index.id,
       quizTime: index.time || 0,
       quizDetail: [],
@@ -135,15 +135,16 @@ const QuizList = (props) => {
           : '';
         quizObject.push(object);
       });
-      //console.log(quizObject);
+      console.log("Quiz:",quiz);
       props.navigation.navigate('QuizAdmin', {
         user: user,
         catergoryId: catergoryId,
         subjectId: subjectId,
         subTopicId: SubTopicId,
         title: title,
+        quizTitle: quiz.quizHeader[0].TestName,
         quizId: 0,
-        quizTime: 0,
+        quizTime: quiz.quizHeader[0].Time,
         quizDetail: quizObject,
       });
     }
@@ -221,7 +222,7 @@ const QuizList = (props) => {
                 csvtojson.commaToPipe(quizDetail.join('\n')),
                 '|',
               );
-              //console.log('TEST:', quiz);
+              console.log('Quiz:', quiz);
               processQuiz(quiz);
             });
           })
@@ -259,7 +260,7 @@ const QuizList = (props) => {
                     title="Start"
                     onPress={openDetail.bind(this, l)}
                     viewStyle={styles.button}
-                    textStyle={{fontFamily: 'Roboto-Medium', fontSize: 16}}
+                    textStyle={{fontFamily: 'Roboto-Medium', fontSize: 15}}
                     elementStyle={{
                       flexDirection: 'row',
                       justifyContent: 'center',
@@ -381,7 +382,7 @@ const styles = StyleSheet.create({
   },
   textLeft: {
     fontFamily: 'Roboto-Medium',
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: 'bold',
   },
   textArea: {
@@ -389,7 +390,7 @@ const styles = StyleSheet.create({
     borderColor: Constants.textColor1,
     width: '90%',
     fontFamily: 'Roboto-Medium',
-    fontSize: 18,
+    fontSize: 15,
   },
   icon: {
     padding: 10,

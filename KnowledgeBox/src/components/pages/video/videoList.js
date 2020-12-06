@@ -133,7 +133,7 @@ const VideoList = (props) => {
                     title="Watch"
                     onPress={openDetail.bind(this, l)}
                     viewStyle={styles.button}
-                    textStyle={{fontFamily: 'Roboto-Medium', fontSize: 16}}
+                    textStyle={{fontFamily: 'Roboto-Medium', fontSize: 15}}
                     elementStyle={{
                       flexDirection: 'row',
                       justifyContent: 'center',
@@ -272,13 +272,13 @@ const styles = StyleSheet.create({
   },
   textLeft: {
     fontFamily: 'Roboto-Medium',
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: 'bold',
   },
   textRight: {
     color: Constants.textColor1,
     fontFamily: 'Roboto-Medium',
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: 'bold',
   },
   textArea: {
@@ -286,7 +286,7 @@ const styles = StyleSheet.create({
     borderColor: Constants.textColor1,
     width: '90%',
     fontFamily: 'Roboto-Medium',
-    fontSize: 18,
+    fontSize: 15,
     borderRadius: 5,
   },
   icon: {

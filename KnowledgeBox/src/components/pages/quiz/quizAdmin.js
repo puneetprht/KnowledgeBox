@@ -28,6 +28,7 @@ const QuizAdmin = (props) => {
     subjectId,
     subTopicId,
     title,
+    quizTitle,
     quizId,
     quizTime,
     quizDetail,
@@ -52,7 +53,7 @@ const QuizAdmin = (props) => {
   };*/
 
   const [isSubmit, setIsSubmit] = useState(false);
-  const [quizName, setQuizName] = useState('');
+  const [quizName, setQuizName] = useState(quizTitle||'');
   const [timeDuration, setTimeDuration] = useState(quizTime);
   const questionObject = {
     question: '',
@@ -76,6 +77,7 @@ const QuizAdmin = (props) => {
   const [languageFlag, setLanguage] = useState(false);
 
   useEffect(() => {
+    console.log("QuizTitle",quizTitle)
     if (quizId) {
       axios
         .get('/quiz/getQuizDetail', {
@@ -87,7 +89,6 @@ const QuizAdmin = (props) => {
           if (response.data) {
             setQuestionsList(response.data);
           }
-          //alert('Gettings');
         })
         .catch((err) => {
           console.log(err);
@@ -127,11 +128,16 @@ const QuizAdmin = (props) => {
 
   const submitQuiz = () => {
     setIsSubmit(true);
+    console.log("quizId:", quizId,
+    "questions: ",questionsList,
+    "quizName: ",quizName,
+    "Quiz TIme:",parseFloat(timeDuration))
     axios
       .post('/quiz/postQuiz', {
         subTopicId: subTopicId,
         subjectId: subjectId,
         categoryId: catergoryId,
+        quizId: quizId,
         questions: questionsList,
         quizName: quizName,
         quizTime: parseFloat(timeDuration),
@@ -263,8 +269,11 @@ const QuizAdmin = (props) => {
                     ...styles.textArea2,
                     width: '70%',
                     alignSelf: 'center',
+                    
                   }}
+                  value={quizName}
                   placeholder="Enter Quiz Name"
+                  placeholderTextColor={'white'}
                   onChangeText={(val) => setQuizName(val)}
                 />
                 <TextInput
@@ -313,7 +322,7 @@ const QuizAdmin = (props) => {
             <Text
               style={{
                 fontFamily: 'Roboto-Medium',
-                fontSize: 18,
+                fontSize: 15,
                 marginTop: 10,
                 color: 'white',
               }}>
@@ -782,21 +791,21 @@ const styles = StyleSheet.create({
   answerText: {
     textAlign: 'left',
     fontFamily: 'Roboto-Medium',
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: 'bold',
     margin: 10,
   },
   answerText2: {
     textAlign: 'left',
     fontFamily: 'Roboto-Medium',
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: 'bold',
   },
   textArea: {
     color: Constants.textColor1,
     borderRadius: 5,
     fontFamily: 'Roboto-Medium',
-    fontSize: 18,
+    fontSize: 15,
   },
   textArea2: {
     borderWidth: 1,
@@ -805,7 +814,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     width: '90%',
     fontFamily: 'Roboto-Medium',
-    fontSize: 18,
+    fontSize: 14,
   },
   elevatedStyle: {
     borderWidth: 3,
