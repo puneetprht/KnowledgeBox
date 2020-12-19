@@ -44,9 +44,10 @@ const TestResult = (props) => {
   const winnerTrophy = require('../../../assets/winnerTrophy.png');
 
   const openDetail = (index, evt) => {
-    props.navigation.navigate('VideoPlayback', {
-      videoId: index,
-      title: 'Solution',
+    props.navigation.navigate('VIDEO', {
+      screen: 'VideoPlayback',
+      params: {videoId: index,
+        title: 'Solution'},
     });
   };
 
@@ -283,7 +284,7 @@ const styles = StyleSheet.create({
   },
   scoreBox: {
     minHeight: 365,
-    height: Dimensions.get('window').width * 0.85,
+    //height: Dimensions.get('window').width * 0.85,
     width: Dimensions.get('window').width * 0.85,
     marginVertical: 15,
     borderRadius: 15,

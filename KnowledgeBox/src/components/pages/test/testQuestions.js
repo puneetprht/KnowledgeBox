@@ -26,8 +26,6 @@ const TestQuestionnaire = (props) => {
     testId,
     title,
     user,
-    catergoryId,
-    testTitle,
     testTime,
     testInstructions,
   } = props.route.params;
@@ -35,9 +33,9 @@ const TestQuestionnaire = (props) => {
   const [languageFlag, setLanguage] = useState(false);
   const [introDone, setIntroDone] = useState(false);
   const [timeDuration, setTimeDuration] = useState(parseInt(testTime * 60));
-
+  const [timeDelay, setTimeDelay ] = useState(1000); 
+  var _interval = null;
   const [questionsList, setQuestionsList] = useState([]);
-  let interrupt = useRef();
 
   const fetchTestDetail = (testId) => {
     axios
@@ -49,7 +47,6 @@ const TestQuestionnaire = (props) => {
       .then((response) => {
         if (response.data) {
           setQuestionsList(response.data);
-          setTimer();
         } else {
           setQuestionsList([]);
         }
@@ -59,32 +56,48 @@ const TestQuestionnaire = (props) => {
       });
   };
 
+  function useInterval(callback, delay) {
+    const savedCallback = useRef();
+  
+    // Remember the latest callback.
+    useEffect(() => {
+      savedCallback.current = callback;
+    }, [callback]);
+  
+    // Set up the interval.
+    useEffect(() => {
+      function tick() {
+        savedCallback.current();
+      }
+      if (delay !== null) {
+        _interval = setInterval(tick, delay);
+        return () => clearInterval(_interval);
+      }
+    }, [delay]);
+  }
+
   useEffect(() => {
     fetchTestDetail(testId);
+    return () => clearInterval(_interval);
+  }, [testId]);
 
-    return () => {
-      clearInterval(interrupt.current);
-    };
-  }, [introDone]);
-
-  const setTimer = () => {
-    /*interrupt = setInterval(() => {
-      const time = parseInt(timeDuration);
-      //if (introDone && questionsList.length) {
-      setTimeDuration((time) => time - 1);
-      /*const questions = JSON.parse(JSON.stringify(questionsList));
+  useInterval(() => {
+    const time = parseInt(timeDuration);
+      if (questionsList.length && introDone) {
+      if (time <= 0) {
+        setTimeDelay(null);
+        submitAnswers();
+      }
+      else{
+        const questions = JSON.parse(JSON.stringify(questionsList));
 			const tempTime = questionsList[key].time;
 			questions[key].time = tempTime + 1;
 			setQuestionsList(questions);
-      //}
-      if (parseInt(time) == 60) {
-        Alert.alert('Will auto-submit the test once time is over.');
+        setTimeDuration(timeDuration - 1);
+
       }
-      if (time <= 0) {
-        clearInterval(interrupt.current);
-      }
-    }, 1000);*/
-  };
+    }
+  }, timeDelay);
 
   const onOptionPress = (index) => {
     const questions = JSON.parse(JSON.stringify(questionsList));
@@ -572,18 +585,18 @@ const renderTimer = (time, showFull = true) => {
 
   minutes = parseInt(time / 60);
   hours = parseInt(minutes / 60);
-
+  let thresh = 10;
   return (
     <Text
       style={{
         fontFamily: 'Roboto-Medium',
-        fontSize: 15,
+        fontSize: time < thresh?15:15,
         margin: 5,
         fontWeight: 'bold',
         justifyContent: 'center',
-        color: 'white',
+        color: time < thresh?'red':'white',
       }}>
-      {(!hours && !showFull ? '' : hours + ':') +
+      {(time < thresh?(''):(!hours && !showFull ? '' : hours + ':'))+
         (minutes < 10 ? '0' + minutes : minutes) +
         ':' +
         (time % 60 < 10 ? '0' + (time % 60) : time % 60)}

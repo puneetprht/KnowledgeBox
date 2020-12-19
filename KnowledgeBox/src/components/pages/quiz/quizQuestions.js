@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   View,
   Text,
@@ -19,10 +19,13 @@ import * as Constants from '../../../constants/constants';
 
 const QuizQuestionnaire = (props) => {
   const [key, setKey] = useState(0);
-  const {quizId, title, user} = props.route.params;
+  const {quizId, title, quizTime, user} = props.route.params;
   const [isSubmit, setIsSubmit] = useState(false);
   const [languageFlag, setLanguage] = useState(false);
   const [questionsList, setQuestionsList] = useState([]);
+  const [timeDuration, setTimeDuration ] = useState(quizTime*60);  
+  const [timeDelay, setTimeDelay ] = useState(1000); 
+  var _interval = null;
   const fetchQuizDetail = (quizId) => {
     axios
       .get('/quiz/getQuizDetail', {
@@ -42,9 +45,45 @@ const QuizQuestionnaire = (props) => {
       });
   };
 
+
+  function useInterval(callback, delay) {
+    const savedCallback = useRef();
+  
+    // Remember the latest callback.
+    useEffect(() => {
+      savedCallback.current = callback;
+    }, [callback]);
+  
+    // Set up the interval.
+    useEffect(() => {
+      function tick() {
+        savedCallback.current();
+      }
+      if (delay !== null) {
+        _interval = setInterval(tick, delay);
+        console.log('intime');
+        return () => clearInterval(_interval);
+      }
+    }, [delay]);
+  }
+
   useEffect(() => {
     fetchQuizDetail(quizId);
-  }, []);
+    return () => clearInterval(_interval);
+  }, [quizId]);
+
+  useInterval(() => {
+    const time = parseInt(timeDuration);
+      if (questionsList.length) {
+      if (time <= 0) {
+        setTimeDelay(null);
+        submitAnswers();
+      }
+      else{
+        setTimeDuration(timeDuration - 1);
+      }
+    }
+  }, timeDelay);
 
   const onOptionPress = (index) => {
     const questions = JSON.parse(JSON.stringify(questionsList));
@@ -192,6 +231,14 @@ const QuizQuestionnaire = (props) => {
                   questionsList[key].count,
                 )}
               </View>
+              <View
+                  style={{
+                    position: 'absolute',
+                    justifyContent: 'center',
+                    paddingLeft: 5,
+                  }}>
+                  {renderTimer(timeDuration)}
+                </View>
               <TouchableOpacity
                 style={{
                   position: 'absolute',
@@ -335,6 +382,31 @@ const QuizQuestionnaire = (props) => {
         </View>
       )}
     </>
+  );
+};
+
+const renderTimer = (time, showFull = true) => {
+  let minutes,
+    hours = null;
+
+  minutes = parseInt(time / 60);
+  hours = parseInt(minutes / 60);
+  let thresh = 10;
+  return (
+    <Text
+      style={{
+        fontFamily: 'Roboto-Medium',
+        fontSize: time < thresh?15:15,
+        margin: 5,
+        fontWeight: 'bold',
+        justifyContent: 'center',
+        color: time < thresh?'red':'white',
+      }}>
+      {(time < thresh?(''):(!hours && !showFull ? '' : hours + ':'))+
+        (minutes < 10 ? '0' + minutes : minutes) +
+        ':' +
+        (time % 60 < 10 ? '0' + (time % 60) : time % 60)}
+    </Text>
   );
 };
 

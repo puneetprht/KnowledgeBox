@@ -30,18 +30,28 @@ const QuizResult = (props) => {
     });
     return correct;
   };
+
   const calculateScore = () => {
     return parseFloat(
       ((correctAnswers() / questionsList.length) * 100).toFixed(2),
     );
   };
+
+  const openDetail = (index, evt) => {
+    props.navigation.navigate('VIDEO', {
+      screen: 'VideoPlayback',
+      params: {videoId: index,
+        title: 'Solution'},
+    });
+  };
+
   const winnerStar = require('../../../assets/winnerStar.png');
   const winnerTrophy = require('../../../assets/winnerTrophy.png');
 
   return (
     <ScrollView style={{marginBottom: 30}}>
       <View>
-        <View style={{flex: 1, justifyContent: 'center', marginTop: 10}}>
+        <View style={{ justifyContent: 'center', marginTop: 10}}>
           <Text
             style={{
               textAlign: 'center',
@@ -209,6 +219,31 @@ const QuizResult = (props) => {
                 ) : (
                   <View />
                 )}
+                {question.videoUrlId ? (
+                  <View flexDirection="row">
+                    <Text
+                      style={{
+                        color: Constants.textColor1,
+                        fontFamily: 'Roboto-Medium',
+                        fontSize: 15,
+                        marginTop: 8,
+                      }}>
+                      Video Solution:{' '}
+                    </Text>
+                    <PButton
+                      title="Watch"
+                      onPress={openDetail.bind(this, question.videoUrlId)}
+                      viewStyle={(styles.button, {marginLeft: 10})}
+                      textStyle={{fontFamily: 'Roboto-Medium', fontSize: 14}}
+                      elementStyle={{
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                      }}
+                    />
+                  </View>
+                ) : (
+                  <View />
+                )}
               </ElevatedView>
             );
           })
@@ -237,7 +272,7 @@ const styles = StyleSheet.create({
   },
   scoreBox: {
     minHeight: 365,
-    height: Dimensions.get('window').width * 0.85,
+    //height: Dimensions.get('window').width * 0.85,
     width: Dimensions.get('window').width * 0.85,
     marginVertical: 15,
     borderRadius: 15,
