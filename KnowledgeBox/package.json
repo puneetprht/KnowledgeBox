@@ -21,7 +21,7 @@
     "aws-amplify": "^3.3.4",
     "aws-amplify-react-native": "^4.2.7",
     "aws-sdk": "^2.767.0",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "babel-plugin-module-resolver": "^4.0.0",
     "base64-arraybuffer": "^0.2.0",
     "convert-csv-to-json": "^1.0.0",
