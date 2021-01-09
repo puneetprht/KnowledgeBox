@@ -1,26 +1,32 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   View,
+  Text,
+  Platform,
+  TextInput,
   ScrollView,
   StyleSheet,
-  Text,
-  TouchableOpacity,
   RefreshControl,
+  TouchableOpacity,
   PermissionsAndroid,
-  Platform,
+  KeyboardAvoidingView,
 } from 'react-native';
-import ContainerList from '../../../widgets/List/containerList';
-import * as Constants from '../../../constants/constants';
-import PButton from '../../../widgets/Button/pButton';
-import axios from '../../../services/axios';
-import Icon from 'react-native-vector-icons/AntDesign';
-import IconFA5 from 'react-native-vector-icons/FontAwesome5';
-import DocumentPicker from 'react-native-document-picker';
+import _ from 'lodash';
 import RNFetchBlob from 'rn-fetch-blob';
-import * as csvtojson from '../../../services/csvToJson';
 import {decode} from 'base64-arraybuffer';
+import axios from '../../../services/axios';
+import { Snackbar } from 'react-native-paper';
+import RNUpiPayment from 'react-native-upi-payment';
+import PButton from '../../../widgets/Button/pButton';
+import Icon from 'react-native-vector-icons/AntDesign';
+import CheckBox from '@react-native-community/checkbox';
+import * as Constants from '../../../constants/constants';
+import DocumentPicker from 'react-native-document-picker';
+import IconFA5 from 'react-native-vector-icons/FontAwesome5';
+import * as PaymentInfo from '../../../constants/paymentInfo';
+import ContainerList from '../../../widgets/List/containerList';
 //import Amplify, {Auth, Storage} from 'aws-amplify';
 //import {S3} from 'aws-sdk/dist/aws-sdk-react-native';
 
@@ -28,6 +34,11 @@ const TestList = (props) => {
   const [list, setList] = useState([]);
   //const [listCSV, setListCSV] = useState([])
   const [refreshing, setRefreshing] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const [status, setStatus] = useState("");
+  const [txnId, setTxnId] = useState("");
+  const [message, setMessage] = useState("");
+  let GobjectId, Gamount = null;
 
   /*Amplify.configure({
     Auth: {
@@ -67,6 +78,7 @@ const TestList = (props) => {
       .get('/test/getTestList', {
         params: {
           id: SubTopicId,
+          user: user,
         },
       })
       .then((response) => {
@@ -213,7 +225,7 @@ const TestList = (props) => {
         },
       );
 
-      const res = await DocumentPicker.pick({
+      const res = await DocumentPicker.pick({     
         type: [DocumentPicker.types.allFiles],
       });
       console.log(res.uri);
@@ -462,106 +474,327 @@ const TestList = (props) => {
     }
   };
 
+  const updateFlags = (id,flag) => {
+    const lists = JSON.parse(JSON.stringify(list));
+    let index = lists.findIndex(l => l.id == id);
+    
+    if(flag && index >= 0){
+      axios
+        .post('/video/postIsPaid', {
+          id: id,
+          flag: !lists[index].isPaid,
+          table: 'test',
+        })
+        .then((response) => {
+          lists[index].isPaid = !lists[index].isPaid;
+          setList(lists);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }else if( index >= 0){
+      axios
+        .post('/video/postIsActive', {
+          id: id,
+          flag: !lists[index].isActive,
+          table: 'test',
+        })
+        .then((response) => {
+          lists[index].isActive = !lists[index].isActive;
+          setList(lists);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+   
+  const postAmount = useRef(_.debounce((id,amount) => updateAmount(id,amount), 2000)).current;
+
+  const updateAmount = (id,amount) => {
+    axios
+    .post('/video/postAmount', {
+      id: id,
+      amount: amount,
+      table: 'test',
+    })
+    .then((response) => {
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  }
+
+  const updateAmountList = (id,amount) => {
+      const lists = JSON.parse(JSON.stringify(list));
+      let index = lists.findIndex(l => l.id == id);
+      lists[index].amount = parseInt(amount);
+      setList(lists);
+  }
+  const unlockItem = (id,amount) => {
+    if(user && user.id && parseInt(amount)){
+      GobjectId = id;
+      Gamount = amount;
+      initiatePayment(parseInt(amount));
+    } else{
+      setVisible(true);
+    }
+  }
+
+  const initiatePayment = (amount) => {
+    RNUpiPayment.initializePayment({
+        vpa: PaymentInfo.vpa,  		//your upi address like 12345464896@okhdfcbank
+        payeeName: PaymentInfo.payeeName,   			// payee name 
+        amount: amount,				//amount
+        transactionNote:'KnowledgeBox Content',		//note of transaction
+        transactionRef: 'aasf-332-aoei-fn'	//some refs to aknowledge the transaction
+    },singleCallback,singleCallback);
+  }
+
+  const singleCallback = (data) => {
+      if (data['Status']=="SUCCESS" || data['Status']=="Success" || data['Status']=="success" || data['status']=="SUCCESS" || data['status']=="Success" || data['status']=="success"){
+          setStatus("SUCCESS");
+          setTxnId(data['txnId']);
+          setMessage("Succccessfull payment");
+      }
+      else if (data['Status']=="FAILURE" || data['status']=="FAILURE"){
+          setStatus("FAILURE");
+          setMessage(data['message']);
+      }
+      // in case of phonepe
+      else if (data['Status']=="Failed" || data['status']=="Failed"){
+          setStatus("FAILURE");
+          setMessage('app closed without doing payment');
+      }
+      // in case of phonepe
+      else if(data['Status']=="Submitted"){
+          setStatus("PENDING");
+          setTxnId(data['txnId']);
+          setMessage('transaction done but pending');
+      }
+      // any other case than above mentioned
+      else{
+          setStatus("FAILURE");
+          setMessage(data['message']);
+      }
+      axios.post('/video/postPaymentStatus', {
+        status: status,
+        txnId: txnId,
+        message: message,
+        userId: user.id,
+        objectId: GobjectId,
+        amount: Gamount,
+        table: 'test'
+      })
+      .then((response) => {
+        if(status == 'SUCCESS'){
+          const lists = JSON.parse(JSON.stringify(list));
+          let index = lists.findIndex(l => l.id == GobjectId);
+          lists[index].isBought = true;
+          setList(lists);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  const allowOrNot = (l) => {
+    if(((l.isPaid && l.amount && !l.isBought) ||
+        (l.isParentPaid && l.parentAmount && !l.isParentBought) || 
+        (l.isSuperParentPaid && l.superParentAmount && !l.isSuperParentBought)) && 
+        (user && !user.isAdmin || !user))
+        {
+        return true;
+    }
+    else{
+      return false;
+    }
+  }
+
   return (
     <ContainerList
       title={title + ' tests'}
       onPress={() => props.navigation.goBack()}>
-      <ScrollView
-        style={{marginBottom: 30}}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }>
-        <View style={styles.Container}>
-          {list.map((l) => {
-            return (
-              <View key={l.id} style={styles.boxSimple}>
-                <View style={styles.boxLeft}>
-                  <Text style={styles.textLeft}>{l.value}</Text>
-                </View>
-                <View style={styles.boxRight}>
-                  <PButton
-                    title="Start"
-                    onPress={openDetail.bind(this, l)}
-                    viewStyle={styles.button}
-                    textStyle={{fontFamily: 'Roboto-Medium', fontSize: 16}}
-                    elementStyle={{
-                      flexDirection: 'row',
-                      justifyContent: 'center',
-                    }}
-                  />
+      <KeyboardAvoidingView>
+        <ScrollView
+          style={{marginBottom: 30}}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }>
+          <View style={styles.Container}>
+          {list.length ? (
+            list.map((l) => {
+              return (
+                <View key={l.id} style={styles.parentBox}>
+                  {((user && !user.isAdmin || !user) && !l.isActive)? (<View/>):
+                  (<View style={styles.parentBox}>
+                    <View style={styles.boxSimple}>
+                  <View style={styles.boxLeft}>
+                    <Text style={styles.textLeft}>{l.value}</Text>
+                  </View>
+                  <View style={styles.boxRight}>
+                    <PButton
+                      title={ allowOrNot(l) ?"Locked":"Start"}
+                      disable={allowOrNot(l)}
+                      onPress={openDetail.bind(this, l)}
+                      viewStyle={styles.button,{backgroundColor: allowOrNot(l) ? '#5aa0ff' : Constants.textColor1}}
+                      textStyle={{fontFamily: 'Roboto-Medium', fontSize: 15}}
+                      elementStyle={{
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                      }}
+                    />
+                    {user && user.isAdmin ? (
+                      <TouchableOpacity
+                        onPress={editTest.bind(this, l)}
+                        style={{
+                          ...styles.icon,
+                          padding: 5,
+                          position: 'absolute',
+                          alignSelf: 'flex-end',
+                          backgroundColor: 'grey',
+                        }}>
+                        <Icon name="edit" style={{color: 'white'}} size={15} />
+                      </TouchableOpacity>
+                    ) : (
+                      <View />
+                    )}
+                    {l.amount && l.isPaid && !l.isBought?(
+                      <View flexDirection='row' style={{paddingHorizontal: 20,marginTop: 5}}>
+                        <View style={{marginRight: 10 }}>
+                          <Text style={styles.amount}>
+                          {'\u20B9'}{l.amount}
+                        </Text>
+                        </View>
+                        <TouchableOpacity onPress={() => unlockItem(l.id, l.amount)}>
+                          <View  flexDirection='row'>
+                          <Text style={styles.amount,{color:Constants.textColor1, marginRight: 2, textAlignVertical: 'center'}}>
+                            Unlock
+                          </Text>
+                          <IconFA5
+                          name="unlock-alt"
+                          style={{color: Constants.textColor1, paddingTop: 2}}
+                          size={15}/>
+                          </View>
+                        </TouchableOpacity>
+                      </View>):
+                      (<View/>)}
+                  </View>
                   {user && user.isAdmin ? (
                     <TouchableOpacity
-                      onPress={editTest.bind(this, l)}
+                      onPress={deleteTest.bind(this, l.id)}
                       style={{
                         ...styles.icon,
-                        padding: 5,
                         position: 'absolute',
-                        alignSelf: 'flex-end',
-                        backgroundColor: 'grey',
+                        backgroundColor: '#de3500',
                       }}>
-                      <Icon name="edit" style={{color: 'white'}} size={15} />
+                      <Icon name="delete" style={{color: 'white'}} size={15} />
                     </TouchableOpacity>
                   ) : (
                     <View />
                   )}
                 </View>
                 {user && user.isAdmin ? (
-                  <TouchableOpacity
-                    onPress={deleteTest.bind(this, l.id)}
-                    style={{
-                      ...styles.icon,
-                      position: 'absolute',
-                      backgroundColor: '#de3500',
-                    }}>
-                    <Icon name="delete" style={{color: 'white'}} size={15} />
-                  </TouchableOpacity>
-                ) : (
-                  <View />
-                )}
-              </View>
-            );
-          })}
-          {user && user.isAdmin ? (
-            <View
-              style={{marginTop: 10}}
-              justifyContent="center"
-              alignItems="center">
-              <View>
-                <PButton
-                  title="Add Test"
-                  onPress={() => addTest()}
-                  viewStyle={{
-                    width: '65%',
-                    paddingHorizontal: 15,
-                    flexDirection: 'row',
-                    justifyContent: 'center',
-                  }}
-                  elementStyle={{
-                    flexDirection: 'row',
-                    justifyContent: 'center',
-                  }}
-                />
-              </View>
-              <View style={{marginTop: 10}}>
-                <Text size="26" fontWeight="bold">
-                  OR
-                </Text>
-              </View>
-              <View style={{marginTop: 10}}>
-                <TouchableOpacity onPress={() => SingleFilePicker()}>
-                  <IconFA5
-                    name="file-csv"
-                    style={{color: Constants.textColor1}}
-                    size={45}
-                  />
-                </TouchableOpacity>
-              </View>
+                  <View style={styles.boxComplex}> 
+                    <View flexDirection='row' alignItems='center'>
+                      <CheckBox
+                      value={Boolean(l.isActive)}
+                        onValueChange={()=>{updateFlags(l.id,false)}}
+                      />
+                      <Text>Active</Text>
+                    </View>
+                    <View flexDirection='row' alignItems='center'>
+                      <CheckBox
+                        value ={Boolean(l.isPaid)}
+                        onValueChange={()=>{updateFlags(l.id,true)}}
+                      />
+                      <Text>Paid</Text>
+                      <TextInput
+                      textAlign="center"
+                      placeholder="Price"
+                      onChangeText={val => {updateAmountList(l.id, val); postAmount(l.id,val);}}
+                      value = {String(l.amount || 0)}
+                      keyboardType='number-pad'
+                      style={{
+                        borderWidth: 1,
+                        borderRadius:5,
+                        margin:5,
+                        height:40,
+                        width:60,
+                        fontFamily: 'Roboto-Medium',
+                        fontSize: 13,
+                      }}
+                      />
+                      </View>
+                  </View> ) : (
+                      <View />
+                    )}
+                    </View>
+                      )}
+                  </View>
+              );
+              })) : (
+            <View>
+              <Text>No Items for Now.</Text>
             </View>
-          ) : (
-            <View />
           )}
-        </View>
-      </ScrollView>
+            {user && user.isAdmin ? (
+              <View
+                style={{marginTop: 10}}
+                justifyContent="center"
+                alignItems="center">
+                <View>
+                  <PButton
+                    title="Add Test"
+                    onPress={() => addTest()}
+                    viewStyle={{
+                      width: '65%',
+                      paddingHorizontal: 15,
+                      flexDirection: 'row',
+                      justifyContent: 'center',
+                    }}
+                    elementStyle={{
+                      flexDirection: 'row',
+                      justifyContent: 'center',
+                    }}
+                  />
+                </View>
+                <View style={{marginTop: 10}}>
+                  <Text size="26" fontWeight="bold">
+                    OR
+                  </Text>
+                </View>
+                <View style={{marginTop: 10}}>
+                  <TouchableOpacity onPress={() => SingleFilePicker()}>
+                    <IconFA5
+                      name="file-csv"
+                      style={{color: Constants.textColor1}}
+                      size={45}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ) : (
+              <View />
+            )}
+          </View>
+        </ScrollView>
+        <Snackbar
+              visible={visible}
+              onDismiss={() => setVisible(false)}
+              style={{backgroundColor:Constants.error}}
+              action={{
+                label: 'Sign-in',
+                onPress: () => {
+                  setVisible(false);
+                  props.navigation.replace('Auth', {screen: 'AuthPage'});
+                },
+              }}
+              >
+              Please sign-in to unlock.
+        </Snackbar>
+      </KeyboardAvoidingView>
     </ContainerList>
   );
 };
@@ -576,6 +809,22 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.8,
     shadowRadius: 10,
     marginHorizontal: 10,
+  },
+  parentBox:{ width: '100%',},
+  boxComplex: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
+  boxRightInner:{
+    flexDirection:'row',
+    justifyContent: 'center',
+    alignContent: 'space-around',
+  },
+  amount:{
+    fontSize: 15,
+    color:'#14b502',
+    fontFamily: 'Roboto-Medium',
   },
   boxSimple: {
     borderBottomWidth: 1,

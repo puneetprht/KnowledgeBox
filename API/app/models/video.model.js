@@ -2,13 +2,27 @@ const sql = require('./db.js');
 
 const Video = function(video) {};
 
-Video.getAllSubjects = (categories, result) => {
-	console.log('categories:', categories);
+Video.getAllSubjects = (categories, user, result) => {
+	let SQL = '';
+	SQL += ` select s.hmy as id,concat(subjectname,'(',categoryname,')') as subject, 
+	count(stp.hmy) as count, c.hmy as category, s.isPaid as isPaid, s.amount as amount,
+	s.isActive as isActive `;
+	if(user && user.id){
+		SQL += ` ,CASE
+		WHEN xref.status = 'SUCCESS' THEN 1
+		ELSE 0
+		END as isBought`
+	}
+	SQL += ` from  subject s
+	left outer join subtopic stp on stp.fsubject = s.hmy
+	inner join category c on c.hmy = s.fcategory `;
+	if(user && user.id){
+		SQL += ` left outer join paymentxref xref on xref.objType = 2 and xref.objPointer = s.hmy and 
+				xref.objReference = 'subject' and xref.hmy in (select max(hmy) from paymentxref group by objtype,objpointer,objReference,fuser) `
+	}
+	SQL += ` where c.hmy in (${categories}) and s.objectType = 2 group by s.hmy `;
 	sql.query(
-		`select s.hmy as id,concat(subjectname,'(',categoryname,')') as subject, 
-		count(stp.hmy) as count, c.hmy as category from  subject s 
-		left outer join subtopic stp on stp.fsubject = s.hmy
-		inner join category c on c.hmy = s.fcategory where c.hmy in (${categories}) and s.objectType = 2 group by s.hmy`,
+		SQL,
 		(err, res) => {
 			if (err) {
 				console.log('error: ', err);
@@ -27,12 +41,26 @@ Video.getAllSubjects = (categories, result) => {
 	);
 };
 
-Video.getSubject = (Categoryid, result) => {
+Video.getSubject = (Categoryid, user, result) => {
+	let SQL = '';
+	SQL += ` select s.hmy as id,subjectname as subject,count(stp.hmy) as count, s.fcategory as category,
+	s.isPaid as isPaid, s.amount as amount, s.isActive as isActive `;
+	if(user && user.id){
+		SQL += ` ,CASE
+		WHEN xref.status = 'SUCCESS' THEN 1
+		ELSE 0
+		END as isBought`
+	}
+	SQL += ` from subtopic stp 
+	right outer join subject s on stp.fsubject = s.hmy `;
+	if(user && user.id){
+		SQL += ` left outer join paymentxref xref on xref.objType = 2 and xref.objPointer = s.hmy and 
+				xref.objReference = 'subject' and xref.hmy in (select max(hmy) from paymentxref group by objtype,objpointer,objReference,fuser) `
+	}
+	SQL += ` where s.fcategory = ${Categoryid} and s.objectType = 2 group by s.hmy `;
+
 	sql.query(
-		`select s.hmy as id,subjectname as subject,count(stp.hmy) as count, s.fcategory as category
-		from subtopic stp 
-		right outer join subject s on stp.fsubject = s.hmy 
-		where s.fcategory = ${Categoryid} and s.objectType = 2 group by s.hmy `,
+		SQL,
 		(err, res) => {
 			if (err) {
 				console.log('error: ', err);
@@ -87,19 +115,35 @@ Video.deleteSubject = (body, result) => {
 	);
 };
 
-Video.getSubTopicList = (id, result) => {
-	console.log('SubjectId: ', id);
+Video.getSubTopicList = (id, user, result) => {
+	let SQL = '';
+	SQL += ` select st.hmy as id,subtopic value,count(v.hmy) as count,
+	st.isPaid as isPaid, st.amount as amount, st.isActive as isActive,
+	s.isPaid as isParentPaid, s.amount as parentAmount `;
+	if(user && user.id){
+		SQL += ` ,CASE
+		WHEN xref.status = 'SUCCESS' THEN 1
+		ELSE 0
+		END as isBought`
+	}
+	SQL += ` from video v
+	right outer join subtopic st on st.hmy = v.fsubtopic
+	inner join subject s on s.hmy = st.fsubject `;
+	if(user && user.id){
+		SQL += ` left outer join paymentxref xref on xref.objType = 2 and xref.objPointer = st.hmy and 
+				xref.objReference = 'subtopic' and xref.hmy in (select max(hmy) from paymentxref group by objtype,objpointer,objReference,fuser) `
+	}
+	SQL += ` where st.fsubject = ${id}  group by st.hmy `;
+
 	sql.query(
-		`select st.hmy as id,subtopic value,count(v.hmy) as count from video v
-		right outer join subtopic st on st.hmy = v.fsubtopic
-		where st.fsubject = ${id}  group by st.hmy `,
+		SQL,
 		(err, res) => {
 			if (err) {
 				console.log('error: ', err);
 				result(err, null);
 				return;
 			}
-			console.log(res);
+
 			if (res.length) {
 				res = JSON.parse(JSON.stringify(res));
 				result(null, res);
@@ -107,15 +151,46 @@ Video.getSubTopicList = (id, result) => {
 			}
 
 			result(null, null);
+			return;
 		}
 	);
 };
 
-Video.getVideoList = (id, result) => {
+Video.getVideoList = (id, user, result) => {
+	let SQL = '';
+	SQL += ` select v.hmy as id,videoname as value, url as url, urlVideoId,
+	v.isPaid as isPaid, v.amount as amount, v.isActive as isActive,
+	st.isPaid as isParentPaid, st.amount as parentAmount,
+	s.isPaid as isSuperParentPaid, s.amount as superParentAmount `;
+	if(user && user.id){
+		SQL += ` ,CASE
+		WHEN xref.status = 'SUCCESS' THEN 1
+		ELSE 0
+		END as isBought `
+		SQL += ` ,CASE
+		WHEN xrefParent.status = 'SUCCESS' THEN 1
+		ELSE 0
+		END as isParentBought `
+		SQL += ` ,CASE
+		WHEN xrefSuperParent.status = 'SUCCESS' THEN 1
+		ELSE 0
+		END as isSuperParentBought `
+	}
+	SQL += ` from video v
+	inner join subtopic st on st.hmy = v.fsubtopic
+	inner join subject s on s.hmy = st.fsubject `;
+	if(user && user.id){
+		SQL += ` left outer join paymentxref xref on xref.objType = 2 and xref.objPointer = v.hmy and 
+				xref.objReference = 'video' and xref.hmy in (select max(hmy) from paymentxref group by objtype,objpointer,objReference,fuser) `;
+		SQL += ` left outer join paymentxref xrefParent on xrefParent.objType = 2 and xrefParent.objPointer = st.hmy and 
+				xrefParent.objReference = 'subtopic' and xrefParent.hmy in (select max(hmy) from paymentxref group by objtype,objpointer,objReference,fuser) `;
+		SQL += ` left outer join paymentxref xrefSuperParent on xrefSuperParent.objType = 2 and xrefSuperParent.objPointer = s.hmy and 
+				xrefSuperParent.objReference = 'subject' and xrefSuperParent.hmy in (select max(hmy) from paymentxref group by objtype,objpointer,objReference,fuser) `;
+	}
+	SQL += ` where st.hmy = ${id} `;
+
 	sql.query(
-		`select v.hmy as id,videoname as value, url as url, urlVideoId from video v
-		inner join subtopic st on st.hmy = v.fsubtopic
-		where st.hmy = ${id} `,
+		SQL,
 		(err, res) => {
 			if (err) {
 				console.log('error: ', err);
@@ -129,19 +204,19 @@ Video.getVideoList = (id, result) => {
 			}
 
 			result(null, null);
+			return;
 		}
 	);
 };
 
 Video.postVideo = (body, result) => {
-	console.log(body);
+	//console.log(body);
 	let urlVideoId = getQueryParams('v', body.videoUrl);
 	if (!urlVideoId) {
 		urlVideoId = body.videoUrl.split('.be/')[1];
 	  }
-	console.log(urlVideoId);
+	//console.log(urlVideoId);
 	if (urlVideoId) {
-		console.log('posting video data');
 		sql.query(
 			`insert into video (videoname,url,fsubtopic,fsubject,fcategory,urlVideoId)
         value ('${body.videoName}', '${body.videoUrl}', ${body.subTopicId},${body.subjectId},${body.categoryId},'${urlVideoId}')`,
@@ -162,13 +237,13 @@ Video.postVideo = (body, result) => {
 };
 
 Video.deleteVideo = (body, result) => {
-	console.log(body);
+	//console.log(body);
 	sql.query(
 		`delete from Video
 		where hmy = ${body.id}`,
 		(err, res) => {
 			if (err) {
-				//console.log('error: ', err);
+				console.log('error: ', err);
 				result(err, null);
 				return;
 			}
@@ -176,6 +251,100 @@ Video.deleteVideo = (body, result) => {
 		}
 	);
 };
+
+Video.postIsActive = (req, result) => {
+	//console.log("Query: ", req);
+	sql.query(
+		`update ${req.table} set isActive = ${req.flag} where hmy = ${req.id}`,
+		(err, data) => {
+			if (err) {
+				console.log('error: ', err);
+				result(err, null);
+				return;
+			}
+			result(null, null);
+			return;
+		}
+	);
+};
+
+Video.postIsPaid = (req, result) => {
+	// console.log("Query: ", req);
+	sql.query(
+		`update ${req.table} set isPaid = ${req.flag} where hmy = ${req.id}`,
+		(err, data) => {
+			if (err) {
+				console.log('error: ', err);
+				result(err, null);
+				return;
+			}
+			result(null, null);
+			return;
+		}
+	);
+};
+
+Video.postAmount = (req, result) => {
+	console.log("Amount:", req);
+	sql.query(
+		`update ${req.table} set amount = ${parseInt(req.amount)} where hmy = ${req.id}`,
+		(err, data) => {
+			if (err) {
+				console.log('error: ', err);
+				result(err, null);
+				return;
+			}
+			result(null, null);
+			return;
+		}
+	);
+};
+
+Video.postPaymentStatus = (req, result) => {
+	if(req.table){
+		/*switch(req.table){
+			case 'subject':{
+				sql.query(
+					`insert into paymentxref (objType, objPointer ,objReference ,fuser ,amount , txId ,status ,message) 
+					values (2, ${parseInt(req.objectId)}, '${String(req.table)}', ${req.userId}, '${String(req.txnId)}', 
+					'${String(req.status)}', '${String(req.message)}')`,
+					(err, data) => {
+						if (err) {
+							console.log('error: ', err);
+							result(err, null);
+							return;
+						}
+						result(null, null);
+						return;
+					}
+				);
+			}
+				break;
+			case 'subtopic':{}
+				break;
+			case 'video':{}
+				break;
+		}*/
+		sql.query(
+			`insert into paymentxref (objType, objPointer ,objReference ,fuser ,amount , txId ,status ,message) 
+			values (2, ${parseInt(req.objectId)}, '${String(req.table)}', ${req.userId}, ${req.amount}, '${String(req.txnId)}', 
+			'${String(req.status)}', '${String(req.message)}')`,
+			(err, data) => {
+				if (err) {
+					console.log('error: ', err);
+					result(err, null);
+					return;
+				}
+				result(null, null);
+				return;
+			}
+		);
+	}
+};
+
+/*V/ideo.test = async (req, result) => {
+	result = await sql.query(`select * from subject where fcategory = 24`);
+};*/
 
 const getQueryParams = (params, url) => {
 	let href = url;

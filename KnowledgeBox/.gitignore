@@ -59,3 +59,4 @@ buck-out/
 /ios/Pods/
 
 /src/constants/aws.js
+/src/constants/paymentInfo.js

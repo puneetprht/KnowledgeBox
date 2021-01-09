@@ -21,7 +21,7 @@ import * as Constants from './src/constants/constants';
 
 import Home from './src/components/pages/home/home';
 import Profile from './src/components/pages/home/profile';
-import TopicList from './src/components/pages/login/signup';
+import UPIPayment from './src/widgets/Payment/upiPayment';
 import VideoList from './src/components/pages/video/videoPlayback';
 import QuizAdmin from './src/components/pages/quiz/quizAdmin';
 import TestList from './src/components/pages/test/testList';

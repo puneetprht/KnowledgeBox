@@ -7,13 +7,28 @@ const toSqlString = (string) => {
 
 const Test = function(test) {};
 
-Test.getAllSubjects = (categories, result) => {
-	console.log('categories:', categories);
+Test.getAllSubjects = (categories, user, result) => {
+	let SQL = '';
+	SQL += ` select s.hmy as id,concat(subjectname,'(',categoryname,')') as subject, 
+	count(stp.hmy) as count, c.hmy as category, s.isPaid as isPaid, s.amount as amount,
+	s.isActive as isActive `;
+	if(user && user.id){
+		SQL += ` ,CASE
+		WHEN xref.status = 'SUCCESS' THEN 1
+		ELSE 0
+		END as isBought`
+	}
+	SQL += ` from  subject s
+	left outer join subtopic stp on stp.fsubject = s.hmy
+	inner join category c on c.hmy = s.fcategory `;
+	if(user && user.id){
+		SQL += ` left outer join paymentxref xref on xref.objType = 3 and xref.objPointer = s.hmy and 
+				xref.objReference = 'subject' and xref.hmy in (select max(hmy) from paymentxref group by objtype,objpointer,objReference,fuser) `
+	}
+	SQL += ` where c.hmy in (${categories}) and s.objectType = 3 group by s.hmy `;
+
 	sql.query(
-		`select s.hmy as id,concat(subjectname,'(',categoryname,')') as subject, 
-		count(stp.hmy) as count, c.hmy as category from  subject s 
-		left outer join subtopic stp on stp.fsubject = s.hmy
-		inner join category c on c.hmy = s.fcategory where c.hmy in (${categories}) and s.objectType = 3 group by s.hmy`,
+		SQL,
 		(err, res) => {
 			if (err) {
 				console.log('error: ', err);
@@ -32,12 +47,26 @@ Test.getAllSubjects = (categories, result) => {
 	);
 };
 
-Test.getSubject = (Categoryid, result) => {
+Test.getSubject = (Categoryid, user, result) => {
+	let SQL = '';
+	SQL += ` select s.hmy as id,subjectname as subject,count(stp.hmy) as count, s.fcategory as category,
+	s.isPaid as isPaid, s.amount as amount, s.isActive as isActive `;
+	if(user && user.id){
+		SQL += ` ,CASE
+		WHEN xref.status = 'SUCCESS' THEN 1
+		ELSE 0
+		END as isBought`
+	}
+	SQL += ` from subtopic stp 
+	right outer join subject s on stp.fsubject = s.hmy `;
+	if(user && user.id){
+		SQL += ` left outer join paymentxref xref on xref.objType = 3 and xref.objPointer = s.hmy and 
+				xref.objReference = 'subject' and xref.hmy in (select max(hmy) from paymentxref group by objtype,objpointer,objReference,fuser) `
+	}
+	SQL += ` where s.fcategory = ${Categoryid} and s.objectType = 3 group by s.hmy `;
+
 	sql.query(
-		`select s.hmy as id,subjectname as subject,count(stp.hmy) as count, s.fcategory as category
-		from subtopic stp 
-		right outer join subject s on stp.fsubject = s.hmy 
-		where s.fcategory = ${Categoryid} and s.objectType = 3 group by s.hmy `,
+		SQL,
 		(err, res) => {
 			if (err) {
 				console.log('error: ', err);
@@ -92,10 +121,29 @@ Test.deleteSubject = (body, result) => {
 	);
 };
 
-Test.getSubTopicList = (id, result) => {
-	//console.log('SubjectId: ', id);
+Test.getSubTopicList = (id, user, result) => {
+	let SQL = '';
+	SQL += ` select st.hmy as id,subtopic value,count(q.hmy) as count,
+	st.isPaid as isPaid, st.amount as amount, st.isActive as isActive,
+	s.isPaid as isParentPaid, s.amount as parentAmount `;
+	if(user && user.id){
+		SQL += ` ,CASE
+		WHEN xref.status = 'SUCCESS' THEN 1
+		ELSE 0
+		END as isBought`
+	}
+	SQL += ` from test v
+	right outer join subtopic st on st.hmy = q.fsubtopic
+	inner join subject s on s.hmy = st.fsubject `;
+	if(user && user.id){
+		SQL += ` left outer join paymentxref xref on xref.objType = 3 and xref.objPointer = st.hmy and 
+				xref.objReference = 'subtopic' and xref.hmy in (select max(hmy) from paymentxref group by objtype,objpointer,objReference,fuser) `
+	}
+	SQL += ` where st.fsubject = ${id}  group by st.hmy `;
+
 	sql.query(
-		`select st.hmy as id,subtopic value,count(q.hmy) as count from test q
+		`select st.hmy as id,subtopic value,count(q.hmy) as count,
+		st.isPaid as isPaid, st.amount as amount, st.isActive as isActive from test q
 		right outer join subtopic st on st.hmy = q.fsubtopic
 		where st.fsubject = ${id}  group by st.hmy `,
 		(err, res) => {
@@ -117,11 +165,42 @@ Test.getSubTopicList = (id, result) => {
 	);
 };
 
-Test.getTestList = (id, result) => {
+Test.getTestList = (id, user, result) => {
+	let SQL = '';
+	SQL += ` select q.hmy as id,testname as value, q.duration as time, q.instructions as instructions,
+	q.isPaid as isPaid, q.amount as amount, q.isActive as isActive,
+	st.isPaid as isParentPaid, st.amount as parentAmount,
+	s.isPaid as isSuperParentPaid, s.amount as superParentAmount `;
+	if(user && user.id){
+		SQL += ` ,CASE
+		WHEN xref.status = 'SUCCESS' THEN 1
+		ELSE 0
+		END as isBought `
+		SQL += ` ,CASE
+		WHEN xrefParent.status = 'SUCCESS' THEN 1
+		ELSE 0
+		END as isParentBought `
+		SQL += ` ,CASE
+		WHEN xrefSuperParent.status = 'SUCCESS' THEN 1
+		ELSE 0
+		END as isSuperParentBought `
+	}
+	SQL += ` from test q
+	inner join subtopic st on st.hmy = q.fsubtopic
+	inner join subject s on s.hmy = st.fsubject `;
+	if(user && user.id){
+		SQL += ` left outer join paymentxref xref on xref.objType = 2 and xref.objPointer = q.hmy and 
+				xref.objReference = 'test' and xref.hmy in (select max(hmy) from paymentxref group by objtype,objpointer,objReference,fuser) `;
+		SQL += ` left outer join paymentxref xrefParent on xrefParent.objType = 2 and xrefParent.objPointer = st.hmy and 
+				xrefParent.objReference = 'subtopic' and xrefParent.hmy in (select max(hmy) from paymentxref group by objtype,objpointer,objReference,fuser) `;
+		SQL += ` left outer join paymentxref xrefSuperParent on xrefSuperParent.objType = 2 and xrefSuperParent.objPointer = s.hmy and 
+				xrefSuperParent.objReference = 'subject' and xrefSuperParent.hmy in (select max(hmy) from paymentxref group by objtype,objpointer,objReference,fuser) `;
+	}
+	SQL += ` where st.hmy = ${id} `;
+
+
 	sql.query(
-		`select q.hmy as id,testname as value, q.duration as time, q.instructions as instructions from test q
-		inner join subtopic st on st.hmy = q.fsubtopic
-		where st.hmy = ${id} `,
+		SQL,
 		(err, res) => {
 			if (err) {
 				console.log('error: ', err);
@@ -359,6 +438,70 @@ Test.postTest = (test, result) => {
 						}
 					);
 				});
+				result(null, null);
+				return;
+			}
+		);
+	}
+};
+
+Test.postIsActive = (req, result) => {
+	sql.query(
+		`update ${req.table} set isActive = ${req.isActive} where hmy = ${req.id}`,
+		(err, data) => {
+			if (err) {
+				console.log('error: ', err);
+				result(err, null);
+				return;
+			}
+			result(null, null);
+			return;
+		}
+	);
+};
+
+Test.postIsPaid = (req, result) => {
+	sql.query(
+		`update ${req.table} set isPaid = ${req.isPaid} where hmy = ${req.id}`,
+		(err, data) => {
+			if (err) {
+				console.log('error: ', err);
+				result(err, null);
+				return;
+			}
+			result(null, null);
+			return;
+		}
+	);
+};
+
+Test.postAmount = (req, result) => {
+	sql.query(
+		`update ${req.table} set amount = ${req.amount} where hmy = ${req.id}`,
+		(err, data) => {
+			if (err) {
+				console.log('error: ', err);
+				result(err, null);
+				return;
+			}
+			result(null, null);
+			return;
+		}
+	);
+};
+
+Test.postPaymentStatus = (req, result) => {
+	if(req.table){
+		sql.query(
+			`insert into paymentxref (objType, objPointer ,objReference ,fuser ,amount , txId ,status ,message) 
+			values (3, ${parseInt(req.objectId)}, '${String(req.table)}', ${req.userId}, ${req.amount}, '${String(req.txnId)}', 
+			'${String(req.status)}', '${String(req.message)}')`,
+			(err, data) => {
+				if (err) {
+					console.log('error: ', err);
+					result(err, null);
+					return;
+				}
 				result(null, null);
 				return;
 			}
