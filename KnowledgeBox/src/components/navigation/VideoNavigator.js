@@ -1,10 +1,11 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
+
 import VideoHome from '../pages/video/videoHome';
-import VideoTopicList from '../pages/video/videoTopicList';
 import VideoList from '../pages/video/videoList';
 import VideoPlayback from '../pages/video/videoPlayback';
+import VideoTopicList from '../pages/video/videoTopicList';
 
 const VideoStack = createStackNavigator();
 const VideoStackScreen = () => (

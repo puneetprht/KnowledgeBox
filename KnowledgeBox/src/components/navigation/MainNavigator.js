@@ -1,15 +1,15 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { createStackNavigator } from '@react-navigation/stack';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import AuthNavigator from './AuthNavigator';
-import StateNavigator from './StateNavigator';
 import QuizNavigator from './QuizNavigator';
 import TestNavigator from './TestNavigator';
 import HomeNavigator from './HomeNavigator';
+import StateNavigator from './StateNavigator';
 import VideoNavigator from './VideoNavigator';
 
 const Tabs = createBottomTabNavigator();

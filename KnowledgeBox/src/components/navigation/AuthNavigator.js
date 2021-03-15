@@ -1,10 +1,10 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
-import {createStackNavigator} from '@react-navigation/stack';
 import Start from '../pages/splash/splash';
-import AuthPage from '../pages/login/login';
 import SignIn from '../pages/login/signin';
 import SignUp from '../pages/login/signup';
+import AuthPage from '../pages/login/login';
+import {createStackNavigator} from '@react-navigation/stack';
 
 const AuthStack = createStackNavigator();
 const AuthStackScreen = () => (

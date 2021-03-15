@@ -1,13 +1,10 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
-
-import {createStackNavigator} from '@react-navigation/stack';
-import {createDrawerNavigator} from '@react-navigation/drawer';
-
-import {DrawerContent} from '../pages/home/drawer';
 import Home from '../pages/home/home';
 import Profile from '../pages/home/profile';
 import Referral from '../pages/home/referral';
+import {DrawerContent} from '../pages/home/drawer';
+import {createDrawerNavigator} from '@react-navigation/drawer';
 
 const Drawer = createDrawerNavigator();
 const DrawerSlider = () => (
