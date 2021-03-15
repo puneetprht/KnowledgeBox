@@ -16,6 +16,16 @@ app.post('/register', async (req, res) => {
 	});
 });
 
+app.get('/refreshUser', async (req, res) => {
+	await model.getUser(req.query.id, (err, data) => {
+		if (err)
+			res.status(500).send({
+				message: err.message || 'Some error occurred while fetching user.'
+			});
+		else res.status(200).send(data);
+	});
+});
+
 app.post('/authenticate', async (req, res) => {
 	model.authenticateUser(req.body, (err, data) => {
 		if (err)
@@ -57,4 +67,23 @@ app.get('/SendVerification/', async (req, res) => {
 	});
 });
 
+app.get('/coupon', async (req, res) => {
+	await model.verifyCoupon(req.query.code, (err, data) => {
+		if (err)
+			res.status(500).send({
+				message: err.message || 'Some error occurred while fetching user.'
+			});
+		else res.status(200).send(data);
+	});
+});
+
+app.get('/referral', async (req, res) => {
+	await model.verifyReferral(req.query.code, (err, data) => {
+		if (err)
+			res.status(500).send({
+				message: err.message || 'Some error occurred while fetching user.'
+			});
+		else res.status(200).send(data);
+	});
+});
 module.exports = app;

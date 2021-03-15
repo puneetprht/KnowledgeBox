@@ -10,21 +10,16 @@ const user = function(user) {
 
 //GetUser should fetch details for the logged in user.
 const getUser = (userId, result) => {
-	sql.query(`SELECT * FROM user WHERE hmy = ${userId}`, (err, res) => {
+	sql.query(`SELECT hmy as id, firstname, lastname, email, password, phone, isAdmin, password, stateId, referralCode, walletAmount FROM user WHERE hmy = ${userId}`, (err, res) => {
 		if (err) {
 			console.log('error: ', err);
-			if (result) {
-				result(err, null);
-			}
+			result(err, null);
 			return;
 		}
-
 		if (res.length) {
 			console.log('found user: ', res[0]);
-			if (result) {
-				result(null, res[0]);
-			}
-			return res[0];
+			result(null, res[0]);
+			return;
 		}
 		result(null, null);
 	});
@@ -32,7 +27,7 @@ const getUser = (userId, result) => {
 user.getUser = getUser;
 
 const getUserByEmail = async (userEmail) => {
-	sql.query(`SELECT * FROM user WHERE email = '${userEmail}'`, (err, res) => {
+	sql.query(`SELECT hmy as id, firstname, lastname, email, password, phone, isAdmin, password, stateId, referralCode, walletAmount FROM user WHERE email = '${userEmail}'`, (err, res) => {
 		if (err) {
 			result(err, null);
 			return;
@@ -64,8 +59,8 @@ user.registerUser = async (user, result) => {
 				return;
 			}
 			sql.query(
-				`INSERT INTO user (firstname, lastname, email, password, phone, isAdmin) values ('${user.firstName}',
-				'${user.lastName}','${user.email}','${user.password}','${user.phoneNumber}', 0)`,
+				`INSERT INTO user (firstname, lastname, email, password, phone, isAdmin, referralcode) values ('${user.firstName}',
+				'${user.lastName}','${user.email}','${user.password}','${user.phoneNumber}', 0, CONCAT("K", FLOOR(RAND()*99), SUBSTR(UPPER('${user.firstName}'),1,1), SUBSTR(UPPER('${user.lastName}'),1,1)))`,
 				(err, res) => {
 					if (err) {
 						console.log('error: ', err);
@@ -90,13 +85,14 @@ user.authenticateUser = async (user, result) => {
 		let userFetch = {};
 		console.log(user);
 		sql.query(
-			`SELECT hmy as id, firstname, lastname, email, password, phone, isAdmin, password, stateId FROM user WHERE email = '${user.email}'`,
+			`SELECT hmy as id, firstname, lastname, email, password, phone, isAdmin, password, stateId, referralCode, walletAmount FROM user WHERE email = '${user.email}'`,
 			(err, res) => {
 				if (err) {
 					result(err, null);
 					return;
 				}
 				let userFetch = res[0];
+				console.log(userFetch);
 				if (userFetch && userFetch.password === user.password) {
 					delete user.password;
 
@@ -294,4 +290,27 @@ user.sendVerificationEmail = async (id, result) => {
 	await email.sendEmail(msg, result);
 };
 
+user.verifyCoupon = (code, result) => {
+	sql.query(`select isPercent, amount, amount as percent, 'coupon' as type, hmy as id from couponcode where isActive = 1 and couponcode = '${code}'`, (err, res) => {
+		if (err) {
+			console.log('error: ', err);
+			result(null, err);
+			return;
+		}
+
+		result(null, res[0]);
+	});
+};
+
+user.verifyReferral = (code, result) => {
+	sql.query(`select isPercent, amount, percent, 'referral' as type, (select hmy from user where referralCode = '${code}') as id from config where 1 = (select 1 from user where referralCode = '${code}')`, (err, res) => {
+		if (err) {
+			console.log('error: ', err);
+			result(null, err);
+			return;
+		}
+
+		result(null, res[0]);
+	});
+};
 module.exports = user;

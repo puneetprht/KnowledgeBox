@@ -557,7 +557,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-around',
     alignItems: 'center',
-    paddingHorizontal:'20',
+    paddingHorizontal: 20,
   },
   amount:{
     fontSize: 15,

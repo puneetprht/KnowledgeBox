@@ -47,7 +47,7 @@ const Login = (props) => {
           elementStyle={styles.buttonElementStyle}
         />
         <PButton
-          title="Skip for now"
+          title="Skip for now."
           onPress={() => {
             global.user = null;
             props.navigation.navigate('State', {

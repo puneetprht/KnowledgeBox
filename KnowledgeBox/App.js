@@ -16,6 +16,7 @@ import {
   StatusBar,
   KeyboardAvoidingView,
 } from 'react-native';
+import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
 import * as Constants from './src/constants/constants';
 

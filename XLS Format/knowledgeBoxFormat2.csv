@@ -1,0 +1,5 @@
+Quiz Name,Time,Instructions,,,,,,,,,,,,,,
+Test 1,5,Please write mindfully,,,,,,,,,,,,,,
+Q. No.,Question,Option 1,Option 2,Option 3,Option 4,Explanation,Question_Hindi,Option 1_Hindi,Option 2_Hindi,Option 3_Hindi,Option 4_Hindi,Explanation_Hindi,Correct Answer,PositiveMarks,NegativeMarks,videoUrl
+1,What is greater than 5,1,6,4,8,Since it follows the simple comparison,,1,6,4,8,,"2,4",3,2,https://www.youtube.com/watch?v=imOwPc8Iocc
+1,What is greater than 7,1,6,4,8,Since it follows the simple comparison,,,,,,,4,3,2,
