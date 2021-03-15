@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
@@ -84,8 +85,9 @@ const TabsScreen = (props) => (
 );
 
 const getTabBarVisibility = (route) => {
-	const routeName = route.state ? route.state.routes[route.state.index].name : '';
-
+	//const routeName = route.state ? route.state.routes[route.state.index].name : '';
+	 const routeName = getFocusedRouteNameFromRoute(route);
+	 
 	if (routeName === 'QuizQuestionnaire' || routeName === 'VideoPlayback' || routeName === 'TestQuestionnaire' || routeName === 'QuizAdmin'
 	|| routeName === 'QuizResult' || routeName === 'TestAdmin' || routeName === 'TestResult') {
 		return false;

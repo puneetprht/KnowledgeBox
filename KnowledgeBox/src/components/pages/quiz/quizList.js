@@ -136,7 +136,7 @@ const QuizList = (props) => {
         quizObject.push(object);
       });
       console.log("Quiz:",quiz);
-      props.navigation.navigate('QuizAdmin', {
+      console.log("Navigating to QuizAdmin",{
         user: user,
         catergoryId: catergoryId,
         subjectId: subjectId,
@@ -147,6 +147,17 @@ const QuizList = (props) => {
         quizTime: quiz.quizHeader[0].Time,
         quizDetail: quizObject,
       });
+      /*props.navigation.navigate('QuizAdmin', {
+        user: user,
+        catergoryId: catergoryId,
+        subjectId: subjectId,
+        subTopicId: SubTopicId,
+        title: title,
+        quizTitle: quiz.quizHeader[0].TestName,
+        quizId: 0,
+        quizTime: quiz.quizHeader[0].Time,
+        quizDetail: quizObject,
+      });*/
     }
   };
 
