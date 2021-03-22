@@ -7,7 +7,7 @@ import {
   Image,
   SafeAreaView,
   ScrollView,
-  Platform,
+  Dimensions,
   StatusBar,
   StyleSheet,
   TouchableOpacity,
@@ -22,28 +22,28 @@ import axios from '../../../services/axios';
 const Home = (props) => {
   const [testList, setTestList] = useState([
     // {
-    //   id: 1,
-    //   value: 'test 1',
+      // id: 1,
+      // value: 'test 1',
     // },
     // {
-    //   id: 2,
-    //   value: 'test 2',
+      // id: 2,
+      // value: 'test 2',
     // },
     // {
-    //   id: 3,
-    //   value: 'test 3',
+      // id: 3,
+      // value: 'test 3',
     // },
     // {
-    //   id: 4,
-    //   value: 'test 4',
+      // id: 4,
+      // value: 'test 4',
     // },
     // {
-    //   id: 5,
-    //   value: 'test 3',
+      // id: 5,
+      // value: 'test 3',
     // },
     // {
-    //   id: 6,
-    //   value: 'test 4',
+      // id: 6,
+      // value: 'test 4',
     // },
   ]);
 
@@ -70,46 +70,62 @@ const Home = (props) => {
   const [dropdownList, setDropdownList] = useState(topic);
 
   const [objectList, setObjectList] = useState([
-    /*{
-			object: 'video',
-			objectName: 'Video 1',
-			id: 2,
-			subject: 'Science',
-			count: 1,
-			timeAgo: 'now'
+    {
+      id: 1,
+      owner: 'Knowledge Box',
+			objectType: 'text',
+			objectUrl: '',
+      objectContent: 'Latest SSC Test series/Video courses available from 1 April, 2021',
+			timeAgo: '1d'
 		},
 		{
-			object: 'quiz',
-			objectName: 'Quiz 6',
-			id: 2,
-			subject: 'Geography',
-			count: 2,
-			timeAgo: '2h'
+      id: 2,
+      owner: 'Knowledge Box',
+      objectType: 'image',
+      objectUrl: 'https://knowledge2020box.s3.ap-south-1.amazonaws.com/Images/IMG_20210318_112905_600.jpg',      
+      objectContent: '',
+			timeAgo: '2d'
 		},
 		{
-			object: 'quiz',
-			objectName: 'Quiz',
-			id: 2,
-			subject: 'History',
-			count: 3,
-			timeAgo: '3h'
+      owner: 'Knowledge Box',
+			objectType: 'image',
+      objectContent: '',
+      objectUrl: 'https://knowledge2020box.s3.ap-south-1.amazonaws.com/Images/IMG_20210320_122744_536.jpg',
+      id: 3,
+			timeAgo: '3d'
 		},
 		{
-			object: 'video',
-			objectName: 'Video 7',
-			id: 2,
-			subject: 'Math',
-			count: 4,
+      owner: 'Knowledge Box',
+			objectType: 'image',
+      objectUrl: 'https://knowledge2020box.s3.ap-south-1.amazonaws.com/Images/IMG_20210125_104035_856.jpg',
+      objectContent: '',
+			id: 4,
+			timeAgo: '4d'
+    },
+    {
+      owner: 'Knowledge Box',
+			objectType: 'image',
+      objectUrl: 'https://knowledge2020box.s3.ap-south-1.amazonaws.com/Images/IMG_20210320_080659_470.jpg',
+      objectContent: '',
+			id: 5,
+			timeAgo: '6d'
+    },
+    {
+      owner: 'Knowledge Box',
+			objectType: 'image',
+      objectUrl: 'https://knowledge2020box.s3.ap-south-1.amazonaws.com/Images/IMG_20210313_093135_307.jpg',
+      objectContent: '',
+			id: 6,
+			timeAgo: '7d'
+    },
+    {
+      owner: 'Knowledge Box',
+			objectType: 'image',
+      objectUrl: 'https://knowledge2020box.s3.ap-south-1.amazonaws.com/Images/IMG_20210202_224104_089.jpg',
+      objectContent: '',
+			id: 7,
 			timeAgo: '10d'
 		},
-		{
-			object: 'test',
-			objectName: 'Test  1',
-			id: 2,
-			subject: 'Science',
-			count: 5,
-			timeAgo: '20d'
-		}*/
   ]);
 
   const onTestPress = (test) => {
@@ -140,14 +156,14 @@ const Home = (props) => {
       <ScrollView style={{backgroundColor: '#ffffff', minHeight: '100%'}}>
         <View
           style={{
-            height: 400,
-            alignItems: 'center',
+            height: Dimensions.get("window").height/2,
+            //alignItems: 'center',
             //paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0
           }}>
           <Image
-            style={{height: '100%', width: '100%'}}
-            ImageResizeMode="stretch"
-            source={require('../../../assets/home.png')}
+            style={{height: Dimensions.get("window").height/2, width: '100%'}}
+            //ImageResizeMode="stretch"
+            source={require('../../../assets/homeHiRes.png')}
           />
           <View style={styles.topMenu} flexDirection="row">
             <TouchableOpacity
@@ -165,7 +181,7 @@ const Home = (props) => {
                   padding: 2,
                   paddingLeft: 7,
                   borderColor: '#ffffff',
-                  maxWidth: 180,
+                  maxWidth: 150,
                 }}
                 flexDirection="row">
                 <Text
@@ -187,6 +203,19 @@ const Home = (props) => {
                 />
               </View>
             </TouchableOpacity>
+          </View>
+          <View style={styles.topMenuText}>
+            <Text
+              style={{
+                textAlign: 'left',
+                fontFamily: 'Roboto-Light',
+                fontSize: 24,
+                color: 'white',
+              }}>
+                Learning is {"\n"} 
+                Fun with {"\n"}
+              KnowledgeBox
+            </Text>
           </View>
         </View>
         <View>
@@ -270,11 +299,11 @@ const Home = (props) => {
             })}
           </ScrollView>
         </View>
-        <View style={{marginVertical: 20}}>
+        <View style={{flex: 1,marginVertical: 20}}>
           {objectList.length ? (
             objectList.map((object) => {
               return (
-                <View key={object.count}>
+                <View key={object.id}>
                   <ElevatedView elevation={7} style={styles.stayElevatedCard}>
                     <View style={{flex: 1, flexDirection: 'row'}}>
                       <View>
@@ -289,15 +318,30 @@ const Home = (props) => {
                       </View>
                       <View style={styles.textWrapper}>
                         <Text style={styles.textTitle}>
-                          {object.subject} {object.object}
+                          {object.owner}
                         </Text>
                         <Text style={styles.textTime}>{object.timeAgo}</Text>
                       </View>
                     </View>
+
                     <View>
-                      <Text style={styles.textObject}>{object.objectName}</Text>
+                      {object.objectType=='text' 
+                      ? (<Text style={styles.textObject}>{object.objectContent}</Text>)
+                      : (<View style={{width: '100%'}}>
+                          <Image 
+                          source={{uri: object.objectUrl}}
+                          alignSelf='center'
+                          ImageResizeMode='contain'
+                          style={{
+                            marginVertical: 10,
+                            width: '100%',
+                            height: Dimensions.get('window').width - 54,
+                            //maxHeight: 400,
+                          }}
+                          ></Image>
+                      </View>)}
                     </View>
-                    <View style={{margin: 20}}>
+                    {/* <View style={{margin: 20}}>
                       <PButton
                         title={object.object === 'video' ? 'Watch' : 'Attempt'}
                         onPress={() => setEditMode(true)}
@@ -318,7 +362,7 @@ const Home = (props) => {
                           textAlignVertical: 'center',
                         }}
                       />
-                    </View>
+                    </View> */}
                   </ElevatedView>
                 </View>
               );
@@ -357,9 +401,9 @@ const styles = StyleSheet.create({
   },
   textObject: {
     fontFamily: 'Roboto-Medium',
-    fontSize: 27,
-    color: Constants.textColor1,
-    textAlign: 'center',
+    fontSize: 18,
+    color: 'black',
+    textAlign: 'left',
   },
   textTitle: {
     fontWeight: 'bold',
@@ -383,7 +427,7 @@ const styles = StyleSheet.create({
   stayElevatedCard: {
     margin: 12,
     marginBottom: 5,
-    padding: 20,
+    padding: 15,
     backgroundColor: 'white',
     borderRadius: 10,
   },
@@ -413,6 +457,15 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     margin: 20,
   },
+  topMenuText: {
+    position: 'absolute',
+    flex: 1,
+    alignItems: 'flex-start',
+    alignContent: 'flex-start',
+    justifyContent: 'flex-start',
+    marginTop: Dimensions.get('window').height/2 * 0.3,
+    marginLeft: Dimensions.get('window').height/2 * 0.1,
+  }
 });
 
 export default Home;

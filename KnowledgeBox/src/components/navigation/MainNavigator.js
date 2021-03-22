@@ -4,6 +4,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { createStackNavigator } from '@react-navigation/stack';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import AuthNavigator from './AuthNavigator';
 import QuizNavigator from './QuizNavigator';
@@ -11,6 +12,8 @@ import TestNavigator from './TestNavigator';
 import HomeNavigator from './HomeNavigator';
 import StateNavigator from './StateNavigator';
 import VideoNavigator from './VideoNavigator';
+
+import * as Constants from '../../constants/constants';
 
 const Tabs = createBottomTabNavigator();
 const TabsScreen = (props) => (
@@ -24,13 +27,14 @@ const TabsScreen = (props) => (
 			component={HomeNavigator}
 			options={({ route }) => ({
 				tabBarVisible: getTabBarVisibility(route),
-				tabBarIcon: ({ color, size }) => {
+				tabBarIcon: ({ focused, color, size }) => {
 					let iconName;
+					let overridenColor = focused ? Constants.gradientColor1 : color;
 
 					if (route.name === 'HOME') {
-						iconName = 'ios-home';
+						iconName = 'home-outline';
 					}
-					return <Ionicons name={iconName} size={30} color={color} />;
+					return <Ionicons name={iconName} size={25} color={overridenColor} />;
 				}
 			})}
 		/>
@@ -40,13 +44,14 @@ const TabsScreen = (props) => (
 			params={props.route.params}
 			options={({ route }) => ({
 				tabBarVisible: getTabBarVisibility(route),
-				tabBarIcon: ({ color, size }) => {
+				tabBarIcon: ({ focused, color, size }) => {
 					let iconName;
+					let overridenColor = focused ? Constants.gradientColor1 : color;
 
 					if (route.name === 'QUIZ') {
-						iconName = 'ios-checkbox-outline';
+						iconName = 'document-text-outline';
 					}
-					return <Ionicons name={iconName} size={30} color={color} />;
+					return <Ionicons name={iconName} size={25} color={overridenColor} />;
 				}
 			})}
 		/>
@@ -56,13 +61,14 @@ const TabsScreen = (props) => (
 			params={props.route.params}
 			options={({ route }) => ({
 				tabBarVisible: getTabBarVisibility(route),
-				tabBarIcon: ({ color, size }) => {
+				tabBarIcon: ({ focused, color, size }) => {
 					let iconName;
+					let overridenColor = focused ? Constants.gradientColor1 : color;
 
 					if (route.name === 'VIDEO') {
-						iconName = 'md-videocam';
+						iconName = 'video-vintage';
 					}
-					return <Ionicons name={iconName} size={30} color={color} />;
+					return <MaterialCommunityIcons name={iconName} size={25} color={overridenColor} />;
 				}
 			})}
 		/>
@@ -71,13 +77,14 @@ const TabsScreen = (props) => (
 			component={TestNavigator}
 			options={({ route }) => ({
 				tabBarVisible: getTabBarVisibility(route),
-				tabBarIcon: ({ color, size }) => {
+				tabBarIcon: ({ focused, color, size }) => {
 					let iconName;
+					let overridenColor = focused ? Constants.gradientColor1 : color;
 
 					if (route.name === 'TEST') {
-						iconName = 'ios-checkbox';
+						iconName = 'clipboard-list-outline';
 					}
-					return <Ionicons name={iconName} size={30} color={color} />;
+					return <MaterialCommunityIcons name={iconName} size={25} color={overridenColor} />;
 				}
 			})}
 		/>

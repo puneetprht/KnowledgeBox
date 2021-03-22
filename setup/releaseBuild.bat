@@ -4,4 +4,4 @@ cd C:\Users\Puneet\Documents\Codes\Neeraj\KnowledgeBox\KnowledgeBox\android
 
 call gradlew cleanBuildCache
 
-call gradlew releaseBuild
+call gradlew assembleRelease
