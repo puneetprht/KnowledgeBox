@@ -13,47 +13,36 @@ import {
   TouchableOpacity,
   TouchableHighlight,
   KeyboardAvoidingView,
-  TouchableOpacityBase,
 } from 'react-native';
 import _ from 'lodash';
-import Modal from 'react-native-modal';
-import axios from '../../../services/axios';
-import { Snackbar } from 'react-native-paper';
-import RNUpiPayment from 'react-native-upi-payment';
 import Icon from 'react-native-vector-icons/Feather';
-import PButton from '../../../widgets/Button/pButton';
 import Icon2 from 'react-native-vector-icons/AntDesign';
 import CheckBox from '@react-native-community/checkbox';
 import LinearGradient from 'react-native-linear-gradient';
 import DropDownPicker from 'react-native-dropdown-picker';
-import * as Constants from '../../../constants/constants';
 import Icon3 from 'react-native-vector-icons/FontAwesome5';
-import * as PaymentInfo from '../../../constants/paymentInfo';
+
+import axios from '../../../services/axios';
+import PButton from '../../../widgets/Button/pButton';
+import * as Constants from '../../../constants/constants';
+import UPIPayment from '../../../widgets/Payment/upiPayment';
 
 const VideoHome = (props) => {
-  const [category, setCategory] = useState(0);
   const [list, setList] = useState([]);
+  const [category, setCategory] = useState(0);
   const [dropdownList, setDropdownList] = useState([
     {value: 0, label: 'No categories'},
   ]);
+
   const [user, setUser] = useState(global.user);
   const [editMode, setEditMode] = useState(false);
   const [newSubject, setNewSubject] = useState('');
   const [refreshing, setRefreshing] = useState(false);
+  
   const [visible, setVisible] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [modalAmount, setModalAmount] = useState(null);
-  
-  const [objectId, setObjectId] = useState(null);
-  const [coupon, setCoupon] = useState("");
-  const [referral, setReferral] = useState("");
-  const [couponValid, setCouponValid] = useState(0);
-  const [referralValid, setReferralValid] = useState(0);
-  const [couponAmount, setCouponAmount] = useState(0);
-  const [referralAmount, setReferralAmount] = useState(0);
-  const [couponError, setCouponError] = useState(false);
-  const [referralError, setReferralError] = useState(false);
-  let GobjectId, Gamount = null;
+  const [objectId, setObjectId] = useState(0);
+  const [amount, setAmount] = useState(0);
 
   useEffect(() => {
     onRefresh();
@@ -224,171 +213,21 @@ const VideoHome = (props) => {
     setEditMode(false);
   };
 
-  const unlockItem = (amount) => {
-    if(user && user.id && parseInt(amount) > 0){
-        Gamount = parseInt(amount);
-        initiatePayment(parseInt(amount));
-      } else if(user && user.id && parseInt(amount) == 0){
-        axios.post('/video/postPaymentStatus', {
-          status: 'SUCCESS',
-          txnId: 0,
-          message: 'Free because of offers.',
-          userId: user.id,
-          objectId: GobjectId || objectId,
-          amount: 0,
-          table: 'subject',
-          referral: referralValid || 0,
-          referralAmount: referralAmount || 0,
-          coupon: couponValid || 0,
-        })
-        .then((response) => {
-            const lists = JSON.parse(JSON.stringify(list));
-            let index = lists.findIndex(l => l.id == GobjectId);
-            lists[index].isBought = true;
-            setList(lists);
-            setModalVisible(false);
-        })
-        .catch((err) => {
-          console.log(err);
-          setModalVisible(false);
-        });
-      }
-  }
-
   const openPaymentModal = (id,amount) => {
     if(global.user && global.user.id && parseInt(amount)){
-      GobjectId = id;
-      Gamount = parseInt(amount);
       setObjectId(id);
+      setAmount(parseInt(amount));
       setModalVisible(true);
-      setModalAmount(parseInt(amount));
-      setCoupon("");
-      setReferral("");
-      setCouponAmount(0);
-      setReferralAmount(0);
-      setCouponError(false);
-      setReferralError(false);
     } else{
       setVisible(true);
     }
   }
 
-  const initiatePayment = (amount) => {
-    RNUpiPayment.initializePayment({
-        vpa: PaymentInfo.vpa,  		//your upi address like 12345464896@okhdfcbank
-        payeeName: PaymentInfo.payeeName,   			// payee name 
-        amount: amount,				//amount
-        transactionNote:'KnowledgeBox Content',		//note of transaction
-        transactionRef: 'aasf-332-aoei-fn'	//some refs to aknowledge the transaction
-    },singleCallback,singleCallback);
-  }
-
-  const singleCallback = (data) => {
-      //console.log(data);
-      var status = "";
-      var txnId = "";
-      var message = "";
-      //setResp(data);
-      if (data['Status']=="SUCCESS" || data['Status']=="Success" || data['Status']=="success" || data['status']=="SUCCESS" || data['status']=="Success" || data['status']=="success"){
-          status = "SUCCESS";
-          txnId = data['txnId'];
-          message = "Succccessfull payment";
-      }
-      else if (data['Status']=="FAILURE" || data['status']=="FAILURE"){
-          status = "FAILURE";
-          txnId = data['txnId'] || '';
-          message = data['message'];
-      }
-      else if (data['Status']=="Failed" || data['status']=="Failed"){
-          status = "FAILURE";
-          txnId = data['txnId'] || '';
-          message = 'app closed without payment'; 
-      }
-      else if(data['Status']=="Submitted"){
-          status = "PENDING";
-          txnId = data['txnId'] || '';
-          message = 'transaction done but pending';
-      }
-      // any other case than above mentioned
-      else{
-        status = "FAILURE";
-        txnId = data['txnId'] || '';
-        message = data['message'];
-      }
-      axios.post('/video/postPaymentStatus', {
-        status: status,
-        txnId: txnId,
-        message: message,
-        userId: user.id,
-        objectId: GobjectId || objectId,
-        amount: finalAmount(modalAmount, couponAmount),
-        table: 'subject',
-        referral: referralValid || 0,
-        referralAmount: referralAmount || 0,
-        coupon: couponValid || 0,
-      })
-      .then((response) => {
-        //console.log("In success", response);
-        if( response.data.status && response.data.status == 'SUCCESS'){
-          const lists = JSON.parse(JSON.stringify(list));
-          let index = lists.findIndex(l => l.id ==  GobjectId || objectId);
-          lists[index].isBought = true;
-          setList(lists);
-        }
-        setModalVisible(false);
-      })
-      .catch((err) => {
-        console.log(err);
-        setModalVisible(false);
-      });
-  };
-
-  const verifyCode = (codeType, codeValue) => {
-    if(codeType === 'referral'){
-      setReferralValid(0);
-    }else if(codeType === 'coupon'){
-      setCouponValid(0);
-      setCouponAmount(0);
-    }
-    if (codeValue && codeValue !== user.ref) {
-      axios
-        .get('/user/' + codeType, {
-          params: {
-            code: codeValue,
-          },
-        })
-        .then((response) => {
-          //console.log(response.data);
-          if(response && response.data){
-            if(response.data.type == 'referral'){
-              setReferralValid(response.data.id);
-              /*if(response.data.isPercent == 1){
-                setReferralAmount(parseInt(modalAmount * response.data.percent / 100));
-              } else {
-                //console.log(parseInt(response.data.amount));
-                setReferralAmount(parseInt(response.data.amount));
-              }*/
-            } else if(response.data.type == 'coupon') {
-              setCouponValid(response.data.id);
-              if(response.data.isPercent == 1){
-                setCouponAmount(parseInt(modalAmount * response.data.percent / 100));
-              } else {
-                setCouponAmount(parseInt(response.data.amount));
-              }
-            }
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  };
-
-  const finalAmount = (amount, coupon) => {
-    if(parseInt(amount) > parseInt(coupon)){
-      return parseInt(amount) - parseInt(coupon);
-    }
-    return 0;
+  const UPICallback = () => {
+    const lists = JSON.parse(JSON.stringify(list));
+    let index = lists.findIndex(l => l.id == objectId);
+    lists[index].isBought = true;
+    setList(lists);
   }
 
   return (
@@ -607,160 +446,10 @@ const VideoHome = (props) => {
           )}
         </View>
       </ScrollView>
-      <Modal
-      isVisible={modalVisible}
-      avoidKeyboard={true}
-      onBackdropPress={()=>{setModalVisible(false)}}
-      >
-      <View style={styles.centeredView}>
-          <View style={{marginVertical: 20,
-            backgroundColor: "white",
-            borderRadius: 20,
-            paddingVertical:20, 
-            alignItems: "center",
-            shadowColor: "#000",
-            shadowOffset: {
-              width: 0,
-              height: 2
-            },
-            shadowOpacity: 0.25,
-            shadowRadius: 3.84,
-            elevation: 5}}>
-            <Text
-              style={{
-                textAlign: 'center',
-                fontFamily: 'Roboto-Medium',
-                fontSize: 18,
-                color: Constants.textColor2,
-                marginBottom: 15,
-              }}>
-                Checkout
-            </Text>
-            <TextInput
-              label="Coupon Code"
-              mode="outlined"
-              maxLength={40}
-              placeholder="Enter Coupon Code"
-              value={coupon}
-              style={styles.text}
-              theme={{colors: {primary: 'blue'}}}
-              onChangeText={(text) => {
-                setCoupon(text);
-              }}
-            />
-            {couponValid > 0 ? (<Text
-                style={{
-                textAlign: 'center',
-                fontFamily: 'Roboto-Medium',
-                fontSize: 15,
-                color: Constants.success,
-                }}>
-                Coupon code applied, Discount of {'\u20B9'}{couponAmount}
-                </Text>) : (<View/>)}
-            <TouchableHighlight
-              style={styles.openButton}
-              onPress={() => {
-                verifyCode("coupon", coupon);
-              }}
-            >
-              <Text style={styles.textStyle}>Apply</Text>
-            </TouchableHighlight>
-            <TextInput
-              label="Referral Code"
-              mode="outlined"
-              maxLength={40}
-              placeholder="Enter Referral Code"
-              value={referral}
-              style={styles.text}
-              theme={{colors: {primary: 'blue'}}}
-              onChangeText={(text) => {
-                setReferral(text);
-              }}
-            />
-            {referralValid > 0 ? (<Text
-                style={{
-                textAlign: 'center',
-                fontFamily: 'Roboto-Medium',
-                fontSize: 15,
-                color: Constants.success,
-                }}>
-                Referral code applied!
-                </Text>) : (<View/>)}
-            <TouchableHighlight
-              style={styles.openButton}
-              onPress={() => {
-                verifyCode("referral", referral);
-              }}
-            >
-              <Text style={styles.textStyle}>Apply</Text>
-            </TouchableHighlight>
-            <View>
-                {modalAmount === finalAmount(modalAmount, couponAmount) ? (<Text
-                style={{
-                textAlign: 'center',
-                fontFamily: 'Roboto-Medium',
-                fontSize: 35,
-                color: Constants.textColor2,
-                marginBottom: 20,
-                }}>
-                {'\u20B9'}{modalAmount}
-                </Text>) : (<View>
-                  <Text
-                style={{
-                textAlign: 'center',
-                fontFamily: 'Roboto-Medium',
-                fontSize: 18,
-                color: Constants.textColor2,
-                textDecorationLine: 'line-through',
-                textDecorationStyle: 'double',
-                marginBottom: 5,
-                }}>
-                {'\u20B9'}{modalAmount}
-                </Text>
-                <Text
-                style={{
-                textAlign: 'center',
-                fontFamily: 'Roboto-Medium',
-                fontSize: 35,
-                color: Constants.success,
-                marginBottom: 20,
-                }}>
-                {'\u20B9'}{finalAmount(modalAmount, couponAmount)}
-                </Text>
-                </View>)
-                }
-                <PButton
-                  title="Pay"
-                  onPress={() => unlockItem(finalAmount(modalAmount, couponAmount))}
-                  viewStyle={{
-                    width: '65%',
-                    paddingHorizontal: 15,
-                    flexDirection: 'row',
-                    justifyContent: 'center',
-                  }}
-                  elementStyle={{
-                    flexDirection: 'row',
-                    justifyContent: 'center',
-                  }}
-                />
-              </View>
-          </View>
-        </View>
-      </Modal>
-      <Snackbar
-            visible={visible}
-            onDismiss={() => setVisible(false)}
-            style={{backgroundColor:Constants.error}}
-            action={{
-              label: 'Sign-in',
-              onPress: () => {
-                setVisible(false);
-                props.navigation.replace('Auth', {screen: 'AuthPage'});
-              },
-            }}
-            >
-            Please sign-in to unlock.
-      </Snackbar>
+      <UPIPayment modalVisible={modalVisible} objectId={objectId} amount={amount}
+      visible={visible} setModalVisible={setModalVisible} setVisible={setVisible}
+      callback={UPICallback}
+      />
     </KeyboardAvoidingView>
   );
 };
@@ -774,7 +463,6 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOpacity: 0.8,
     shadowRadius: 10,
-    //elevation: 3,
     marginTop: 10,
   },
   parentBox:{ width: '100%',},
@@ -842,50 +530,6 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 100,
   },
-  centeredView: {
-    flex: 1,
-    //width: Dimensions.get('window').width,
-    justifyContent: "center",
-    alignItems: "center",
-    paddingVertical: 20
-  },
-  modalView: {
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding:50,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5
-  },
-  openButton: {
-    backgroundColor: "white",
-    padding: 10,
-  },
-  textStyle: {
-    color: Constants.textColor2,
-    textAlign: "center"
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: "center"
-  },
-  text: {
-    marginTop: 10,
-    marginHorizontal:10,
-    width: Dimensions.get('window').width * 0.8,
-    color: Constants.textColor2,
-    fontFamily: 'Roboto-Medium',
-    fontSize: 14,
-    borderWidth: 1,
-    borderColor: Constants.textColor2,
-    borderRadius: 5,
-  }
 });
 
 export default VideoHome;
