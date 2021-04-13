@@ -492,17 +492,45 @@ Test.postAmount = (req, result) => {
 
 Test.postPaymentStatus = (req, result) => {
 	if(req.table){
+		console.log(`insert into paymentxref (objType, objPointer ,objReference ,fuser ,amount , txId ,status ,message, fReferralUser, fCoupon, referralAmount) 
+		values (2, ${parseInt(req.objectId)}, '${String(req.table)}', ${req.userId}, ${req.amount}, '${String(req.txnId)}', 
+		'${String(req.status)}', '${String(req.message)}', ${parseInt(req.referral)}, ${parseInt(req.coupon)}, ${parseInt(req.referralAmount)})`);
 		sql.query(
-			`insert into paymentxref (objType, objPointer ,objReference ,fuser ,amount , txId ,status ,message) 
-			values (3, ${parseInt(req.objectId)}, '${String(req.table)}', ${req.userId}, ${req.amount}, '${String(req.txnId)}', 
-			'${String(req.status)}', '${String(req.message)}')`,
+			`insert into paymentxref (objType, objPointer ,objReference ,fuser ,amount , txId ,status ,message, fReferralUser, fCoupon, referralAmount) 
+			values (2, ${parseInt(req.objectId)}, '${String(req.table)}', ${req.userId}, ${req.amount}, '${String(req.txnId)}', 
+			'${String(req.status)}', '${String(req.message)}', ${parseInt(req.referral)}, ${parseInt(req.coupon)}, ${parseInt(req.referralAmount)})`,
 			(err, data) => {
 				if (err) {
 					console.log('error: ', err);
 					result(err, null);
 					return;
 				}
-				result(null, null);
+				if(req.referral > 0 && req.coupon > 0 && String(req.status) == 'SUCCESS'){
+				sql.query(
+					`update user set walletAmount = walletAmount + ${parseInt(req.amount)} where hmy =  ${parseInt(req.referral)}`,
+					(err, data) => {
+						if (err) {
+							console.log('error: ', err);
+							result(err, null);
+							return;
+						}
+						result(null,{status: String(req.status)});
+						return;
+					}
+				);} else if(req.referral > 0 && String(req.status) == 'SUCCESS'){
+				sql.query(
+					`update user set walletAmount = walletAmount + ${parseInt(req.amount)/2} where hmy =  ${parseInt(req.referral)}`,
+					(err, data) => {
+						if (err) {
+							console.log('error: ', err);
+							result(err, null);
+							return;
+						}
+						result(null,{status: String(req.status)});
+						return;
+					}
+				);}
+				result(null,{status: String(req.status)});
 				return;
 			}
 		);

@@ -65,7 +65,7 @@ const UPIPayment = (props) => {
         vpa: PaymentInfo.vpa,  		//your upi address like 12345464896@okhdfcbank
         payeeName: PaymentInfo.payeeName,   			// payee name 
         amount: amount,				//amount
-        transactionNote:'KnowledgeBox Content',		//note of transaction
+        transactionNote:'KnowledgeBox Course.',		//note of transaction
         transactionRef: 'aasf-332-aoei-fn'	//some refs to aknowledge the transaction
     },paymentCallback,paymentCallback);
   }
@@ -103,14 +103,14 @@ const UPIPayment = (props) => {
   }
 
   const postPayment = (objStatus, objTxnId, objMessage, objAmount) => {
-    axios.post('/video/postPaymentStatus', {
+    axios.post(props.callRouteUrl, {
       status: objStatus,
       txnId: objTxnId,
       message: objMessage,
       userId: user.id,
       objectId: props.objectId,
       amount: objAmount,
-      table: 'subject',
+      table: props.callRouteTable,
       referral: referralValid || 0,
       referralAmount: referralAmount || 0,
       coupon: couponValid || 0,

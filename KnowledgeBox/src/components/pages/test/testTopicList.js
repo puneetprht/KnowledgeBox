@@ -12,16 +12,17 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import _ from 'lodash';
-import axios from '../../../services/axios';
-import { Snackbar } from 'react-native-paper';
-import RNUpiPayment from 'react-native-upi-payment';
 import Icon from 'react-native-vector-icons/Feather';
-import PButton from '../../../widgets/Button/pButton';
 import Icon2 from 'react-native-vector-icons/AntDesign';
 import CheckBox from '@react-native-community/checkbox';
-import * as Constants from '../../../constants/constants';
 import Icon3 from 'react-native-vector-icons/FontAwesome5';
-import * as PaymentInfo from '../../../constants/paymentInfo';
+
+
+
+import axios from '../../../services/axios';
+import PButton from '../../../widgets/Button/pButton';
+import * as Constants from '../../../constants/constants';
+import UPIPayment from '../../../widgets/Payment/upiPayment';
 import ContainerList from '../../../widgets/List/containerList';
 
 const TestTopicList = (props) => {
@@ -30,11 +31,11 @@ const TestTopicList = (props) => {
   const [editMode, setEditMode] = useState(false);
   const [newSubject, setNewSubject] = useState('');
   const [refreshing, setRefreshing] = useState(false);
+
   const [visible, setVisible] = useState(false);
-  const [status, setStatus] = useState("");
-  const [txnId, setTxnId] = useState("");
-  const [message, setMessage] = useState("");
-  let GobjectId, Gamount = null;
+  const [modalVisible, setModalVisible] = useState(false);
+  const [objectId, setObjectId] = useState(0);
+  const [amount, setAmount] = useState(0);
 
   useEffect(() => {
     onRefresh();
@@ -167,72 +168,22 @@ const TestTopicList = (props) => {
       lists[index].amount = parseInt(amount);
       setList(lists);
   }
-  const unlockItem = (id,amount) => {
-    if(user && user.id && parseInt(amount)){
-      GobjectId = id;
-      Gamount = amount;
-      initiatePayment(parseInt(amount));
+
+  const openPaymentModal = (id,amount) => {
+    if(global.user && global.user.id && parseInt(amount)){
+      setObjectId(id);
+      setAmount(parseInt(amount));
+      setModalVisible(true);
     } else{
       setVisible(true);
     }
   }
 
-  const initiatePayment = (amount) => {
-    RNUpiPayment.initializePayment({
-        vpa: PaymentInfo.vpa,  		//your upi address like 12345464896@okhdfcbank
-        payeeName: PaymentInfo.payeeName,   			// payee name 
-        amount: amount,				//amount
-        transactionNote:'KnowledgeBox Content',		//note of transaction
-        transactionRef: 'aasf-332-aoei-fn'	//some refs to aknowledge the transaction
-    },singleCallback,singleCallback);
-  }
-
-  const singleCallback = (data) => {
-      if (data['Status']=="SUCCESS" || data['Status']=="Success" || data['Status']=="success" || data['status']=="SUCCESS" || data['status']=="Success" || data['status']=="success"){
-          setStatus("SUCCESS");
-          setTxnId(data['txnId']);
-          setMessage("Succccessfull payment");
-      }
-      else if (data['Status']=="FAILURE" || data['status']=="FAILURE"){
-          setStatus("FAILURE");
-          setMessage(data['message']);
-      }
-      // in case of phonepe
-      else if (data['Status']=="Failed" || data['status']=="Failed"){
-          setStatus("FAILURE");
-          setMessage('app closed without doing payment');
-      }
-      // in case of phonepe
-      else if(data['Status']=="Submitted"){
-          setStatus("PENDING");
-          setTxnId(data['txnId']);
-          setMessage('transaction done but pending');
-      }
-      // any other case than above mentioned
-      else{
-          setStatus("FAILURE");
-          setMessage(data['message']);
-      }
-      axios.post('/video/postPaymentStatus', {
-        status: status,
-        txnId: txnId,
-        message: message,
-        userId: user.id,
-        objectId: GobjectId,
-        amount: Gamount,
-        table: 'subtopic'
-      })
-      .then((response) => {
-        if(status == 'SUCCESS'){
-          const lists = JSON.parse(JSON.stringify(list));
-          let index = lists.findIndex(l => l.id == GobjectId);
-          lists[index].isBought = true;
-          setList(lists);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  const UPICallback = () => {
+    const lists = JSON.parse(JSON.stringify(list));
+    let index = lists.findIndex(l => l.id == objectId);
+    lists[index].isBought = true;
+    setList(lists);
   }
 
   return (
@@ -269,13 +220,13 @@ const TestTopicList = (props) => {
                               {'\u20B9'}{l.amount}
                             </Text>
                             </View>
-                            <TouchableOpacity onPress={() => unlockItem(l.id, l.amount)}>
+                            <TouchableOpacity onPress={() => openPaymentModal(l.id, l.amount)}>
                               <View  flexDirection='row'>
                               <Text style={styles.amount,{color:Constants.textColor1, marginRight: 2, textAlignVertical: 'center'}}>
                                 Unlock
                               </Text>
-                              <Icon3
-                              name="unlock-alt"
+                              <Icon
+                              name="unlock"
                               style={{color: Constants.textColor1, paddingTop: 2}}
                               size={15}/>
                               </View>
@@ -396,20 +347,10 @@ const TestTopicList = (props) => {
           )}
         </View>
       </ScrollView>
-      <Snackbar
-            visible={visible}
-            onDismiss={() => setVisible(false)}
-            style={{backgroundColor:Constants.error}}
-            action={{
-              label: 'Sign-in',
-              onPress: () => {
-                setVisible(false);
-                props.navigation.replace('Auth', {screen: 'AuthPage'});
-              },
-            }}
-            >
-            Please sign-in to unlock.
-      </Snackbar>
+      <UPIPayment modalVisible={modalVisible} objectId={objectId} amount={amount}
+      visible={visible} setModalVisible={setModalVisible} setVisible={setVisible}
+      callback={UPICallback} callRouteUrl='/test/postPaymentStatus' callRouteTable='subtopic'
+      />
       </KeyboardAvoidingView>
     </ContainerList>
   );

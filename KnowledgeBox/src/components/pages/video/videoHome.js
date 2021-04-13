@@ -323,8 +323,8 @@ const VideoHome = (props) => {
                               <Text style={styles.amount,{color:Constants.textColor1, marginRight: 2, textAlignVertical: 'center'}}>
                                 Unlock
                               </Text>
-                              <Icon3
-                              name="unlock-alt"
+                              <Icon
+                              name="unlock"
                               style={{color: Constants.textColor1, paddingTop: 2}}
                               size={15}/>
                               </View>
@@ -448,7 +448,7 @@ const VideoHome = (props) => {
       </ScrollView>
       <UPIPayment modalVisible={modalVisible} objectId={objectId} amount={amount}
       visible={visible} setModalVisible={setModalVisible} setVisible={setVisible}
-      callback={UPICallback}
+      callback={UPICallback} callRouteUrl='/video/postPaymentStatus' callRouteTable='subject'
       />
     </KeyboardAvoidingView>
   );
