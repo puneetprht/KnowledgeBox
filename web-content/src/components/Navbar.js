@@ -40,7 +40,7 @@ const NavBar = () => {
             <ul id="nav-laptop" className={styles.list}>
                 {!user ?
                   <>
-                      <li className={isActive('/home')}><Link href="/home"><a className={isActive('/home')}>Home</a></Link></li>
+                      <li className={isActive('/home')}><Link href="/home" className={styles.linkParent}><a className={isActive('/home')}>Home</a></Link></li>
                       <li className={isActive('quiz')}><Link href="/quiz"><a className={isActive('quiz')}>Quiz</a></Link></li>
                       <li className={isActive('video')}><Link href="/video"><a className={isActive('video')}>Video</a></Link></li>
                       <li className={isActive('test')}><Link href="/test"><a className={isActive('test')}>Test</a></Link></li>  
@@ -63,9 +63,11 @@ const NavBar = () => {
                   </button>
                 </a>   
                 <a className={styles.menuWrapper}>
-                  <button className={styles.menu} onClick={() =>{setMode(true)}}>
-                    Menu
-                  </button>
+                  <div onClick={() =>{setMode(true)}}>
+                    <div className={styles.burgerButton}></div>
+                    <div className={styles.burgerButton}></div>
+                    <div className={styles.burgerButton}></div>
+                  </div>
                 </a> 
               </>
                 :
@@ -75,8 +77,8 @@ const NavBar = () => {
           </div>
         </nav>
         <div className={overlayMode()}>
-            <a class={styles.close} onClick={() =>{setMode(false)}}>&times;</a>
-            <div class={styles.overlayContent}>
+            <a className={styles.close} onClick={() =>{setMode(false)}}>&times;</a>
+            <div className={styles.overlayContent}>
               <Link href="/home"><a className={styles.menuLinks} onClick={() =>{setMode(false)}}>Home</a></Link>
               <Link href="/quiz"><a className={styles.menuLinks} onClick={() =>{setMode(false)}}>Quiz</a></Link>
               <Link href="/video"><a className={styles.menuLinks} onClick={() =>{setMode(false)}}>Video</a></Link>

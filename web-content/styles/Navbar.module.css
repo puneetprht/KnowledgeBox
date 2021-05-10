@@ -2,7 +2,7 @@
   height: 100%;
 }
 .wrapper{
-  height: 3.2em;
+  height: 2.5em;
   background-color: #008ACF;
   position: relative;
   display: flex;
@@ -14,7 +14,7 @@
 }
 
 .logo {
-    height: 3em;
+    height: 2.5em;
     cursor: pointer;
     margin-bottom: 0.2em;
 }
@@ -25,14 +25,14 @@
 }
 
 .links {
-  text-align: center;
-  height: 3.2em;
+  line-height: 2.5em;
+  height: 2.5em;
   transition: color 0.3s ease 0s;
 }
 
 .linksActive{
-  text-align: center;
-  height: 3.2em;
+  line-height: 2.5em;
+  height: 2.5em;
   border-bottom: 2px solid #edf0f1;
   transition: color 0.3s ease 0s;
 }
@@ -60,16 +60,13 @@
   color:#ffffff;
 }
 
-/* export const gradientColor1 = '#009CDE';
-export const gradientColor2 = '#003087';
-export const gradientColorTheme1 = '#FF8E1C';
-export const gradientColorTheme2 = '#FF621C';
-export const success = '#1fc281';
-export const error = '#de3500';
-export const textColor1 = '#003e92';
-export const textColor2 = '#008ACF'; */
-
-
+.burgerButton{
+  width: 25px;
+  height: 3px;
+  background-color: #ffffff;
+  border-radius: 5px;
+  margin: 3px 15px;
+}
 
 /* Mobile Nav */
 .menuWrapper {
