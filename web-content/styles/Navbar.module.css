@@ -1,0 +1,166 @@
+.navContainer{
+  height: 100%;
+}
+.wrapper{
+  height: 3.2em;
+  background-color: #008ACF;
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.logo {
+    height: 3em;
+    cursor: pointer;
+    margin-bottom: 0.2em;
+}
+
+.list{
+  height: 100%;
+  align-items: center;
+}
+
+.links {
+  text-align: center;
+  height: 3.2em;
+  transition: color 0.3s ease 0s;
+}
+
+.linksActive{
+  text-align: center;
+  height: 3.2em;
+  border-bottom: 2px solid #edf0f1;
+  transition: color 0.3s ease 0s;
+}
+
+.links:hover 
+.linksActive:hover {
+  color: #0088a9;
+}
+
+.logout {
+  padding: 4px 12px;
+  margin-right: 0.5em;
+  background-color: #ffffff;
+  color: #008ACF;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 1em;
+  font-weight: 300;
+  transition: background-color 0.3s ease 0s;
+}
+
+.logout:hover {
+  background-color: #FF8E1C;
+  color:#ffffff;
+}
+
+/* export const gradientColor1 = '#009CDE';
+export const gradientColor2 = '#003087';
+export const gradientColorTheme1 = '#FF8E1C';
+export const gradientColorTheme2 = '#FF621C';
+export const success = '#1fc281';
+export const error = '#de3500';
+export const textColor1 = '#003e92';
+export const textColor2 = '#008ACF'; */
+
+
+
+/* Mobile Nav */
+.menuWrapper {
+  display: none;
+}
+
+.menu{
+  padding: 4px 12px;
+  margin-right: 0.5em;
+  background-color: #ffffff;
+  color: #008ACF;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 1em;
+  font-weight: 300;
+  transition: background-color 0.3s ease 0s;
+}
+
+.overlay {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  background-color: #008ACF;
+  overflow-x: hidden;
+  transition: width 0.5s ease 0s;
+}
+
+.overlayActive {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  background-color: #008ACF;
+  overflow-x: hidden;
+  transition: width 0.5s ease 0s;
+  width: 100%;
+}
+
+.overlayContent {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.menuLinks {
+  padding: 15px;
+  font-size: 36px;
+  display: block;
+  transition: color 0.3s ease 0s;
+  color:#ffffff;
+}
+
+.menuLinks:hover,
+.menuLinks:focus {
+  color: #0088a9;
+}
+.close {
+  position: absolute;
+  top: 20px;
+  right: 45px;
+  font-size: 60px;
+  color: #edf0f1;
+}
+
+@media screen and (max-height: 450px) {
+  .menuLinks {
+    font-size: 20px;
+  }
+  .close {
+    font-size: 40px;
+    top: 15px;
+    right: 35px;
+  }
+}
+
+@media only screen and (max-width: 450px) {
+  .links,
+  .linksActive,
+  .logout {
+    display: none;
+  }
+  .menuWrapper {
+    display: initial;
+  }
+}
+  

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg width="226" height="147" viewBox="49.725 -6.564 94.796 97.377" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>.a,.b{fill:#fff;}.a{stroke:#fff;font-size:35px;font-family:Arista2.0Light, 'Arista 2.0';letter-spacing:0.03em;}.c,.d{fill:#0069b5;}.c{font-size:90px;font-family:ArialRoundedMTBold, Arial Rounded MT;}.e{fill:#006ab5;}</style>
+    <view id="view-1" viewBox="49.686 -4.833 96 96">
+      <title>View 1</title>
+    </view>
+  </defs>
+  <g transform="matrix(1, 0, 0, 1, -99.606606, -216.776886)">
+    <g transform="matrix(1, 0, 0, 1, 11.392875, -45.389866)">
+      <rect class="b" width="80" height="80" rx="20" transform="translate(148 267)"/>
+      <g transform="translate(-6 4)">
+        <text class="c" style="white-space: pre;" transform="translate(162 333)"><tspan x="0" y="0">k</tspan></text>
+        <rect class="d" width="11.932" height="22.877" style="" x="169.04" y="263.123"/>
+      </g>
+      <g transform="translate(199.999 275)">
+        <path class="e" d="M1.017,11.881,1,5.064a.467.467,0,0,1,.65-.43L7.857,7.286a.467.467,0,0,1,.283.428l.016,6.817a.467.467,0,0,1-.65.43L1.3,12.309A.467.467,0,0,1,1.017,11.881Zm14.219-6.5L9.509,7.865l.015,6.309,5.727-2.48-.015-6.309m.232-.822a.467.467,0,0,1,.468.466l.016,6.817a.467.467,0,0,1-.281.429L9.477,14.957a.466.466,0,0,1-.652-.427L8.809,7.713a.467.467,0,0,1,.281-.429L15.283,4.6a.466.466,0,0,1,.185-.039ZM8.431.722,2.49,3.375,8.444,6l5.941-2.653L8.431.722m0-.722a.467.467,0,0,1,.189.04l6.529,2.878a.467.467,0,0,1,0,.853L8.635,6.681a.467.467,0,0,1-.379,0L1.726,3.8a.467.467,0,0,1,0-.853L8.24.041A.467.467,0,0,1,8.429,0Z" transform="translate(0)"/>
+      </g>
+    </g>
+  </g>
+</svg>
