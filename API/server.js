@@ -1,6 +1,7 @@
 const express = require('./node_modules/express');
 const bodyParser = require('./node_modules/body-parser');
 const router = require('./app/controllers/router');
+const cors = require('./node_modules/cors');
 const port = 3000;
 
 const app = express();
@@ -20,6 +21,8 @@ app.use((req, res, next) => {
 	}
 	next();
 });
+
+app.use(cors());
 
 //redirecting all the route to a common router.
 app.use('', router);
