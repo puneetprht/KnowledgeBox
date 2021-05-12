@@ -38,7 +38,7 @@ const NavBar = () => {
                 <img src="/iconInverted.svg" alt="KnowledgeBox" className={styles.logo} />
             </Link>
             <ul id="nav-laptop" className={styles.list}>
-                {!user ?
+                {user ?
                   <>
                       <li className={isActive('/home')}><Link href="/home" className={styles.linkParent}><a className={isActive('/home')}>Home</a></Link></li>
                       <li className={isActive('quiz')}><Link href="/quiz"><a className={isActive('quiz')}>Quiz</a></Link></li>
@@ -50,13 +50,12 @@ const NavBar = () => {
                   </>
                 }
             </ul>
-            {!user ?
+            {user ?
               <>
                 <a id="button-laptop">
                   <button className={styles.logout} onClick={()=>{
-                      cookie.remove('token')
                       cookie.remove('user')
-                      router.push('/login')
+                      router.push('/')
                     }}
                   >
                     Log Out

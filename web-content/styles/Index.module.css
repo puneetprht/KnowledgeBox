@@ -1,0 +1,88 @@
+.container {
+  min-height: 100vh;
+  padding: 0 0.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #008ACF;
+}
+
+.title {
+  margin: 0;
+  line-height: 1.15;
+  font-size: 1.5rem;
+  text-align: center;
+  color: #ffffff;
+  font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono,
+    Bitstream Vera Sans Mono, Courier New, monospace;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-width: 50%;
+}
+
+.button {
+  padding: 4px 12px;
+  margin-top: 5px;
+  margin-right: 0.5em;
+  vertical-align: middle;
+  background-color: #ffffff;
+  color: #008ACF;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background-color 0.3s ease 0s;
+  left: 50%;
+}
+
+.button:hover {
+  background-color: #e2e2e2;
+  color: #008ACF;
+}
+.button:focus{
+  background-color: #ffffff;
+  color: #008ACF;
+}
+
+.password{
+  width:100%;
+}
+
+.text {
+  color: #ffffff;
+  border-bottom: 1px solid #ffffff;
+  padding: 0.75rem;
+  font-size: 1.1remas;
+  font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono,
+    Bitstream Vera Sans Mono, Courier New, monospace;
+}
+
+.eye{
+  color:#ffffff;
+  width: 1.5%;
+  position: absolute;
+  left: 72.5%;
+  display:inline-block;
+  flex-direction: column;
+  justify-self: flex-start;
+  align-self: flex-end;
+  margin-top: 1em;
+}
+
+.error{
+  align-self: flex-start;
+  color: #ffffff;
+}
+
+@media (max-width: 600px) {
+  .main {
+    min-width: 60%;
+    flex-direction: column;
+  }
+}
