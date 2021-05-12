@@ -1,0 +1,67 @@
+.container{
+  display: grid;  
+  grid-template-columns: 22% 59% 19%;
+  /* grid-template-columns: 17% 66% 17%; */
+}
+
+.dropdown{
+  border: 1px solid #000;
+  height: 100%;
+  min-height: 2em;
+  margin: 1% 1%;
+  display: none;
+}
+
+.rightModule{
+  border: 1px solid #000;
+  height: 100%;
+  min-height: 10em;
+  margin: 0 1%;
+}
+
+.centerModule{
+  border: 1px solid #000;
+  height: 100%;
+  min-height: 10em;
+}
+
+.leftModule{
+  border: 1px solid #000;
+  height: 100%;
+  min-height: 10em;
+  margin: 0 1%;
+}
+
+/* On screens that are 992px wide or less, go from four columns to two columns */
+@media screen and (max-width: 992px) {
+  .container {
+    grid-template-columns: 30% 70% 0%;
+  }
+
+  .rightModule{
+    display: none;
+  }
+
+  .centerModule{
+    margin-right: 1%;
+  }
+}
+
+/* On screens that are 600px wide or less, make the columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 450px) {
+  .container {
+    grid-template-columns: 100% 0%;
+  }
+
+  .leftModule{
+    display: none;
+  }
+
+  .centerModule{
+    margin-left: 1%;
+  }
+
+  .dropdown {
+    display: block;
+  }
+}

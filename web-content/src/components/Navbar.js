@@ -30,6 +30,10 @@ const NavBar = () => {
         return styles.overlay;
     } 
 
+    if(router.pathname === '/[object]/edit'){
+      return (<> </>);
+    }
+    
     return(
       <>
         <nav className={styles.navContainer}>
