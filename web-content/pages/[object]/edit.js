@@ -1,6 +1,8 @@
-import Link from 'next/link'
-import {useRouter} from 'next/router'
-import styles from '../../styles/Home.module.css'
+import Link from 'next/link';
+import {parseCookies} from 'nookies';
+import {useRouter} from 'next/router';
+
+import styles from '../../styles/Edit.module.css';
 
 export default function QuizEdit() {
   const router = useRouter()
@@ -13,4 +15,14 @@ export default function QuizEdit() {
       </main>
     </div>
   )
+}
+
+export async function getServerSideProps(ctx){
+  const {user} = parseCookies(ctx)
+  if(!user){
+      const {res} = ctx
+      res.writeHead(302,{Location:"/"})
+      res.end()
+  }
+  return {props: {user: user || {}}};
 }

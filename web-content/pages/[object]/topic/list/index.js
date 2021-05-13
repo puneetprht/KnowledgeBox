@@ -1,8 +1,10 @@
-import Link from 'next/link'
-import {useRouter} from 'next/router'
-import styles from '../../../../styles/List.module.css'
+import Link from 'next/link';
+import {parseCookies} from 'nookies';
+import {useRouter} from 'next/router';
 
-export default function List() {
+import styles from '../../../../styles/List.module.css';
+
+export default function List({user}) {
   const router = useRouter()
   return (
     <div className={styles.wrapper}>
@@ -21,4 +23,14 @@ export default function List() {
       </main>
     </div>
   )
+}
+
+export async function getServerSideProps(ctx){
+  const {user} = parseCookies(ctx)
+  if(!user){
+      const {res} = ctx
+      res.writeHead(302,{Location:"/"})
+      res.end()
+  }
+  return {props: {user: user || {}}};
 }

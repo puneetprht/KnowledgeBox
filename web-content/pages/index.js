@@ -61,12 +61,13 @@ export default function Home() {
         <h3 className={styles.title}>LOGIN</h3>
         <form className={styles.main} onSubmit={(e)=>sendCred(e)}>
            <input className={styles.text} type="email" placeholder="Email"
+            autocomplete="email"
             value={email}
             onChange={(e)=>setEmail(e.target.value)}
             />
             <div className={styles.password}>
               <input className={styles.text} type={isShow ? "text" : "password" } placeholder="Password"
-              value={password}
+              value={password} autocomplete="password"
               onChange={(e)=>setPassword(e.target.value)}
               />
               <span><FontAwesomeIcon className={styles.eye} size="1x" icon={isShow?faEye:faEyeSlash} onClick={() => setIsShow(!isShow)}/></span>
