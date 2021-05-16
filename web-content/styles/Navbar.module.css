@@ -1,5 +1,6 @@
 .navContainer{
   height: 100%;
+  border-bottom: 1px solid #008ACF;
 }
 .wrapper{
   height: 2.5em;

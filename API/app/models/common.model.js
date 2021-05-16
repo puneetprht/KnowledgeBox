@@ -247,4 +247,18 @@ Common.deleteCategory = (body, result) => {
 	);
 };
 
+Common.updateSubject = (body, result) => {
+	if (body.id) {
+		sql.query(`update subject set subjectName = '${body.value}' where hmy = ${body.id}`, (err, res) => {
+			if (err) {
+				console.log('error: ', err);
+				result(err, null);
+				return;
+			}
+			result(null, null);
+			return;
+		});
+	}
+};
+
 module.exports = Common;

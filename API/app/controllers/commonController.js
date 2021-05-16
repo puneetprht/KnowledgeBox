@@ -62,4 +62,14 @@ app.delete('/deleteCategory', (req, res) => {
 	});
 });
 
+app.post('/updateSubject', (req, res) => {
+	model.updateSubject(req.body, (err, data) => {
+		if (err)
+			res.status(500).send({
+				message: err.message || 'Error processing request..'
+			});
+		else res.status(200).send();
+	});
+});
+
 module.exports = app;

@@ -15,11 +15,11 @@ app.get('/', (req, res) => {
 
 app.get('/getAllSubjects', (req, res) => {
 	let selectedCategory = [];
+	let admin = req.query.isAdmin || false;
 	for (const category of JSON.parse(req.query.selectedCategory)) {
 		selectedCategory.push(category.id);
 	}
-	console.log(selectedCategory);
-	model.getAllSubjects(selectedCategory, (err, data) => {
+	model.getAllSubjects(selectedCategory, admin, (err, data) => {
 		if (err)
 			res.status(500).send({
 				message: err.message || 'Error processing request..'

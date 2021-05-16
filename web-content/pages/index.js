@@ -3,13 +3,12 @@ import {parseCookies} from 'nookies';
 import {useRouter} from 'next/router';
 import axios from '../src/services/axios';
 import {useState, useEffect} from 'react';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 import styles from '../styles/Index.module.css'
 
 export default function Home() {
-
   const router  = useRouter()
 
   const [email, setEmail] = useState('');
@@ -40,10 +39,9 @@ export default function Home() {
       .catch((err) => {
         setIsSubmit(false);
         setIsError(true);
-        console.log(err);
+        console.error(err);
       });
   };
-
 
   const checkFormValid = (text, type) => {
     switch (type) {
@@ -61,13 +59,13 @@ export default function Home() {
         <h3 className={styles.title}>LOGIN</h3>
         <form className={styles.main} onSubmit={(e)=>sendCred(e)}>
            <input className={styles.text} type="email" placeholder="Email"
-            autocomplete="email"
+            autoComplete="email"
             value={email}
             onChange={(e)=>setEmail(e.target.value)}
             />
             <div className={styles.password}>
               <input className={styles.text} type={isShow ? "text" : "password" } placeholder="Password"
-              value={password} autocomplete="password"
+              value={password} autoComplete="password"
               onChange={(e)=>setPassword(e.target.value)}
               />
               <span><FontAwesomeIcon className={styles.eye} size="1x" icon={isShow?faEye:faEyeSlash} onClick={() => setIsShow(!isShow)}/></span>

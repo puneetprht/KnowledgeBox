@@ -7,11 +7,11 @@ const toSqlString = (string) => {
 
 const Test = function(test) {};
 
-Test.getAllSubjects = (categories, user, result) => {
+Test.getAllSubjects = (categories, user, admin, result) => {
 	let SQL = '';
-	SQL += ` select s.hmy as id,concat(subjectname,'(',categoryname,')') as subject, 
-	count(stp.hmy) as count, c.hmy as category, s.isPaid as isPaid, s.amount as amount,
-	s.isActive as isActive `;
+	SQL += ` select s.hmy as id,concat(subjectname,'(',categoryname,')') as subject, subjectname as subjectName, categoryname as categoryName,
+	count(stp.hmy) as count, c.hmy as category, IFNULL(s.isPaid, 0) as isPaid, s.amount as amount,
+	IFNULL(s.isActive, 0) as isActive `;
 	if(user && user.id){
 		SQL += ` ,CASE
 		WHEN xref.status = 'SUCCESS' THEN 1
@@ -25,8 +25,13 @@ Test.getAllSubjects = (categories, user, result) => {
 		SQL += ` left outer join paymentxref xref on xref.objType = 3 and xref.objPointer = s.hmy and 
 				xref.objReference = 'subject' and xref.hmy in (select max(hmy) from paymentxref group by objtype,objpointer,objReference,fuser) `
 	}
-	SQL += ` where c.hmy in (${categories}) and s.objectType = 3 group by s.hmy `;
+	if(admin){
+		SQL += ` where c.hmy in (select hmy from category) and s.objectType = 3 group by s.hmy `;
+	}	else{
+		SQL += ` where c.hmy in (${categories}) and s.objectType = 3 group by s.hmy `;
+	}
 
+	console.log("Query:", SQL);
 	sql.query(
 		SQL,
 		(err, res) => {
@@ -49,8 +54,8 @@ Test.getAllSubjects = (categories, user, result) => {
 
 Test.getSubject = (Categoryid, user, result) => {
 	let SQL = '';
-	SQL += ` select s.hmy as id,subjectname as subject,count(stp.hmy) as count, s.fcategory as category,
-	s.isPaid as isPaid, s.amount as amount, s.isActive as isActive `;
+	SQL += ` select s.hmy as id,subjectname as subject, subjectname as subjectName, count(stp.hmy) as count, s.fcategory as category,
+	IFNULL(s.isPaid, 0) as isPaid, s.amount as amount, IFNULL(s.isActive, 0) as isActive `;
 	if(user && user.id){
 		SQL += ` ,CASE
 		WHEN xref.status = 'SUCCESS' THEN 1

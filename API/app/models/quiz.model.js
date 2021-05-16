@@ -7,13 +7,22 @@ const toSqlString = (string) => {
 	else return null;
 };
 
-Quiz.getAllSubjects = (categories, result) => {
+Quiz.getAllSubjects = (categories, admin, result) => {
 	console.log('categories:', categories);
+	let SQL = `select s.hmy as id,concat(subjectname,'(',categoryname,')') as subject, subjectname as subjectName, categoryname as categoryName,
+	count(stp.hmy) as count, c.hmy as category, IFNULL(s.isActive, 0) as isActive from  subject s 
+	left outer join subtopic stp on stp.fsubject = s.hmy
+	inner join category c on c.hmy = s.fcategory where `;
+
+	if(admin){
+		SQL += ` c.hmy in (select hmy from category) 	and s.objectType = 1 group by s.hmy`;
+	}else{
+		SQL += ` c.hmy in (${categories}) 	and s.objectType = 1 group by s.hmy`;
+	}
+	
+	console.log(SQL);
 	sql.query(
-		`select s.hmy as id,concat(subjectname,'(',categoryname,')') as subject, 
-		count(stp.hmy) as count, c.hmy as category from  subject s 
-		left outer join subtopic stp on stp.fsubject = s.hmy
-		inner join category c on c.hmy = s.fcategory where c.hmy in (${categories}) 	and s.objectType = 1 group by s.hmy`,
+		SQL,
 		(err, res) => {
 			if (err) {
 				console.log('error: ', err);
@@ -34,7 +43,7 @@ Quiz.getAllSubjects = (categories, result) => {
 
 Quiz.getSubject = (Categoryid, result) => {
 	sql.query(
-		`select s.hmy as id,subjectname as subject,count(stp.hmy) as count, s.fcategory as category
+		`select s.hmy as id,subjectname as subject, subjectname as subjectName, count(stp.hmy) as count, s.fcategory as category, IFNULL(s.isActive, 0) as isActive
 		from subtopic stp 
 		right outer join subject s on stp.fsubject = s.hmy 
 		where s.fcategory = ${Categoryid} and s.objectType = 1 group by s.hmy `,

@@ -1,6 +1,9 @@
 .container{
   display: grid;  
   grid-template-columns: 22% 59% 19%;
+  padding: 1em 0.5em;
+  background-color: #fff;
+  grid-auto-flow: dense
   /* grid-template-columns: 17% 66% 17%; */
 }
 
@@ -12,25 +15,167 @@
   display: none;
 }
 
-.rightModule{
-  border: 1px solid #000;
-  height: 100%;
-  min-height: 10em;
-  margin: 0 1%;
-}
-
-.centerModule{
-  border: 1px solid #000;
-  height: 100%;
-  min-height: 10em;
-}
-
+/* Categories column */
 .leftModule{
-  border: 1px solid #000;
-  height: 100%;
-  min-height: 10em;
+  border-radius: 1em;
+  background-color: rgb(247, 250, 248);
+  max-height: 100%;
   margin: 0 1%;
+  padding: 1em 0.5em;
+  grid-column-end: initial;
 }
+
+.leftHeading{
+  margin: 0;
+  padding: 0;
+  color: #008ACF;
+  font-weight: 500;
+}
+
+.leftContent{
+  margin: 1%;
+  padding: 0.3em ;
+  color: #009CDE;
+}
+
+.leftContentActive{
+  margin: 1%;
+  padding: 0.3em ;
+  color: #009CDE;
+  border-radius: 1em;
+  background-color: rgb(232, 232, 232);
+  font-weight: 500;
+}
+
+.leftContent:hover{
+  text-decoration: underline;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* Main column */
+.centerModule{
+  padding: 0.5em 0.5em;
+  border-radius: 1em;
+  background-color: rgb(250, 250, 250);
+  color:#008ACF;
+}
+
+.centerGrid{
+  display: grid;  
+  grid-template-columns: 40% 20% 40%;
+  border-radius: 1em;
+  margin-bottom: 0.5em;
+  background-color: rgb(230, 243, 255);
+}
+
+.centerGridSubject{
+  margin-right: 1%;
+  padding: 1em 1em;
+  font-weight: 500;
+}
+
+.centerConfirmSubject, .centerEditSubject{
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.textInputSubject{
+  padding-left: 0.5em;
+  width: 60%;
+}
+
+.confirm{
+  width: 1em;
+  margin: 1em 0.5em;
+}
+.confirmCross{
+  margin: 1em 0.5em;
+  width: 0.8em;
+}
+.centerGridCount{
+  padding: 1em 1em;
+}
+
+.centerGridAction{
+  margin-left: 1%;
+  padding: 1em 1em;
+}
+
+.ActionRow1{
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.trash{
+  width: 1em;
+  color: #ff6363;
+}
+
+.isActive{
+  font-weight: 600;
+  font-size: medium;
+}
+
+.trash:hover{
+  width: 1em;
+  color: #fd8c8c;
+  cursor: pointer;
+}
+
+.ActionRow2{
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.actionTextInput{
+  width: 50px;
+}
+
+.addParent{
+  display: flex;
+  justify-content: center;
+}
+
+.add{
+  width: 2em;
+  margin: 1em 0.5em;  
+  align-self: center;
+  text-align: center;
+}
+
+/* Statistic column */
+.rightModule{
+  border-radius: 1em;
+  background-color: rgb(247, 250, 248);
+  height: 100%;
+  margin: 0 1%;
+  padding: 1em 0.5em;
+}
+
+.rightHeading{
+  margin: 0;
+  padding: 0;
+  /* border-bottom: 1px solid #000000; */
+  color: #008ACF;
+  font-weight: 500;
+}
+
+.rightContent{
+  margin: 1%;
+  padding: 0.3em ;
+  color: #009CDE;
+  /* font-weight: 400; */
+}
+
 
 /* On screens that are 992px wide or less, go from four columns to two columns */
 @media screen and (max-width: 992px) {
