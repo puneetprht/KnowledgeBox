@@ -279,7 +279,6 @@ export default function Objects(props) {
 
   return (
     <div className={styles.wrapper}>
-      {/* <Link href={`/${router.query.object}/topic?i=' + ${12}`}><a>Go to topics page.</a></Link> */}
       <div className={styles.dropdown}>
         <p>This will show dropdown on small screen.</p>
       </div>
@@ -319,14 +318,20 @@ export default function Objects(props) {
                     </div>
                     :
                     <div className={styles.centerEditSubject}>
-                      <p>
-                        {item.categoryName? item.subjectName.trim() + ' (' + item.categoryName + ')':item.subjectName}
-                      </p>
+                      <Link href={`/${router.query.object}/topic?sId=${item.id}&cId=${item.category}`}>
+                        <p>
+                          {item.categoryName? item.subjectName.trim() + ' (' + item.categoryName + ')':item.subjectName}
+                        </p>
+                      </Link> 
                       <FontAwesomeIcon className={styles.confirm} size="1x" icon={faEdit} onClick={() => {setEditSubject(item.id); setOldSubject(item.subjectName);}}/>
                     </div>
                   }
                 </div>
-                <p className={styles.centerGridCount}>{item.count} {countString(item.count)}</p>
+                <Link href={`/${router.query.object}/topic?sId=${item.id}&cId=${item.category}`}>
+                <p className={styles.centerGridCount}>
+                  {item.count} {countString(item.count)}
+                </p>
+                </Link>
                 <div className={styles.centerGridAction}>
                   <div className={styles.ActionRow1}>
                     <label>

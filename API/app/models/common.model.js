@@ -149,19 +149,34 @@ Common.deleteSubject = (body, result) => {
 
 Common.addSubTopic = (body, result) => {
 	console.log(body);
-	sql.query(
-		`insert into  subtopic (subtopic, fcategory, fsubject) 
-		values ('${body.SubTopicName}',${body.catergoryId},${body.subjectId})`,
-		(err, res) => {
-			if (err) {
-				console.log('error: ', err);
-				result(err, null);
+	if(body.subtopicId){
+		sql.query(
+			`update subtopic set subtopic= '${body.SubTopicName}' where hmy = ${body.subtopicId}`,
+			(err, res) => {
+				if (err) {
+					console.log('error: ', err);
+					result(err, null);
+					return;
+				}
+				result(null, null);
 				return;
 			}
-			result(null, null);
-			return;
-		}
-	);
+		);
+	}else{
+		sql.query(
+			`insert into  subtopic (subtopic, fcategory, fsubject) 
+			values ('${body.SubTopicName}',${body.catergoryId},${body.subjectId})`,
+			(err, res) => {
+				if (err) {
+					console.log('error: ', err);
+					result(err, null);
+					return;
+				}
+				result(null, null);
+				return;
+			}
+		);
+	}
 };
 
 Common.deleteSubTopic = (body, result) => {

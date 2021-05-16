@@ -104,7 +104,8 @@ Quiz.deleteSubject = (body, result) => {
 Quiz.getSubTopicList = (id, result) => {
 	//console.log('SubjectId: ', id);
 	sql.query(
-		`select st.hmy as id,subtopic value,count(q.hmy) as count from quiz q
+		`select st.hmy as id,subtopic value,count(q.hmy) as count,
+		IFNULL(st.isPaid, 0) as isPaid, st.amount as amount, IFNULL(st.isActive, 0) as isActive from quiz q
 		right outer join subtopic st on st.hmy = q.fsubtopic
 		where st.fsubject = ${id}  group by st.hmy `,
 		(err, res) => {

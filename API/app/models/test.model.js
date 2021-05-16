@@ -129,8 +129,8 @@ Test.deleteSubject = (body, result) => {
 Test.getSubTopicList = (id, user, result) => {
 	let SQL = '';
 	SQL += ` select st.hmy as id,subtopic value,count(q.hmy) as count,
-	st.isPaid as isPaid, st.amount as amount, st.isActive as isActive,
-	s.isPaid as isParentPaid, s.amount as parentAmount `;
+	IFNULL(st.isPaid, 0) as isPaid, st.amount as amount, IFNULL(st.isActive, 0) as isActive,
+	IFNULL(s.isPaid, 0) as isParentPaid, s.amount as parentAmount `;
 	if(user && user.id){
 		SQL += ` ,CASE
 		WHEN xref.status = 'SUCCESS' THEN 1
