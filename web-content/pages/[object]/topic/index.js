@@ -192,6 +192,9 @@ export default function Topic({user}) {
   
   return (
     <div className={styles.wrapper}>
+      <h4 className={styles.heading}>
+        {countString(1)} topics
+      </h4>
       <main className={styles.container}>
         <div className={styles.leftModule}>
           {

@@ -130,4 +130,34 @@ app.post('/postQuiz', (req, res) => {
 	});
 });
 
+app.post('/postIsActive', (req, res) => {
+	model.postIsActive(req.body, (err, data) => {
+		if (err)
+			res.status(500).send({
+				message: err.message || 'Error processing request..'
+			});
+		else res.status(200).send();
+	});
+});
+
+app.post('/postIsPaid', (req, res) => {
+	model.postIsPaid(req.body, (err, data) => {
+		if (err)
+			res.status(500).send({
+				message: err.message || 'Error processing request..'
+			});
+		else res.status(200).send();
+	});
+});
+
+app.post('/postAmount', (req, res) => {
+	model.postAmount(req.body, (err, data) => {
+		if (err)
+			res.status(500).send({
+				message: err.message || 'Error processing request..'
+			});
+		else res.status(200).send();
+	});
+});
+
 module.exports = app;

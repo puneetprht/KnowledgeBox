@@ -173,7 +173,7 @@ Test.getSubTopicList = (id, user, result) => {
 Test.getTestList = (id, user, result) => {
 	let SQL = '';
 	SQL += ` select q.hmy as id,testname as value, q.duration as time, q.instructions as instructions,
-	q.isPaid as isPaid, q.amount as amount, q.isActive as isActive,
+	IFNULL(q.isPaid,0) as isPaid, q.amount as amount, IFNULL(q.isActive,0) as isActive,
 	st.isPaid as isParentPaid, st.amount as parentAmount,
 	s.isPaid as isSuperParentPaid, s.amount as superParentAmount `;
 	if(user && user.id){

@@ -276,4 +276,18 @@ Common.updateSubject = (body, result) => {
 	}
 };
 
+Common.updateObject = (body, result) => {
+	if (body.id) {
+		sql.query(`update ${body.table} set ${body.table}Name = '${body.value}' where hmy = ${body.id}`, (err, res) => {
+			if (err) {
+				console.log('error: ', err);
+				result(err, null);
+				return;
+			}
+			result(null, null);
+			return;
+		});
+	}
+};
+
 module.exports = Common;

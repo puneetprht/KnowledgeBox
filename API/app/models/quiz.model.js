@@ -129,7 +129,8 @@ Quiz.getSubTopicList = (id, result) => {
 
 Quiz.getQuizList = (id, result) => {
 	sql.query(
-		`select q.hmy as id,quizname as value, q.duration as time from quiz q
+		`select q.hmy as id,quizname as value, q.duration as time,
+		IFNULL(q.isPaid,0) as isPaid, q.amount as amount, IFNULL(q.isActive,0) as isActive from quiz q
 		inner join subtopic st on st.hmy = q.fsubtopic
 		where st.hmy = ${id} `,
 		(err, res) => {
@@ -363,6 +364,52 @@ Quiz.postQuiz = (quiz, result) => {
 			}
 		);
 	}
+};
+
+Quiz.postIsActive = (req, result) => {
+	console.log(`update ${req.table} set isActive = ${req.isActive} where hmy = ${req.id}`);
+	sql.query(
+		`update ${req.table} set isActive = ${req.isActive} where hmy = ${req.id}`,
+		(err, data) => {
+			if (err) {
+				console.log('error: ', err);
+				result(err, null);
+				return;
+			}
+			result(null, null);
+			return;
+		}
+	);
+};
+
+Quiz.postIsPaid = (req, result) => {
+	sql.query(
+		`update ${req.table} set isPaid = ${req.isPaid} where hmy = ${req.id}`,
+		(err, data) => {
+			if (err) {
+				console.log('error: ', err);
+				result(err, null);
+				return;
+			}
+			result(null, null);
+			return;
+		}
+	);
+};
+
+Quiz.postAmount = (req, result) => {
+	sql.query(
+		`update ${req.table} set amount = ${req.amount} where hmy = ${req.id}`,
+		(err, data) => {
+			if (err) {
+				console.log('error: ', err);
+				result(err, null);
+				return;
+			}
+			result(null, null);
+			return;
+		}
+	);
 };
 
 module.exports = Quiz;

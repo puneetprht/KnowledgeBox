@@ -1,9 +1,23 @@
+.wrapper{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;  
+    align-items: center;
+}
+
+.heading{
+  color: #008ACF;
+  font-size: x-large;
+  font-weight: 500;
+}
+
 .container{
   display: grid;  
   grid-template-columns: 75% 25%;
   padding: 1em 0.5em;
   background-color: #fff;
-  grid-auto-flow: dense
+  grid-auto-flow: dense;
+  width: 100%;
   /* grid-template-columns: 17% 66% 17%; */
 }
 

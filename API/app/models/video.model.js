@@ -163,7 +163,7 @@ Video.getSubTopicList = (id, user, result) => {
 Video.getVideoList = (id, user, result) => {
 	let SQL = '';
 	SQL += ` select v.hmy as id,videoname as value, url as url, urlVideoId,
-	v.isPaid as isPaid, v.amount as amount, v.isActive as isActive,
+	IFNULL(v.isPaid,0) as isPaid, v.amount as amount, IFNULL(v.isActive,0) as isActive,
 	st.isPaid as isParentPaid, st.amount as parentAmount,
 	s.isPaid as isSuperParentPaid, s.amount as superParentAmount `;
 	if(user && user.id){
