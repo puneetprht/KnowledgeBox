@@ -14,3 +14,8 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.bar-of-progress {
+  z-index: 50;
+  width: 3px;
+}
