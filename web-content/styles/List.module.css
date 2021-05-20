@@ -140,6 +140,32 @@
   text-align: center;
 }
 
+.centerGrid{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.editButton {
+  padding: 4px 12px;
+  margin-right: 0.5em;
+  color: #ffffff;
+  background-color: #008ACF;
+  border: none;
+  border-radius: 50px;
+  width: 7em;
+  float: center;  
+  cursor: pointer;
+  font-size: 1em;
+  font-weight: 300;
+  transition: background-color 0.3s ease 0s;
+}
+
+.editButton:hover {
+  background-color:#12abf7;
+}
+
+
 .postNewVideo{
   position: relative;
   align-items: center;

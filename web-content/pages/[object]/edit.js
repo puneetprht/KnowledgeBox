@@ -6,6 +6,12 @@ import styles from '../../styles/Edit.module.css';
 
 export default function QuizEdit() {
   const router = useRouter()
+  const object = router.query.object;
+  const subjectId = parseInt(router.query.sId);
+  const categoryId = parseInt(router.query.cId);
+  const subTopicId = parseInt(router.query.stId);
+  const objectId = parseInt(router.query.id);
+
   return (
     <div className={styles.container}>
       <main className={styles.main}>

@@ -331,9 +331,13 @@ export default function List({user}) {
                       <FontAwesomeIcon className={styles.confirm} size="1x" icon={faEdit} onClick={() => {setEditVideoUrl(item.id); setOldVideoUrl(item.url);}}/>
                     </div>
                   ) : 
-                  (<button>
-                    Edit
-                  </button>)
+                  (
+                    <div className={styles.centerGrid}>
+                      <button className={styles.editButton} onClick={()=> {router.push(`/${object}/edit?sId=${subjectId}&cId=${categoryId}&stId=${subTopicId}&id=${item.id}`)}}>
+                        Edit {countString(1)}
+                      </button>
+                    </div>
+                  )
                 }
                 <div className={styles.rightGridAction}>
                   <div className={styles.ActionRow1}>
@@ -398,7 +402,8 @@ export default function List({user}) {
               </div>
             ) : (
               <div className={styles.addParent}>
-                <FontAwesomeIcon className={styles.add} size="1x" icon={faPlus} onClick={() => setEditMode(true)}/>
+                <FontAwesomeIcon className={styles.add} size="1x" icon={faPlus} 
+                onClick={() => object == 'video' ? setEditMode(true) : router.push(`/${object}/edit?sId=${subjectId}&cId=${categoryId}&stId=${subTopicId}&id=0`)}/>
               </div>
             )
           }  
