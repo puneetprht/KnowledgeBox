@@ -18,6 +18,7 @@
   background-color: #fff;
   grid-auto-flow: dense;
   width: 100%;
+  align-items: center;
   /* grid-template-columns: 17% 66% 17%; */
 }
 
@@ -31,7 +32,6 @@
   grid-column-end: initial;
 }
 
-
 .leftModule{
   padding: 0.5em 0.5em;
   border-radius: 1em;
@@ -41,10 +41,11 @@
 
 .leftGrid{
   display: grid;  
-  grid-template-columns: 40% 20% 40%;
+  grid-template-columns: 35% 35% 30%;
   border-radius: 1em;
   margin-bottom: 0.5em;
   background-color: rgb(230, 243, 255);
+  align-items: center;
 }
 
 .leftGridSubject{
@@ -60,9 +61,17 @@
   align-items: center;
 }
 
+.textVideoUrl{
+  padding: 0.5em 0.1em;
+}
+
+.videoAction{
+  float: right;
+}
+
 .textInputSubject{
   padding-left: 0.5em;
-  width: 60%;
+  width: 70%;
 }
 
 .confirm{
@@ -77,9 +86,10 @@
   padding: 1em 1em;
 }
 
-.leftGridAction{
+.rightGridAction{
   margin-left: 1%;
   padding: 1em 1em;
+  align-items: center;
 }
 
 .ActionRow1{
@@ -128,6 +138,21 @@
   margin: 1em 0.5em;  
   align-self: center;
   text-align: center;
+}
+
+.postNewVideo{
+  position: relative;
+  align-items: center;
+  margin: 0.5em;
+}
+
+.postNewVideoRow2{
+  display: flex;
+  justify-content: space-between;
+}
+
+.postVideoName{
+  width: 50%;
 }
 
 /* Statistic column */

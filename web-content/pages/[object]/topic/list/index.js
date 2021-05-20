@@ -14,15 +14,18 @@ import styles from '../../../../styles/List.module.css';
 export default function List({user}) {
   const router = useRouter()
   const object = router.query.object;
-  const subjectId = router.query.sId;
-  const categoryId = router.query.cId;
-  const subTopicId = router.query.id;
+  const subjectId = parseInt(router.query.sId);
+  const categoryId = parseInt(router.query.cId);
+  const subTopicId = parseInt(router.query.id);
 
   const [list, setList] = useState([]);
   const [editMode, setEditMode] = useState(false);
   const [editSubject, setEditSubject] = useState(0);
   const [oldSubject, setOldSubject] = useState('');
-  const [newSubject, setNewSubject] = useState('');
+  const [editVideoUrl, setEditVideoUrl] = useState(0);
+  const [oldVideoUrl, setOldVideoUrl] = useState('');
+  const [newVideo, setNewVideo] = useState('');
+  const [newVideoUrl, setNewVideoUrl] = useState('');
 
   const [videoUrl, setVideoUrl] = useState('');
   const [videoName, setVideoName] = useState('');
@@ -51,7 +54,7 @@ export default function List({user}) {
       });
   };
 
-  const deleteSubject = (id) => {
+  const deleteListObject = (id) => {
     if (id) {
       axios
         .delete('/' + object + '/delete' + object, {
@@ -82,34 +85,7 @@ export default function List({user}) {
     }
   };
 
-  const postObject = () => {
-    if (!videoName) {
-      Alert.alert('Please add a Video Name!');
-      return;
-    } else if (!videoUrl) {
-      Alert.alert('Please add a Video URL!');
-      return;
-    }
-    setEditMode(true);
-    axios
-      .post('/' + object + '/post' + object, {
-        subTopicId: subTopicId,
-        subjectId: subjectId,
-        categoryId: catergoryId,
-        videoName: videoName,
-        videoUrl: videoUrl,
-      })
-      .then((response) => {
-        setEditMode(false);
-        fetchAllTopics();
-      })
-      .catch((err) => {
-        setEditMode(false);
-        Alert.alert('No Video Id detected.');
-      });
-  };
-
-  const updateSubject = (id, value) => {
+  const updateListObject = (id, value) => {
     axios
       .post('/common/updateObject', {
         id: id,
@@ -190,7 +166,59 @@ export default function List({user}) {
     .catch((err) => {
       console.log(err);
     });
-  }
+  };
+
+  const postVideoUrl = (id, url, name) => {
+    let error = '';
+    if(!id && !name){
+      error='Please enter Video name.';
+    }
+    else if(!url){
+      error='Please enter Video URL.';
+    }
+    else if(!getVideoUrlId(url)){
+      error='Please enter valid Video URL.';
+    }
+    if(error){
+      toast.error(error, {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        draggable: true,
+      });
+      return;
+    }
+    axios
+      .post('/video/postVideo', {
+        id: id,
+        subTopicId: subTopicId,
+        subjectId: subjectId,
+        categoryId: categoryId,
+        videoName: name,
+        videoUrl: url,
+      })
+      .then((response) => {
+        toast.success('Video Posted!', {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          draggable: true,
+        });
+        setEditVideoUrl(0);
+        fetchAllTopics();
+      })
+      .catch((err) => {
+        toast.error('Error posting Video, contact developer.', {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          draggable: true,
+        });
+      });
+  };
 
   /* Normal function definitions*/
   const updateAmountList = (id,amount) => {
@@ -207,6 +235,13 @@ export default function List({user}) {
     setList(lists);
   };
 
+  const changeVideoUrl= (id,value) => {
+    const lists = JSON.parse(JSON.stringify(list));
+    let index = lists.findIndex(l => l.id == id);
+    lists[index].url = value;
+    setList(lists);
+  };
+  
   const countString = (val) => {
     if(object == 'quiz'){
       return val < 2 ? 'Quiz' : 'Quizes';
@@ -227,10 +262,13 @@ export default function List({user}) {
   };
 
   const getVideoUrlId = (val) => {
+    console.log(val);
     let videoUrlId = getQueryParams('v', val);
+    console.log(videoUrlId);
     if (!videoUrlId) {
       videoUrlId = val.split('.be/')[1];
     }
+    console.log(videoUrlId);
     return videoUrlId;
   };
 
@@ -239,7 +277,7 @@ export default function List({user}) {
       <h4 className={styles.heading}>
         {countString(1)} List
       </h4>
-      {router.query.object == 'test' || router.query.object == 'quiz'? <Link href={`/${router.query.object}/edit`}><a>Edit</a></Link>:<></>} 
+      {/* {router.query.object == 'test' || router.query.object == 'quiz'? <Link href={`/${router.query.object}/edit`}><a>Edit</a></Link>:<></>}  */}
       <main className={styles.container}>
         <div className={styles.leftModule}>
           {
@@ -257,33 +295,53 @@ export default function List({user}) {
                         />
                       </span>
                       <span>
-                        <FontAwesomeIcon className={styles.confirm} size="1x" icon={faCheck} onClick={() => updateSubject(item.id, item.value)}/>
+                        <FontAwesomeIcon className={styles.confirm} size="1x" icon={faCheck} onClick={() => updateListObject(item.id, item.value)}/>
                         <FontAwesomeIcon className={styles.confirmCross} size="1x" icon={faTimes} onClick={() => {setEditSubject(0); changeSubject(item.id, oldSubject);}}/>
                       </span>
                     </div>
                     :
                     <div className={styles.leftEditSubject}>
-                      <Link href={`/${router.query.object}/topic/list?sId=${subjectId}&cId=${categoryId}&id=${item.id}`}>
-                        <p>
-                          {item.value}
-                        </p>
-                      </Link> 
+                      <p>
+                        {item.value}
+                      </p>
                       <FontAwesomeIcon className={styles.confirm} size="1x" icon={faEdit} onClick={() => {setEditSubject(item.id); setOldSubject(item.value);}}/>
                     </div>
                   }
-                </div>
-                <Link href={`/${router.query.object}/topic/list?sId=${subjectId}&cId=${categoryId}&id=${item.id}`}>
-                  <p className={styles.leftGridCount}>
-                    {item.count} {countString(item.count)}
-                  </p>
-                </Link>
-                <div className={styles.leftGridAction}>
+                </div >
+                { object == 'video' ? (
+                    editVideoUrl == item.id 
+                    ? 
+                    <div className={styles.textVideoUrl}>
+                      <div>
+                        <input type="text"
+                        value={item.url}
+                        onChange={(e)=>changeVideoUrl(item.id, e.target.value)}
+                        />
+                      </div>
+                      <div className={styles.videoAction}>
+                        <FontAwesomeIcon className={styles.confirm} size="1x" icon={faCheck} onClick={() => postVideoUrl(item.id, item.url)}/>
+                        <FontAwesomeIcon className={styles.confirmCross} size="1x" icon={faTimes} onClick={() => {setEditVideoUrl(0); changeVideoUrl(item.id, oldVideoUrl);}}/>
+                      </div>
+                    </div>
+                    :
+                    <div className={styles.leftEditSubject}>
+                      <p>
+                        {item.url}
+                      </p>
+                      <FontAwesomeIcon className={styles.confirm} size="1x" icon={faEdit} onClick={() => {setEditVideoUrl(item.id); setOldVideoUrl(item.url);}}/>
+                    </div>
+                  ) : 
+                  (<button>
+                    Edit
+                  </button>)
+                }
+                <div className={styles.rightGridAction}>
                   <div className={styles.ActionRow1}>
                     <label>
                       <input type="checkbox" value={item.isActive} checked={item.isActive?"checked":''} onChange={()=> updateFlags(item.id,false)}/>
                       <span className={styles.isActive}> Is Active </span>
                     </label>
-                    <FontAwesomeIcon className={styles.trash} size="1x" icon={faTrashAlt} onClick={() => deleteSubject(item.id)}/>
+                    <FontAwesomeIcon className={styles.trash} size="1x" icon={faTrashAlt} onClick={() => deleteListObject(item.id)}/>
                   </div>
                   {object == 'video' || object == 'test'? 
                   <div className={styles.ActionRow2}>
@@ -307,18 +365,34 @@ export default function List({user}) {
           {
             editMode ? 
             (
-              <div className={styles.boxSimple}>
-                <div className={styles.leftConfirmSubject}>
-                  <span className={styles.textInputSubject}>
+              <div className={styles.postNewVideo}>
+                <div className={styles.textInputVideoUrl}>
                   <input
-                    value={newSubject}
-                    placeholder="Enter Subject"
-                    onChange={(e) => setNewSubject(e.target.value)}
+                    value={newVideoUrl}
+                    placeholder="Enter Video URL"
+                    onChange={(e) => setNewVideoUrl(e.target.value)}
                   />
+                </div>
+                <div className={styles.postNewVideoRow2}>
+                  <span className={styles.postVideoName}>
+                    <input
+                      value={newVideo}
+                      placeholder="Enter Video Name"
+                      onChange={(e) => setNewVideo(e.target.value)}
+                    />
                   </span>
-                  <span>
-                    <FontAwesomeIcon className={styles.confirm} size="1x" icon={faCheck} onClick={() => postSubtopic(0, newSubject)}/>
-                    <FontAwesomeIcon className={styles.confirmCross} size="1x" icon={faTimes} onClick={() => setEditMode(false)}/>
+                  <span className={styles.videoAction}>
+                    <FontAwesomeIcon className={styles.confirm} size="1x" icon={faCheck} onClick={() => {
+                      postVideoUrl(0, newVideoUrl, newVideo);
+                      setEditMode(false);
+                      setNewVideo('');
+                      setNewVideoUrl('');
+                    }}/>
+                    <FontAwesomeIcon className={styles.confirmCross} size="1x" icon={faTimes} onClick={() => {
+                        setEditMode(false);
+                        setNewVideo('');
+                        setNewVideoUrl('');
+                      }}/>
                   </span>
                 </div>
               </div>

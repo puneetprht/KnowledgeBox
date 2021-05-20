@@ -214,16 +214,22 @@ Video.getVideoList = (id, user, result) => {
 };
 
 Video.postVideo = (body, result) => {
-	//console.log(body);
-	let urlVideoId = getQueryParams('v', body.videoUrl);
-	if (!urlVideoId) {
-		urlVideoId = body.videoUrl.split('.be/')[1];
-	  }
-	//console.log(urlVideoId);
-	if (urlVideoId) {
+	console.log(body);
+	if(body.id){
+		let urlVideoId = body.urlVideoId;
+		if(!urlVideoId){
+			urlVideoId = getQueryParams('v', body.videoUrl)
+		} 
+		if(!urlVideoId){
+			urlVideoId = body.videoUrl.split('.be/')[1];
+		}
+		if(!urlVideoId){
+			result('No Video Id detected.', null);
+			return;
+		}
+		console.log(`update video set url= '${body.videoUrl}', urlVideoId = '${urlVideoId}' where hmy = ${body.id}`);
 		sql.query(
-			`insert into video (videoname,url,fsubtopic,fsubject,fcategory,urlVideoId)
-        value ('${body.videoName}', '${body.videoUrl}', ${body.subTopicId},${body.subjectId},${body.categoryId},'${urlVideoId}')`,
+			`update video set url= '${body.videoUrl}', urlVideoId = '${urlVideoId}' where hmy = ${body.id}`,
 			(err, res) => {
 				if (err) {
 					console.log('error: ', err);
@@ -234,10 +240,32 @@ Video.postVideo = (body, result) => {
 				return;
 			}
 		);
-	} else {
-		result('No Video Id detected.', null);
-		return;
 	}
+	else{
+		let urlVideoId = getQueryParams('v', body.videoUrl);
+		if (!urlVideoId) {
+			urlVideoId = body.videoUrl.split('.be/')[1];
+		  }
+		//console.log(urlVideoId);
+		if (urlVideoId) {
+			sql.query(
+				`insert into video (videoname,url,fsubtopic,fsubject,fcategory,urlVideoId)
+  	      value ('${body.videoName}', '${body.videoUrl}', ${body.subTopicId},${body.subjectId},${body.categoryId},'${urlVideoId}')`,
+				(err, res) => {
+					if (err) {
+						console.log('error: ', err);
+						result(err, null);
+						return;
+					}
+					result(null, null);
+					return;
+				}
+			);
+		} else {
+			result('No Video Id detected.', null);
+			return;
+		}		
+	}	
 };
 
 Video.deleteVideo = (body, result) => {
