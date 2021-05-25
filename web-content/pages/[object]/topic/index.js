@@ -246,12 +246,17 @@ export default function Topic({user}) {
                       <input type="checkbox" value={item.isPaid} checked={item.isPaid?"checked":''} onChange={()=> updateFlags(item.id,true)}/>
                       <span className={styles.isActive}> Is Paid </span>
                     </label>
-                    <span className={styles.actionTextInput}>
-                      <input type="text"
-                        value={item.amount}
-                        onChange={e => {updateAmountList(item.id, e.target.value); postAmount(item.id, e.target.value);}}
-                      />
-                    </span>
+                    <div className={styles.actionTextInput}>
+                      <div className="row">
+                        <div className="input-field">
+                          <input id={"amount" + item.id} type="text"
+                            value={item.amount || ''}
+                            onChange={e => {updateAmountList(item.id, e.target.value); postAmount(item.id, e.target.value);}}
+                          />
+                          <label htmlFor={"amount" + item.id} className={item.amount?"active": ""}>Amount</label>
+                        </div>
+                      </div>
+                    </div>
                   </div> :<>
                   </>}
                 </div>
