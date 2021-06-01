@@ -90,6 +90,20 @@ app.get('/getTestList', (req, res) => {
 	});
 });
 
+app.get('/getTest', (req, res) => {
+	let user = null;
+	if(req.query.user){
+		user = JSON.parse(req.query.user);
+	}
+	model.getTestListById(req.query.id, user, (err, data) => {
+		if (err)
+			res.status(500).send({
+				message: err.message || 'Error processing request..'
+			});
+		else res.send(data);
+	});
+});
+
 app.get('/getTestDetail', (req, res) => {
 	//console.log(req);
 	model.getTestDetail(req.query.id, (err, data) => {

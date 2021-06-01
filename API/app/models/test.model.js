@@ -224,6 +224,33 @@ Test.getTestList = (id, user, result) => {
 	);
 };
 
+Test.getTestListById = (id, user, result) => {
+	let SQL = '';
+	SQL += ` select q.hmy as id,testname as value, q.duration as time, q.instructions as instructions,
+	IFNULL(q.isPaid,0) as isPaid, q.amount as amount, IFNULL(q.isActive,0) as isActive `;
+	SQL += ` from test q`;
+	SQL += ` where q.hmy = ${id} `;
+
+	sql.query(
+		SQL,
+		(err, res) => {
+			if (err) {
+				console.log('error: ', err);
+				result(err, null);
+				return;
+			}
+
+			if (res.length) {
+				result(null, res[0]);
+				return;
+			}
+
+			result(null, null);
+			return;
+		}
+	);
+};
+
 Test.addTest = (body, result) => {
 	console.log(body);
 	sql.query(

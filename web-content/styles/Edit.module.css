@@ -1,0 +1,72 @@
+.container{
+  margin: 0;
+  padding: 0;
+}
+
+.pageHeader{
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  background-color: #008ACF;
+  padding: 0.3em 1em;
+}
+
+.back{
+  width: 1.5em;
+  color: white;
+}
+
+.button {
+  padding: 4px 12px;
+  margin-right: 0.5em;
+  background-color: #ffffff;
+  color: #008ACF;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 1em;
+  font-weight: 300;
+  transition: background-color 0.3s ease 0s;
+}
+
+.button:hover {
+  background-color: #FF8E1C;
+  color:#ffffff;
+}
+
+.button:focus {  
+  background-color: #FF8E1C;
+  color:#ffffff;
+}
+
+.objectContainer{
+  width: 85%;
+  margin: auto;
+  margin-top: 1em;
+}
+
+.objectHeader{
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.objectTitle{
+ min-width: 200px; 
+ width: 50%;
+}
+
+.timeDuration{
+  min-width: 100px;
+  width: 25%;
+}
+
+.textInput{
+  border: none;
+}
+
+.textInput:active{
+  border: none;
+}
