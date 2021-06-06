@@ -8,7 +8,7 @@ import { confirmAlert } from 'react-confirm-alert';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faTimes, faArrowLeft, faPlus, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faLanguage, faTimes, faArrowLeft, faPlus, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 
 import styles from '../../styles/Edit.module.css';
 import { functions } from 'lodash';
@@ -59,7 +59,7 @@ export default function ObjectEdit({user}) {
             id: objectId,
           },
         })
-        .then((response) => {
+        .then((response) => {         
           if (response.data) {
             setQuestionsList(response.data);
           }
@@ -82,10 +82,7 @@ export default function ObjectEdit({user}) {
         .catch((err) => {
           console.log(err);
         });
-    } else if (testDetail.length) {
-      console.log('setQuestionsList:', testDetail);
-      setQuestionsList(testDetail);
-    }
+    } 
   }, []);
 
   const submitTest = (event) => {
@@ -105,6 +102,13 @@ export default function ObjectEdit({user}) {
       })
       .then((response) => {
         setIsSubmit(false);
+        toast.success('Test saved successfully.', {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          draggable: true,
+        });
       })
       .catch((err) => {
         setIsSubmit(false);
@@ -123,6 +127,13 @@ export default function ObjectEdit({user}) {
       })
       .then((response) => {
         setIsSubmit(false);
+        toast.success('Quiz saved successfully.', {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          draggable: true,
+        });
       })
       .catch((err) => {
         setIsSubmit(false);
@@ -243,6 +254,10 @@ export default function ObjectEdit({user}) {
     setQuestionsList(questions);
   };
 
+  const isQuestionValid = (item) => {
+    return item.count%2==1?true:false;
+  }
+
   const navigateBack = (index) => {
     //To save and navigate back.
     confirmAlert({
@@ -276,8 +291,11 @@ export default function ObjectEdit({user}) {
   return (
     <form className={styles.container}>
       <div className={styles.pageHeader}> 
-        <FontAwesomeIcon className={styles.back} size="1" icon={faArrowLeft} onClick={() => navigateBack()}/>
+        <FontAwesomeIcon className={styles.back} size="1x" icon={faArrowLeft} onClick={() => navigateBack()}/>
         <div>
+          <button className={styles.buttonDelete} onClick={(e)=>submitTest(e)}>
+            Delete
+          </button>
           <button className={styles.button} onClick={(e)=>submitTest(e)}>
             Save
           </button>
@@ -313,23 +331,139 @@ export default function ObjectEdit({user}) {
           </div>
         </div>
         <div>
-          <div className="row">
-            <div className="input-field">
-              <textarea id="instructions" type="text" className="materialize-textarea"
-                value={instructions}
-                onChange={(e)=>setInstructions(e.target.value)}
-              />
-              <label htmlFor="instructions" className={instructions?"active": ""}>Test Instructions</label>
+          {object == 'test'?
+            <div className="row">
+              <div className="input-field">
+                <textarea id="instructions" type="text" className="materialize-textarea"
+                  value={instructions}
+                  onChange={(e)=>setInstructions(e.target.value)}
+                />
+                <label htmlFor="instructions" className={instructions?"active": ""}>Test Instructions</label>
+              </div>
             </div>
-          </div>
+            :<></>
+          }
         </div>
         <div className={styles.questionList}>
-
+          {questionsList.length ?
+            (questionsList.map(item => {
+              return (
+                <div key={item.id} className={isQuestionValid(item)? styles.question : styles.questionWrong}>
+                  <div>
+                    <div className="input-field">
+                      <textarea id={"question"+item.count} type="text" className="materialize-textarea"
+                        value={item.question}
+                        onChange={(e)=>setInstructions(e.target.value)}
+                      />
+                      <label htmlFor={"question"+item.count} className={item.question?"active": ""}>Question {item.count}</label>
+                    </div>
+                    {/* <div className="row">
+                      <div className="input-field">
+                        <textarea id={"questionLang"+item.count} type="text" className="materialize-textarea"
+                          value={item.questionLang}
+                          onChange={(e)=>setInstructions(e.target.value)}
+                        />
+                        <label htmlFor={"questionLang"+item.count} className={item.questionLang?"active": ""}>प्रश्न {item.count}</label>
+                      </div>
+                    </div> */}
+                  </div>
+                  <div className={styles.optionSelection}>
+                    <span className={styles.selectionBox}>1</span>
+                    <span className={styles.selectionBox}>2</span>
+                    <span className={styles.selectionBoxSelected}>3</span>
+                    <span className={styles.selectionBox}>4</span>
+                  </div>
+                  <div className={styles.optionContainer}>
+                    <div className={styles.optionBox}>
+                      <div className="input-field">
+                        <textarea id={"question"+item.count} type="text" className="materialize-textarea"
+                          value={item.option1}
+                          onChange={(e)=>setInstructions(e.target.value)}
+                        />
+                        <label htmlFor={"question"+item.count} className={item.question?"active": ""}>Option 1</label>
+                      </div>
+                    </div>
+                    <div className={styles.optionBox}>
+                      <div className="input-field">
+                        <textarea id={"question"+item.count} type="text" className="materialize-textarea"
+                          value={item.option2}
+                          onChange={(e)=>setInstructions(e.target.value)}
+                        />
+                        <label htmlFor={"question"+item.count} className={item.question?"active": ""}>Option 2</label>
+                      </div>
+                    </div>
+                    <div className={styles.optionBox}>
+                      <div className="input-field">
+                        <textarea id={"question"+item.count} type="text" className="materialize-textarea"
+                          value={item.option3}
+                          onChange={(e)=>setInstructions(e.target.value)}
+                        />
+                        <label htmlFor={"question"+item.count} className={item.question?"active": ""}>Option 3</label>
+                      </div>
+                    </div>
+                    <div className={styles.optionBox}>
+                      <div className="input-field">
+                        <textarea id={"question"+item.count} type="text" className="materialize-textarea"
+                          value={item.option4}
+                          onChange={(e)=>setInstructions(e.target.value)}
+                        />
+                        <label htmlFor={"question"+item.count} className={item.question?"active": ""}>Option 4</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div className={styles.footerContainer}>
+                    <div className={styles.weightage}>
+                      <div className={styles.weightageChild}>
+                        <div className="input-field">
+                          <input type="number"
+                            id="number" 
+                            value={timeDuration}
+                            onChange={(e)=>setTimeDuration(e.target.value)}
+                          />
+                          <label htmlFor="number" className={timeDuration?"active": ""}>Positive</label>
+                        </div>
+                      </div>
+                      <div className={styles.weightageChild}>
+                        <div className="input-field">
+                          <input type="number"
+                            id="number" 
+                            value={timeDuration}
+                            onChange={(e)=>setTimeDuration(e.target.value)}
+                          />
+                          <label htmlFor="number" className={timeDuration?"active": ""}>Negative</label>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <FontAwesomeIcon className={styles.questionIcon} size="1x" icon={faLanguage} onClick={() => navigateBack()}/>
+                      <FontAwesomeIcon className={isQuestionValid(item)?styles.questionIcon2: styles.questionIcon2Wrong} size="1x" icon={faTrashAlt} onClick={() => navigateBack()}/>
+                    </div>
+                  </div>
+                </div>
+              );  
+            }))
+            :
+            <p className={styles.noQuestion}>
+              No Questions, please add one.
+            </p>
+          }
         </div>
         <div className={styles.pageFooter}>
-
+                <FontAwesomeIcon  size="1x" icon={faPlus} 
+                onClick={(e) => addQuestion(e)}/>
         </div>
       </div>
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </form>
   )
 }

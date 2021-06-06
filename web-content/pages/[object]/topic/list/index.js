@@ -281,7 +281,8 @@ export default function List({user}) {
       <main className={styles.container}>
         <div className={styles.leftModule}>
           {
-            list.map(item => {return(
+            list.map(item => {
+              return(
               <div className={styles.leftGrid} key={item.id}>
                 <div className={styles.leftGridSubject}>
                   {
