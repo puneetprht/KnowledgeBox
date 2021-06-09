@@ -185,6 +185,33 @@ Quiz.deleteQuiz = (body, result) => {
 	);
 };
 
+Quiz.getQuizListById = (id, user, result) => {
+	let SQL = '';
+	SQL += ` select q.hmy as id, quizname as value, q.duration as time,
+	IFNULL(q.isPaid,0) as isPaid, q.amount as amount, IFNULL(q.isActive,0) as isActive `;
+	SQL += ` from quiz q`;
+	SQL += ` where q.hmy = ${id} `;
+
+	sql.query(
+		SQL,
+		(err, res) => {
+			if (err) {
+				console.log('error: ', err);
+				result(err, null);
+				return;
+			}
+
+			if (res.length) {
+				result(null, res[0]);
+				return;
+			}
+
+			result(null, null);
+			return;
+		}
+	);
+};
+
 Quiz.getQuizDetail = (id, result) => {
 	console.log(id, ' Time: ', new Date());
 	sql.query(
@@ -274,7 +301,7 @@ Quiz.postQuiz = (quiz, result) => {
 					result(err, null);
 					return;
 				}
-				console.log(data.insertId);
+				console.log(data.insertId || quiz.quizId);
 				console.log(quiz.questions);
 
 				quiz.questions.forEach((question) => {
@@ -306,7 +333,7 @@ Quiz.postQuiz = (quiz, result) => {
 							`insert into quizdetail (fquiz,fsubtopic,fsubject,fcategory,question,option1,option2,
 								option3,option4,correctoption,isMultiple, questionLang, optionLang1, optionLang2, optionLang3, optionLang4,
 								videoUrl, videoUrlId, explaination, explainationLang) values 
-								(${data.insertId}, ${quiz.subTopicId}, ${quiz.subjectId}, ${quiz.categoryId},
+								(${data.insertId || quiz.quizId}, ${quiz.subTopicId}, ${quiz.subjectId}, ${quiz.categoryId},
 									'${question.question.toString()}','${question.option1.toString()}','${question.option2.toString()}',
 									'${question.option3.toString()}','${question.option4.toString()}',
 									'${question.correctOption.toString()}',${question.isMultiple},'${question.questionLang}',
@@ -322,7 +349,7 @@ Quiz.postQuiz = (quiz, result) => {
 						);
 					}
 				});
-				result(null, null);
+				result(null, {id: data.insertId || quiz.quizId});
 				return;
 			}
 		);
@@ -359,7 +386,7 @@ Quiz.postQuiz = (quiz, result) => {
 						}
 					);
 				});
-				result(null, null);
+				result(null, {id: data.insertId});
 				return;
 			}
 		);

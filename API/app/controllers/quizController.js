@@ -79,6 +79,20 @@ app.get('/getQuizList', (req, res) => {
 	});
 });
 
+app.get('/getQuiz', (req, res) => {
+	let user = null;
+	if(req.query.user){
+		user = JSON.parse(req.query.user);
+	}
+	model.getQuizListById(req.query.id, user, (err, data) => {
+		if (err)
+			res.status(500).send({
+				message: err.message || 'Error processing request..'
+			});
+		else res.send(data);
+	});
+});
+
 app.get('/getQuizDetail', (req, res) => {
 	//console.log(req);
 	model.getQuizDetail(req.query.id, (err, data) => {
@@ -126,7 +140,7 @@ app.post('/postQuiz', (req, res) => {
 			res.status(500).send({
 				message: err.message || 'Error processing request..'
 			});
-		else res.status(200).send();
+		else res.status(200).send(data);
 	});
 });
 

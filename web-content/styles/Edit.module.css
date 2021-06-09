@@ -150,9 +150,9 @@
   text-align: center;
   padding-top: 0.65em;
   vertical-align: middle;
-  border: 1px solid #58fc06;
+  border: 1px solid #3db800;
   border-radius: 50%;
-  background-color: #58fc06;
+  background-color: #79c752;
 }
 
 .relative{
@@ -168,9 +168,11 @@
 }
 
 .footerContainer{
-  display: flex;
+  /* display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: center; */
+  position: relative;
+  min-height: 3.2em;
 }
 
 .weightage{
@@ -182,6 +184,13 @@
 .weightageChild{
   width: 100px;
 }
+
+.action{
+  position: absolute;
+  top: 0em;
+  right: 0em;
+}
+
 
 .questionIcon{
   width: 1.8em;
@@ -205,6 +214,28 @@
   vertical-align: bottom;
   margin: 1em;
   color: white;
+}
+
+.videoParent{
+  position: relative;
+}
+
+.videoChild1{
+  position: absolute;
+  width: 1em;
+  right: 0em;
+  top: 0em;
+  margin: 1em;
+  color: rgb(255, 0, 0);
+}
+
+.videoChild2{
+  position: absolute;
+  width: 1em;
+  right: 0em;
+  top: 0em;
+  margin: 1em;
+  color: rgb(0, 255, 0);
 }
 
 .pageFooter{

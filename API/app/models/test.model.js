@@ -279,6 +279,19 @@ Test.deleteTest = (body, result) => {
 				result(err, null);
 				return;
 			}
+			sql.query(
+				`delete from testDetail
+				where ftest = ${body.id}`,
+				(err, res) => {
+					if (err) {
+						//console.log('error: ', err);
+						result(err, null);
+						return;
+					}
+					result(null, null);
+					return;
+				}
+			);
 			result(null, null);
 			return;
 		}
@@ -384,7 +397,7 @@ Test.postTest = (test, result) => {
 					result(err, null);
 					return;
 				}
-				console.log(data.insertId);
+				console.log(data.insertId || test.testId);
 				console.log(test.questions);
 
 				test.questions.forEach((question) => {
@@ -417,7 +430,7 @@ Test.postTest = (test, result) => {
 							`insert into testdetail (ftest,fsubtopic,fsubject,fcategory,question,option1,option2,
 								option3,option4,correctoption,isMultiple, questionLang, optionLang1, optionLang2, optionLang3, optionLang4, weightage, negativeWeightage,
 								videoUrl, videoUrlId, explaination, explainationLang) values 
-								(${data.insertId}, ${test.subTopicId}, ${test.subjectId}, ${test.categoryId},
+								(${data.insertId || test.testId}, ${test.subTopicId}, ${test.subjectId}, ${test.categoryId},
 									'${question.question.toString()}','${question.option1.toString()}','${question.option2.toString()}',
 									'${question.option3.toString()}','${question.option4.toString()}',
 									'${question.correctOption.toString()}',${question.isMultiple},'${question.questionLang}',
@@ -433,7 +446,7 @@ Test.postTest = (test, result) => {
 						);
 					}
 				});
-				result(null, null);
+				result(null, {id: test.testId});
 				return;
 			}
 		);
@@ -470,7 +483,7 @@ Test.postTest = (test, result) => {
 						}
 					);
 				});
-				result(null, null);
+				result(null, {id: data.insertId});
 				return;
 			}
 		);

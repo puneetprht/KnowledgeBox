@@ -141,7 +141,7 @@ app.post('/postTest', (req, res) => {
 			res.status(500).send({
 				message: err.message || 'Error processing request..'
 			});
-		else res.status(200).send();
+		else res.status(200).send(data);
 	});
 });
 

@@ -8,10 +8,9 @@ import { confirmAlert } from 'react-confirm-alert';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLanguage, faTimes, faArrowLeft, faPlus, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faLanguage, faCheckDouble, faArrowLeft, faPlus, faTrashAlt, faTimes} from '@fortawesome/free-solid-svg-icons';
 
 import styles from '../../styles/Edit.module.css';
-import { functions } from 'lodash';
 
 export default function ObjectEdit({user}) {
   const router = useRouter()
@@ -21,7 +20,7 @@ export default function ObjectEdit({user}) {
   const subTopicId = parseInt(router.query.stId);
   const objectId = parseInt(router.query.id);
 
-  const [key, setKey] = useState(0);
+  const [saved, setSaved] = useState(false);
   const [isSubmit, setIsSubmit] = useState(false);
   const [objectTitle, setObjectTitle] = useState('');
   const [timeDuration, setTimeDuration] = useState('');
@@ -45,9 +44,9 @@ export default function ObjectEdit({user}) {
     negativeWeightage: 0,
     correctOption: [],
     isMultiple: false,
+    languageFlag: false,
   };
   const [questionsList, setQuestionsList] = useState([questionObject]);
-  const [languageFlag, setLanguage] = useState(false);
   const [instructions, setInstructions] = useState('');
 
   //API Calls
@@ -61,11 +60,15 @@ export default function ObjectEdit({user}) {
         })
         .then((response) => {         
           if (response.data) {
+            response.data.forEach(element => {
+              element.correctOption = element.correctOption.split(',').map(Number);
+            });
             setQuestionsList(response.data);
           }
+          setSaved(true);
         })
         .catch((err) => {
-          console.log(err);
+          console.error(err);
         });
         axios
         .get('/' + object + '/get' + object, {
@@ -80,13 +83,23 @@ export default function ObjectEdit({user}) {
           setTimeDuration(response.data.time);
         })
         .catch((err) => {
-          console.log(err);
+          console.error(err);
         });
     } 
   }, []);
 
-  const submitTest = (event) => {
+  const submitObject = (event) => {
     event.preventDefault();
+    if(validateQuiz()){
+      toast.error('Please correct errors in ' + countString(1) + '.', {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        draggable: true,
+      });
+      return;
+    }
     setIsSubmit(true);
     if(object == 'test'){
       axios
@@ -102,6 +115,10 @@ export default function ObjectEdit({user}) {
       })
       .then((response) => {
         setIsSubmit(false);
+        setSaved(true);
+        if(objectId == 0 && response.data.id){
+          router.replace(`/${object}/edit?sId=${subjectId}&cId=${categoryId}&stId=${subTopicId}&id=${response.data.id}`)
+        }
         toast.success('Test saved successfully.', {
           position: "top-center",
           autoClose: 3000,
@@ -112,14 +129,14 @@ export default function ObjectEdit({user}) {
       })
       .catch((err) => {
         setIsSubmit(false);
-        console.log(err);
+        console.error(err);
       });
     } else if(object =='quiz'){
       axios
       .post('/quiz/postQuiz', {
         subTopicId: subTopicId,
         subjectId: subjectId,
-        categoryId: catergoryId,
+        categoryId: categoryId,
         quizId: objectId,
         questions: questionsList,
         quizName: objectTitle,
@@ -127,6 +144,10 @@ export default function ObjectEdit({user}) {
       })
       .then((response) => {
         setIsSubmit(false);
+        setSaved(true);
+        if(objectId == 0 && response.data.id){
+          router.replace(`/${object}/edit?sId=${subjectId}&cId=${categoryId}&stId=${subTopicId}&id=${response.data.id}`)
+        }
         toast.success('Quiz saved successfully.', {
           position: "top-center",
           autoClose: 3000,
@@ -137,56 +158,74 @@ export default function ObjectEdit({user}) {
       })
       .catch((err) => {
         setIsSubmit(false);
-        console.log(err);
+        console.error(err);
+      });
+    }
+  };
+
+  const deleteObject = (event) => {
+    event.preventDefault();
+    if (objectId) {
+      confirmAlert({
+        title: 'Delete ' + countString(1),
+        message: 'Are you sure you want to delete this?',
+        buttons: [
+          {
+            label: 'Yes',
+            onClick: () => {
+              setIsSubmit(true);
+              axios
+                .delete('/' + object + '/delete' + object, {
+                  data: {
+                    id: objectId,
+                  },
+                })
+                .then((response) => {
+                  toast.success(countString(1) + ' deleted successfully.', {
+                    position: "top-center",
+                    autoClose: 3000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    draggable: true,
+                  });
+                  router.back();
+                })
+                .catch((err) => {
+                  console.error(err);
+                  toast.error('Error deleting '+countString(1)+', contact developer.', {
+                    position: "top-center",
+                    autoClose: 3000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    draggable: true,
+                  });
+                });
+              }
+          },
+          {
+            label: 'No',
+            onClick: () => console.log("No Pressed")
+          }
+        ]
+      });
+    } else{
+      toast.error('New '+countString(1)+' cannot delete.', {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        draggable: true,
       });
     }
   };
 
   // Normal Functions
-  const isMultiple = (bool) => {
+  const setQuestionProperty = (val, item, prop) => {
     const questions = JSON.parse(JSON.stringify(questionsList));
-    questions[key].isMultiple = bool;
+    let index = questions.findIndex(q => q.count == item.count);
+    questions[index][prop] = val;
     setQuestionsList(questions);
-  };
-
-  const saveQuestion = (val) => {
-    const questions = JSON.parse(JSON.stringify(questionsList));
-    if (languageFlag) {
-      questions[key].questionLang = val;
-    } else {
-      questions[key].question = val;
-    }
-    setQuestionsList(questions);
-  };
-
-  const saveOption = (val, index) => {
-    const questions = JSON.parse(JSON.stringify(questionsList));
-    if (languageFlag) {
-      questions[key]['optionLang' + index] = val;
-    } else {
-      questions[key]['option' + index] = val;
-    }
-    setQuestionsList(questions);
-  };
-
-  const saveWeightage = (val, flag = true) => {
-    const questions = JSON.parse(JSON.stringify(questionsList));
-    if (flag) {
-      questions[key].weightage = val;
-    } else {
-      questions[key].negativeWeightage = val;
-    }
-    setQuestionsList(questions);
-  };
-
-  const saveExplanation = (val) => {
-    const questions = JSON.parse(JSON.stringify(questionsList));
-    if (languageFlag) {
-      questions[key].explainationLang = val;
-    } else {
-      questions[key].explaination = val;
-    }
-    setQuestionsList(questions);
+    setSaved(false);
   };
 
   const getQueryParams = (params, url) => {
@@ -197,17 +236,20 @@ export default function ObjectEdit({user}) {
     return queryString ? queryString[1] : null;
   };
 
-  const saveVideoUrl = (val) => {
+  const saveVideoUrl = (val, item) => {
     const questions = JSON.parse(JSON.stringify(questionsList));
-    questions[key].videoUrl = val;
-    questions[key].videoUrlId = getQueryParams('v', val);
-    if (!questions[key].videoUrlId) {
-      questions[key].videoUrlId = val.split('.be/')[1];
+    let index = questions.findIndex(q => q.count == item.count);
+    questions[index].videoUrl = val;
+    questions[index].videoUrlId = getQueryParams('v', val);
+    if (!questions[index].videoUrlId) {
+      questions[index].videoUrlId = val.split('.be/')[1];
     }
     setQuestionsList(questions);
+    setSaved(false);
   };
 
-  const validateQuiz = () => {
+  const isQuestionValid = (item) => {
+    let key = questionsList.findIndex(q => q.count == item.count);
     return (
       questionsList[key].question &&
       questionsList[key].option1 &&
@@ -218,51 +260,42 @@ export default function ObjectEdit({user}) {
     );
   };
 
-  const deleteQuestion = (index) => {
-    const questions = JSON.parse(JSON.stringify(questionsList));
-    console.log(questions);
-    questions.splice(index, 1);
-    console.log(questions);
-    setQuestionsList(questions);
-    setKey(index - 1);
-  };
-
-  const onOptionPress = (index) => {
-    const questions = JSON.parse(JSON.stringify(questionsList));
-    if (
-      questions[key].correctOption.includes(index) &&
-      questions[key].isMultiple
-    ) {
-      questions[key].correctOption.splice(
-        questions[key].correctOption.indexOf(index),
-        1,
-      );
-    } else if (
-      questions[key].correctOption.includes(index) &&
-      !questions[key].isMultiple
-    ) {
-      questions[key].correctOption = [];
-    } else {
-      if (questions[key].isMultiple) {
-        questions[key].correctOption.push(index);
-        questions[key].correctOption.sort();
-      } else {
-        questions[key].correctOption = [];
-        questions[key].correctOption.push(index);
-      }
-    }
-    setQuestionsList(questions);
-  };
-
-  const isQuestionValid = (item) => {
-    return item.count%2==1?true:false;
+  const validateQuiz = () => {
+    return !!questionsList.filter(q => isQuestionValid(q) == false).length || !objectTitle || !timeDuration
   }
 
-  const navigateBack = (index) => {
+  const onOptionPress = (item, option) => {
+    const questions = JSON.parse(JSON.stringify(questionsList));
+    let index = questions.findIndex(q => q.count == item.count);
+    if (questions[index].correctOption.includes(option)) {
+      questions[index].correctOption.splice(questions[index].correctOption.findIndex(q => q == option),1);
+    } 
+    else {
+        questions[index].correctOption.push(option);
+        questions[index].correctOption.sort();
+    }
+    questions[index].isMultiple = (questions[index].correctOption.length > 1);
+    setQuestionsList(questions);
+    setSaved(false);
+  };
+
+  const deleteQuestion = (item) => {
+    const questions = JSON.parse(JSON.stringify(questionsList));
+    let index = questions.findIndex(q => q.count == item.count);
+    questions.splice(index, 1);
+    setQuestionsList(questions);
+    setSaved(false);
+  };
+
+  const navigateBack = () => {
     //To save and navigate back.
+    if(saved){
+      router.back();
+    }
+    else{
     confirmAlert({
       title: 'Go back',
-      message: 'All the changes will be erased. Are you sure to do this.',
+      message: 'All the unsaved changes will be erased. Are you sure to do this.',
       buttons: [
         {
           label: 'Yes',
@@ -274,6 +307,7 @@ export default function ObjectEdit({user}) {
         }
       ]
     });
+  }
   };
 
   const countString = (val) => {
@@ -287,21 +321,29 @@ export default function ObjectEdit({user}) {
     return '';
   };
 
+  const addQuestion = () => {
+    let question = JSON.parse(JSON.stringify(questionObject))
+    question.count = parseInt(questionsList[questionsList.length-1].count)+1;
+    const questions = JSON.parse(JSON.stringify(questionsList));
+    questions.push(question);
+    setQuestionsList(questions);
+    setSaved(false);
+  }
 
   return (
     <form className={styles.container}>
       <div className={styles.pageHeader}> 
         <FontAwesomeIcon className={styles.back} size="1x" icon={faArrowLeft} onClick={() => navigateBack()}/>
         <div>
-          <button className={styles.buttonDelete} onClick={(e)=>submitTest(e)}>
+          <button className={styles.buttonDelete} onClick={(e)=>deleteObject(e)}>
             Delete
           </button>
-          <button className={styles.button} onClick={(e)=>submitTest(e)}>
+          <button className={styles.button} onClick={(e)=>submitObject(e)}>
             Save
           </button>
           <button className={styles.button} onClick={(e)=>{
               e.preventDefault();
-              submitTest(e);
+              submitObject(e);
               router.back();
             }}>
             Save & Close 
@@ -312,7 +354,7 @@ export default function ObjectEdit({user}) {
         <div className={styles.objectHeader}>
           <div className={styles.objectTitle}>
             <div className="input-field">
-              <input id="title" type="text"
+              <input id="title" type="text" required="true" aria-required="true"
                 value={objectTitle}
                 onChange={(e)=>setObjectTitle(e.target.value)}
               />
@@ -321,7 +363,7 @@ export default function ObjectEdit({user}) {
           </div>
           <div className={styles.timeDuration}>
             <div className="input-field">
-              <input type="number"
+              <input type="number" required="true" aria-required="true"
                 id="number" 
                 value={timeDuration}
                 onChange={(e)=>setTimeDuration(e.target.value)}
@@ -348,95 +390,108 @@ export default function ObjectEdit({user}) {
           {questionsList.length ?
             (questionsList.map(item => {
               return (
-                <div key={item.id} className={isQuestionValid(item)? styles.question : styles.questionWrong}>
+                <div key={item.count} className={isQuestionValid(item)? styles.question : styles.questionWrong}>
                   <div>
                     <div className="input-field">
                       <textarea id={"question"+item.count} type="text" className="materialize-textarea"
-                        value={item.question}
-                        onChange={(e)=>setInstructions(e.target.value)}
+                        value={ item.languageFlag? item.questionLang: item.question }
+                        onChange={(e)=>setQuestionProperty(e.target.value, item, item.languageFlag?"questionLang":"question")}
                       />
-                      <label htmlFor={"question"+item.count} className={item.question?"active": ""}>Question {item.count}</label>
+                      <label htmlFor={"question"+item.count} className={(item.languageFlag? item.questionLang: item.question) ?"active": ""}> {item.languageFlag? "प्रश्न": "Question"} {item.count}</label>
                     </div>
-                    {/* <div className="row">
-                      <div className="input-field">
-                        <textarea id={"questionLang"+item.count} type="text" className="materialize-textarea"
-                          value={item.questionLang}
-                          onChange={(e)=>setInstructions(e.target.value)}
-                        />
-                        <label htmlFor={"questionLang"+item.count} className={item.questionLang?"active": ""}>प्रश्न {item.count}</label>
-                      </div>
-                    </div> */}
                   </div>
                   <div className={styles.optionSelection}>
-                    <span className={styles.selectionBox}>1</span>
-                    <span className={styles.selectionBox}>2</span>
-                    <span className={styles.selectionBoxSelected}>3</span>
-                    <span className={styles.selectionBox}>4</span>
+                    <span className={item.correctOption.includes(1)?styles.selectionBoxSelected:styles.selectionBox} onClick={() => {onOptionPress(item,1)}}>1</span>
+                    <span className={item.correctOption.includes(2)?styles.selectionBoxSelected:styles.selectionBox} onClick={() => {onOptionPress(item,2)}}>2</span>
+                    <span className={item.correctOption.includes(3)?styles.selectionBoxSelected:styles.selectionBox} onClick={() => {onOptionPress(item,3)}}>3</span>
+                    <span className={item.correctOption.includes(4)?styles.selectionBoxSelected:styles.selectionBox} onClick={() => {onOptionPress(item,4)}}>4</span>
                   </div>
                   <div className={styles.optionContainer}>
                     <div className={styles.optionBox}>
                       <div className="input-field">
                         <textarea id={"question"+item.count} type="text" className="materialize-textarea"
-                          value={item.option1}
-                          onChange={(e)=>setInstructions(e.target.value)}
+                          value={item.languageFlag? item.optionLang1: item.option1}
+                          onChange={(e)=>setQuestionProperty(e.target.value, item, item.languageFlag? "optionLang1": "option1")}
                         />
-                        <label htmlFor={"question"+item.count} className={item.question?"active": ""}>Option 1</label>
+                        <label htmlFor={"question"+item.count} className={(item.languageFlag? item.optionLang1: item.option1)?"active": ""}>{item.languageFlag? "विकल्प": "Option"} 1</label>
                       </div>
                     </div>
                     <div className={styles.optionBox}>
                       <div className="input-field">
                         <textarea id={"question"+item.count} type="text" className="materialize-textarea"
-                          value={item.option2}
-                          onChange={(e)=>setInstructions(e.target.value)}
+                          value={item.languageFlag? item.optionLang2: item.option2}
+                          onChange={(e)=>setQuestionProperty(e.target.value, item, item.languageFlag? "optionLang2": "option2")}
                         />
-                        <label htmlFor={"question"+item.count} className={item.question?"active": ""}>Option 2</label>
+                        <label htmlFor={"question"+item.count} className={(item.languageFlag? item.optionLang2: item.option2)?"active": ""}>{item.languageFlag? "विकल्प": "Option"} 2</label>
                       </div>
                     </div>
                     <div className={styles.optionBox}>
                       <div className="input-field">
                         <textarea id={"question"+item.count} type="text" className="materialize-textarea"
-                          value={item.option3}
-                          onChange={(e)=>setInstructions(e.target.value)}
+                          value={item.languageFlag? item.optionLang3: item.option3}
+                          onChange={(e)=>setQuestionProperty(e.target.value, item, item.languageFlag? "optionLang3": "option3")}
                         />
-                        <label htmlFor={"question"+item.count} className={item.question?"active": ""}>Option 3</label>
+                        <label htmlFor={"question"+item.count} className={(item.languageFlag? item.optionLang3: item.option3)?"active": ""}>{item.languageFlag? "विकल्प": "Option"} 3</label>
                       </div>
                     </div>
                     <div className={styles.optionBox}>
                       <div className="input-field">
                         <textarea id={"question"+item.count} type="text" className="materialize-textarea"
-                          value={item.option4}
-                          onChange={(e)=>setInstructions(e.target.value)}
+                          value={item.languageFlag? item.optionLang4: item.option4}
+                          onChange={(e)=>setQuestionProperty(e.target.value, item, item.languageFlag? "optionLang4": "option4")}
                         />
-                        <label htmlFor={"question"+item.count} className={item.question?"active": ""}>Option 4</label>
+                        <label htmlFor={"question"+item.count} className={(item.languageFlag? item.optionLang4: item.option4)?"active": ""}>{item.languageFlag? "विकल्प": "Option"} 4</label>
                       </div>
                     </div>
                   </div>
+                  <div className={styles.videoParent}>
+                    <div className="input-field">
+                      <input type="text"
+                        id={"videoUrl"+item.count}
+                        value={item.videoUrl}
+                        onChange={(e)=>saveVideoUrl(e.target.value, item)}
+                      />
+                      <label htmlFor={"videoUrl"+item.count} className={item.videoUrl?"active": ""}>Solution Video URL</label>
+                    </div>
+                    {item.videoUrl && !item.videoUrlId?<FontAwesomeIcon className={styles.videoChild1} size="1x" icon={faTimes}/>:<></>}
+                    {item.videoUrlId?<FontAwesomeIcon className={styles.videoChild2} size="1x" icon={faCheckDouble}/>:<></>}
+                  </div>
+                  <div className="input-field">
+                    <textarea id={"explaination"+item.count} type="text" className="materialize-textarea"
+                      value={item.languageFlag? item.explainationLang: item.explaination}
+                      onChange={(e)=>setQuestionProperty(e.target.value, item, item.languageFlag? "explainationLang": "explaination")}
+                    />
+                    <label htmlFor={"explaination"+item.count} className={(item.languageFlag? item.explainationLang: item.explaination)?"active": ""}>{item.languageFlag? "विवरण": "Explanation"}</label>
+                  </div>
                   <div className={styles.footerContainer}>
+                    {object == 'test'? 
                     <div className={styles.weightage}>
                       <div className={styles.weightageChild}>
                         <div className="input-field">
                           <input type="number"
                             id="number" 
-                            value={timeDuration}
-                            onChange={(e)=>setTimeDuration(e.target.value)}
+                            value={item.weightage}
+                            onChange={(e)=>setQuestionProperty(e.target.value, item, "weightage")}
                           />
-                          <label htmlFor="number" className={timeDuration?"active": ""}>Positive</label>
+                          <label htmlFor="number" className={item.weightage?"active": ""}>Positive</label>
                         </div>
                       </div>
                       <div className={styles.weightageChild}>
                         <div className="input-field">
                           <input type="number"
                             id="number" 
-                            value={timeDuration}
-                            onChange={(e)=>setTimeDuration(e.target.value)}
+                            value={item.negativeWeightage}
+                            onChange={(e)=>setQuestionProperty(e.target.value, item, "negativeWeightage")}
                           />
-                          <label htmlFor="number" className={timeDuration?"active": ""}>Negative</label>
+                          <label htmlFor="number" className={item.negativeWeightage >= 0?"active": ""}>Negative</label>
                         </div>
                       </div>
                     </div>
-                    <div>
-                      <FontAwesomeIcon className={styles.questionIcon} size="1x" icon={faLanguage} onClick={() => navigateBack()}/>
-                      <FontAwesomeIcon className={isQuestionValid(item)?styles.questionIcon2: styles.questionIcon2Wrong} size="1x" icon={faTrashAlt} onClick={() => navigateBack()}/>
+                    :
+                    <> </>}
+                    <div className={styles.action}>
+                      <FontAwesomeIcon className={styles.questionIcon} size="1x" icon={faLanguage} onClick={() => setQuestionProperty(!item.languageFlag, item, "languageFlag")}/>
+                      <FontAwesomeIcon className={isQuestionValid(item)?styles.questionIcon2: styles.questionIcon2Wrong} size="1x" icon={faTrashAlt} onClick={() => deleteQuestion(item)}/>
                     </div>
                   </div>
                 </div>
