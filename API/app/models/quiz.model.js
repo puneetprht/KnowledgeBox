@@ -349,6 +349,7 @@ Quiz.postQuiz = (quiz, result) => {
 						);
 					}
 				});
+				deleteSaved(data.insertId || quiz.quizId, quiz.questions);
 				result(null, {id: data.insertId || quiz.quizId});
 				return;
 			}
@@ -386,12 +387,42 @@ Quiz.postQuiz = (quiz, result) => {
 						}
 					);
 				});
+				deleteSaved(data.insertId, quiz.questions);
 				result(null, {id: data.insertId});
 				return;
 			}
 		);
 	}
 };
+
+const deleteSaved = (id, quizData) => {
+	let inputIds = quizData.map((q) => {return q.id});
+	try {
+	sql.query(
+		`select hmy from quizdetail where fquiz = ${id}`,
+		(err, data) => {
+			//console.log("data: ", JSON.stringify(data))
+			let toDelete = data.map((q) => {return q.hmy}).filter(d => {return !inputIds.includes(d)});
+			//console.log("todelete: ", JSON.stringify(toDelete))
+			if(toDelete.length){
+				toDelete.forEach(id => {
+					sql.query(
+						`delete from quizDetail where hmy = ${id}`,
+						(err, res) => {}
+					);
+				})
+			}
+			return;
+		}
+	);
+	}
+	catch (e) {
+		console.log("error: ", e);
+	}
+	finally {
+		console.log("Quiz Details not deleted.");
+	}
+}
 
 Quiz.postIsActive = (req, result) => {
 	console.log(`update ${req.table} set isActive = ${req.isActive} where hmy = ${req.id}`);

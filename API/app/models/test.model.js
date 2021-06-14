@@ -446,6 +446,7 @@ Test.postTest = (test, result) => {
 						);
 					}
 				});
+				deleteSaved(test.testId, test.questions);
 				result(null, {id: test.testId});
 				return;
 			}
@@ -483,6 +484,7 @@ Test.postTest = (test, result) => {
 						}
 					);
 				});
+				//deleteSaved(data.insertId, test.questions);
 				result(null, {id: data.insertId});
 				return;
 			}
@@ -581,5 +583,35 @@ Test.postPaymentStatus = (req, result) => {
 		);
 	}
 };
+
+const deleteSaved = (id, testData) => {
+	let inputIds = testData.map((t) => {return t.id});
+	try {
+	sql.query(
+		`select hmy from testdetail where ftest = ${id}`,
+		(err, data) => {
+			//console.log("data: ", JSON.stringify(data))
+			let toDelete = data.map((q) => {return q.hmy}).filter(d => {return !inputIds.includes(d)});
+			//console.log("todelete: ", JSON.stringify(toDelete))
+			if(toDelete.length){
+				toDelete.forEach(id => {
+					sql.query(
+						`delete from testdetail where hmy = ${id}`,
+						(err, res) => {}
+					);
+				})
+			}
+			return;
+		}
+	);
+	}
+	catch (e) {
+		console.log("error: ", e);
+	}
+	finally {
+		console.log("Test Details not deleted.");
+	}
+}
+
 
 module.exports = Test;
