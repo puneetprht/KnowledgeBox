@@ -5,7 +5,9 @@ import {useRouter} from 'next/router';
 import 'react-toastify/dist/ReactToastify.css';
 import {useState, useEffect, useRef} from 'react';
 import axios from '../../../../src/services/axios';
+import { confirmAlert } from 'react-confirm-alert';
 import { ToastContainer, toast } from 'react-toastify';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTimes, faEdit, faPlus, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 
@@ -56,32 +58,46 @@ export default function List({user}) {
 
   const deleteListObject = (id) => {
     if (id) {
-      axios
-        .delete('/' + object + '/delete' + object, {
-          data: {
-            id: id,
-          },
-        })
-        .then((response) => {
-          fetchAllTopics();
-          toast.success('Item deleted successfully.', {
-            position: "top-center",
-            autoClose: 3000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            draggable: true,
-          });
-        })
-        .catch((err) => {
-          console.error(err);
-          toast.error('Error deleting item, contact developer.', {
-            position: "top-center",
-            autoClose: 3000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            draggable: true,
-          });
-        });
+    confirmAlert({
+      title: 'Delete ' + countString(1),
+      message: 'Are you sure you want to delete this?',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: () => {
+            axios.delete('/' + object + '/delete' + object, {
+              data: {
+                id: id,
+              },
+            })
+            .then((response) => {
+              fetchAllTopics();
+              toast.success('Item deleted successfully.', {
+                position: "top-center",
+                autoClose: 3000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                draggable: true,
+              });
+            })
+            .catch((err) => {
+              console.error(err);
+              toast.error('Error deleting item, contact developer.', {
+                position: "top-center",
+                autoClose: 3000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                draggable: true,
+              });
+            });
+        }
+        },
+        {
+          label: 'No',
+          onClick: () => console.log("No Pressed")
+        }
+      ]
+      });
     }
   };
 

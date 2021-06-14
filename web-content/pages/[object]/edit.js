@@ -26,6 +26,7 @@ export default function ObjectEdit({user}) {
   const [timeDuration, setTimeDuration] = useState('');
   const questionObject = {
     id: 0,
+    count: 1,
     question: '',
     option1: '',
     option2: '',
@@ -51,6 +52,10 @@ export default function ObjectEdit({user}) {
 
   //API Calls
   useEffect(() => {
+    getObject();
+  }, [objectId]);
+
+  const getObject = () => {
     if (objectId) {
       axios
         .get('/' + object + '/get' + object + 'Detail', {
@@ -86,7 +91,7 @@ export default function ObjectEdit({user}) {
           console.error(err);
         });
     } 
-  }, []);
+  }
 
   const submitObject = (event) => {
     event.preventDefault();
@@ -119,6 +124,7 @@ export default function ObjectEdit({user}) {
         if(objectId == 0 && response.data.id){
           router.replace(`/${object}/edit?sId=${subjectId}&cId=${categoryId}&stId=${subTopicId}&id=${response.data.id}`)
         }
+        getObject();
         toast.success('Test saved successfully.', {
           position: "top-center",
           autoClose: 3000,
@@ -148,6 +154,7 @@ export default function ObjectEdit({user}) {
         if(objectId == 0 && response.data.id){
           router.replace(`/${object}/edit?sId=${subjectId}&cId=${categoryId}&stId=${subTopicId}&id=${response.data.id}`)
         }
+        getObject();
         toast.success('Quiz saved successfully.', {
           position: "top-center",
           autoClose: 3000,
@@ -250,6 +257,7 @@ export default function ObjectEdit({user}) {
 
   const isQuestionValid = (item) => {
     let key = questionsList.findIndex(q => q.count == item.count);
+    //console.log("key: ", key, " questionObject: ", JSON.stringify(questionsList[key]));
     return (
       questionsList[key].question &&
       questionsList[key].option1 &&
@@ -354,7 +362,7 @@ export default function ObjectEdit({user}) {
         <div className={styles.objectHeader}>
           <div className={styles.objectTitle}>
             <div className="input-field">
-              <input id="title" type="text" required="true" aria-required="true"
+              <input id="title" type="text" required={true} aria-required={true}
                 value={objectTitle}
                 onChange={(e)=>setObjectTitle(e.target.value)}
               />
@@ -363,7 +371,7 @@ export default function ObjectEdit({user}) {
           </div>
           <div className={styles.timeDuration}>
             <div className="input-field">
-              <input type="number" required="true" aria-required="true"
+              <input type="number" required={true} aria-required={true}
                 id="number" 
                 value={timeDuration}
                 onChange={(e)=>setTimeDuration(e.target.value)}
@@ -388,9 +396,9 @@ export default function ObjectEdit({user}) {
         </div>
         <div className={styles.questionList}>
           {questionsList.length ?
-            (questionsList.map(item => {
+            (questionsList.map((item, itemIndex) => {
               return (
-                <div key={item.count} className={isQuestionValid(item)? styles.question : styles.questionWrong}>
+                <div key={itemIndex} className={isQuestionValid(item)? styles.question : styles.questionWrong}>
                   <div>
                     <div className="input-field">
                       <textarea id={"question"+item.count} type="text" className="materialize-textarea"
