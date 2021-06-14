@@ -80,23 +80,28 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  cursor: pointer;
 }
 
 .textInputSubject{
   padding-left: 0.5em;
   width: 60%;
+  cursor: pointer;
 }
 
 .confirm{
   width: 1em;
   margin: 1em 0.5em;
+  cursor: pointer;
 }
 .confirmCross{
   margin: 1em 0.5em;
   width: 0.8em;
+  cursor: pointer;
 }
 .centerGridCount{
   padding: 1em 1em;
+  cursor: pointer;
 }
 
 .centerGridAction{
