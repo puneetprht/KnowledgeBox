@@ -8,7 +8,7 @@ const toSqlString = (string) => {
 };
 
 Quiz.getAllSubjects = (categories, admin, result) => {
-	console.log('categories:', categories);
+	//console.log('categories:', categories);
 	let SQL = `select s.hmy as id,concat(subjectname,'(',categoryname,')') as subject, subjectname as subjectName, categoryname as categoryName,
 	count(stp.hmy) as count, c.hmy as category, IFNULL(s.isActive, 0) as isActive from  subject s 
 	left outer join subtopic stp on stp.fsubject = s.hmy
@@ -20,7 +20,7 @@ Quiz.getAllSubjects = (categories, admin, result) => {
 		SQL += ` c.hmy in (${categories}) 	and s.objectType = 1 group by s.hmy`;
 	}
 	
-	console.log(SQL);
+	//console.log(SQL);
 	sql.query(
 		SQL,
 		(err, res) => {
@@ -152,7 +152,7 @@ Quiz.getQuizList = (id, result) => {
 };
 
 Quiz.addQuiz = (body, result) => {
-	console.log(body);
+	//console.log(body);
 	sql.query(
 		`insert into  subtopic (subtopic, fcategory, fsubject) 
 		values ('${body.SubTopicName}',${body.catergoryId},${body.subjectId})`,
@@ -169,7 +169,7 @@ Quiz.addQuiz = (body, result) => {
 };
 
 Quiz.deleteQuiz = (body, result) => {
-	console.log(body);
+	//console.log(body);
 	sql.query(
 		`delete from Quiz
 		where hmy = ${body.id}`,
@@ -260,7 +260,7 @@ Quiz.getQuizDetail = (id, result) => {
 };
 
 Quiz.postQuizAnswers = (quizResult, result) => {
-	console.log(quizResult);
+	// console.log(quizResult);
 	sql.query(
 		`insert into quizxref (fquiz,fuser,score) value (${quizResult.quizId},${quizResult.userId},${quizResult.score})`,
 		(err, data) => {
@@ -269,7 +269,7 @@ Quiz.postQuizAnswers = (quizResult, result) => {
 				result(err, null);
 				return;
 			}
-			console.log(data.insertId);
+			// console.log(data.insertId);
 
 			quizResult.answers.forEach((answer) => {
 				sql.query(
@@ -302,7 +302,7 @@ Quiz.postQuiz = (quiz, result) => {
 					return;
 				}
 				console.log(data.insertId || quiz.quizId);
-				console.log(quiz.questions);
+				console.log("Questions to be saved:", quiz.questions);
 
 				quiz.questions.forEach((question) => {
 					if (question.id) {
@@ -330,7 +330,7 @@ Quiz.postQuiz = (quiz, result) => {
 						);
 					} else {
 						sql.query(
-							`insert into quizdetail (fquiz,fsubtopic,fsubject,fcategory,question,option1,option2,
+							setTimeout(`insert into quizdetail (fquiz,fsubtopic,fsubject,fcategory,question,option1,option2,
 								option3,option4,correctoption,isMultiple, questionLang, optionLang1, optionLang2, optionLang3, optionLang4,
 								videoUrl, videoUrlId, explaination, explainationLang) values 
 								(${data.insertId || quiz.quizId}, ${quiz.subTopicId}, ${quiz.subjectId}, ${quiz.categoryId},
@@ -346,7 +346,7 @@ Quiz.postQuiz = (quiz, result) => {
 									return;
 								}
 							}
-						);
+						), (question.count || 1) * 100);
 					}
 				});
 				deleteSaved(data.insertId || quiz.quizId, quiz.questions);
@@ -365,10 +365,10 @@ Quiz.postQuiz = (quiz, result) => {
 					return;
 				}
 				console.log(data.insertId);
-				console.log(quiz.questions);
+				console.log("Questions to be saved:", quiz.questions);
 				
 				quiz.questions.forEach((question) => {
-					sql.query(
+					setTimeout(sql.query(
 						`insert into quizdetail (fquiz,fsubtopic,fsubject,fcategory,question,option1,option2,
 						option3,option4,correctoption,isMultiple, questionLang, optionLang1, optionLang2, optionLang3, optionLang4,
 						videoUrl, videoUrlId, explaination, explainationLang) values 
@@ -385,7 +385,7 @@ Quiz.postQuiz = (quiz, result) => {
 								return;
 							}
 						}
-					);
+					), (question.count || 1) * 100);
 				});
 				deleteSaved(data.insertId, quiz.questions);
 				result(null, {id: data.insertId});

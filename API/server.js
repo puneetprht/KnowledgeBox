@@ -15,9 +15,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //convert single quotes for sql insertion.
 app.use((req, res, next) => {
 	if (req.body) {
-		//console.log(req.body);
 		req.body = JSON.parse(JSON.stringify(req.body).replace("'", "''"));
-		//console.log(req.body);
 	}
 	next();
 });

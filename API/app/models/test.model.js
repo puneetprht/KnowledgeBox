@@ -31,7 +31,7 @@ Test.getAllSubjects = (categories, user, admin, result) => {
 		SQL += ` where c.hmy in (${categories}) and s.objectType = 3 group by s.hmy `;
 	}
 
-	console.log("Query:", SQL);
+	// console.log("Query:", SQL);
 	sql.query(
 		SQL,
 		(err, res) => {
@@ -252,7 +252,7 @@ Test.getTestListById = (id, user, result) => {
 };
 
 Test.addTest = (body, result) => {
-	console.log(body);
+	// console.log(body);
 	sql.query(
 		`insert into  subtopic (subtopic, fcategory, fsubject) 
 		values ('${body.SubTopicName}',${body.catergoryId},${body.subjectId})`,
@@ -269,7 +269,7 @@ Test.addTest = (body, result) => {
 };
 
 Test.deleteTest = (body, result) => {
-	console.log(body);
+	// console.log(body);
 	sql.query(
 		`delete from Test
 		where hmy = ${body.id}`,
@@ -344,11 +344,10 @@ Test.getTestDetail = (id, result) => {
 					maxMarks += parseFloat(element.weightage || 0);
 					element.maxMarks = maxMarks;
 				});
-				console.log('Test Details :', res);
+				//console.log('Test Details :', res);
 				result(null, res);
 				return;
 			}
-
 			result(null, null);
 			return;
 		}
@@ -356,7 +355,7 @@ Test.getTestDetail = (id, result) => {
 };
 
 Test.postTestAnswers = (testResult, result) => {
-	console.log(testResult);
+	// console.log(testResult);
 	sql.query(
 		`insert into testxref (ftest,fuser,score) value (${testResult.testId},${testResult.userId},${testResult.score})`,
 		(err, data) => {
@@ -365,7 +364,7 @@ Test.postTestAnswers = (testResult, result) => {
 				result(err, null);
 				return;
 			}
-			console.log(data.insertId);
+			// console.log(data.insertId);
 
 			testResult.answers.forEach((answer) => {
 				sql.query(
@@ -426,7 +425,7 @@ Test.postTest = (test, result) => {
 							}
 						);
 					} else {
-						sql.query(
+						setTimeout(sql.query(
 							`insert into testdetail (ftest,fsubtopic,fsubject,fcategory,question,option1,option2,
 								option3,option4,correctoption,isMultiple, questionLang, optionLang1, optionLang2, optionLang3, optionLang4, weightage, negativeWeightage,
 								videoUrl, videoUrlId, explaination, explainationLang) values 
@@ -443,7 +442,7 @@ Test.postTest = (test, result) => {
 									return;
 								}
 							}
-						);
+						), ( question.count || 1 ) * 100);
 					}
 				});
 				deleteSaved(test.testId, test.questions);
@@ -465,7 +464,7 @@ Test.postTest = (test, result) => {
 				console.log(test.questions);
 
 				test.questions.forEach((question) => {
-					sql.query(
+					setTimeout(sql.query(
 						`insert into testdetail (ftest,fsubtopic,fsubject,fcategory,question,option1,option2,
 						option3,option4,correctoption,isMultiple, questionLang, optionLang1, optionLang2, optionLang3, optionLang4, weightage, negativeWeightage,
 						videoUrl, videoUrlId, explaination, explainationLang) values 
@@ -482,7 +481,7 @@ Test.postTest = (test, result) => {
 								return;
 							}
 						}
-					);
+					), ( question.count || 1 ) * 100);
 				});
 				//deleteSaved(data.insertId, test.questions);
 				result(null, {id: data.insertId});

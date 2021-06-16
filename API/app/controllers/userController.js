@@ -47,7 +47,7 @@ app.post('/PostUserState', async (req, res) => {
 });
 
 app.get('/GetUserState/:id', (req, res) => {
-	console.log(req.params);
+	//console.log(req.params);
 	model.getUserState(req.params.id, (err, data) => {
 		if (err)
 			res.status(500).send({

@@ -214,7 +214,7 @@ Video.getVideoList = (id, user, result) => {
 };
 
 Video.postVideo = (body, result) => {
-	console.log(body);
+	//console.log(body);
 	if(body.id){
 		let urlVideoId = body.urlVideoId;
 		if(!urlVideoId){
@@ -317,7 +317,7 @@ Video.postIsPaid = (req, result) => {
 };
 
 Video.postAmount = (req, result) => {
-	console.log("Amount:", req);
+	//console.log("Amount:", req);
 	sql.query(
 		`update ${req.table} set amount = ${parseInt(req.amount)} where hmy = ${req.id}`,
 		(err, data) => {

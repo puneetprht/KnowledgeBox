@@ -148,7 +148,7 @@ Common.deleteSubject = (body, result) => {
 */
 
 Common.addSubTopic = (body, result) => {
-	console.log(body);
+	//console.log(body);
 	if(body.subtopicId){
 		sql.query(
 			`update subtopic set subtopic= '${body.SubTopicName}' where hmy = ${body.subtopicId}`,
@@ -180,7 +180,7 @@ Common.addSubTopic = (body, result) => {
 };
 
 Common.deleteSubTopic = (body, result) => {
-	console.log(body);
+	//console.log(body);
 	sql.query(
 		`delete from subtopic
 		where hmy = ${body.id}`,
@@ -247,7 +247,7 @@ Common.postCategory = (body, result) => {
 };
 
 Common.deleteCategory = (body, result) => {
-	console.log(body);
+	//console.log(body);
 	sql.query(
 		`delete from category
 		where hmy = ${body.id}`,

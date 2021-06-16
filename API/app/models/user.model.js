@@ -17,7 +17,7 @@ const getUser = (userId, result) => {
 			return;
 		}
 		if (res.length) {
-			console.log('found user: ', res[0]);
+			// console.log('found user: ', res[0]);
 			result(null, res[0]);
 			return;
 		}
@@ -33,7 +33,7 @@ const getUserByEmail = async (userEmail) => {
 			return;
 		}
 		if (res.length) {
-			console.log('found user: ', res[0]);
+			// console.log('found user: ', res[0]);
 			if (result) {
 				result(null, res[0]);
 			}
@@ -118,7 +118,7 @@ user.create = (newuser, result) => {
 			return;
 		}
 
-		console.log('created user: ', { id: res.insertId, ...newuser });
+		//console.log('created user: ', { id: res.insertId, ...newuser });
 		result(null, { id: res.insertId, ...newuser });
 	});
 };
@@ -174,7 +174,7 @@ user.updateById = (id, user, result) => {
 				return;
 			}
 
-			console.log('updated user: ', { id: id, ...user });
+			//console.log('updated user: ', { id: id, ...user });
 			result(null, { id: id, ...user });
 		}
 	);
@@ -194,7 +194,7 @@ user.remove = (id, result) => {
 			return;
 		}
 
-		console.log('deleted user with id: ', id);
+		//console.log('deleted user with id: ', id);
 		result(null, res);
 	});
 };
@@ -207,7 +207,7 @@ user.removeAll = (result) => {
 			return;
 		}
 
-		console.log(`deleted ${res.affectedRows} users`);
+		//console.log(`deleted ${res.affectedRows} users`);
 		result(null, res);
 	});
 };
@@ -225,7 +225,7 @@ user.sendVerificationEmail = async (id, result) => {
 
 	//console.log(user);
 	if (!user || !user.email) {
-		console.log("User or User's Email not found.");
+		//console.log("User or User's Email not found.");
 		result("User or User's Email not found.", null);
 		return;
 	}
