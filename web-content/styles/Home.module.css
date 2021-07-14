@@ -1,123 +1,217 @@
-.container {
-  min-height: 100vh;
-  padding: 0 0.5rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+.container{
+  display: grid;  
+  grid-template-columns: 22% 59% 19%;
+  padding: 1em 0.5em;
+  background-color: #fff;
+  grid-auto-flow: dense
+  /* grid-template-columns: 17% 66% 17%; */
 }
 
-.main {
-  padding: 5rem 0;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+.dropdown{
+  border: 1px solid #000;
+  height: 100%;
+  min-height: 2em;
+  margin: 1% 1%;
+  display: none;
 }
 
-.footer {
-  width: 100%;
-  height: 100px;
-  border-top: 1px solid #eaeaea;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+/* Categories column */
+.leftModule{
+  border-radius: 1em;
+  background-color: rgb(247, 250, 248);
+  max-height: 100%;
+  margin: 0 1%;
+  padding: 1em 0.5em;
+  grid-column-end: initial;
 }
 
-.footer img {
-  margin-left: 0.5rem;
-}
-
-.footer a {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.title a {
-  color: #0070f3;
-  text-decoration: none;
-}
-
-.title a:hover,
-.title a:focus,
-.title a:active {
-  color: #f32400;
-  text-decoration: underline;
-}
-
-.title {
+.leftHeading{
   margin: 0;
-  line-height: 1.15;
-  font-size: 4rem;
+  padding: 0;
+  color: #008ACF;
+  font-weight: 500;
 }
 
-.title,
-.description {
+.leftContent{
+  margin: 1%;
+  padding: 0.3em ;
+  color: #009CDE;
+}
+
+.leftContentActive{
+  margin: 1%;
+  padding: 0.3em ;
+  color: #009CDE;
+  border-radius: 1em;
+  background-color: rgb(232, 232, 232);
+  font-weight: 500;
+}
+
+.leftContent:hover{
+  text-decoration: underline;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* Main column */
+.centerModule{
+  padding: 0.5em 0.5em;
+  border-radius: 1em;
+  background-color: rgb(250, 250, 250);
+  color:#008ACF;
+}
+
+.centerGrid{
+  display: grid;  
+  grid-template-columns: 40% 20% 40%;
+  border-radius: 1em;
+  margin-bottom: 0.5em;
+  background-color: rgb(230, 243, 255);
+}
+
+.centerGridSubject{
+  margin-right: 1%;
+  padding: 1em 1em;
+  font-weight: 500;
+}
+
+.centerConfirmSubject, .centerEditSubject{
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.textInputSubject{
+  padding-left: 0.5em;
+  width: 60%;
+  cursor: pointer;
+}
+
+.confirm{
+  width: 1em;
+  margin: 1em 0.5em;
+  cursor: pointer;
+}
+.confirmCross{
+  margin: 1em 0.5em;
+  width: 0.8em;
+  cursor: pointer;
+}
+.centerGridCount{
+  padding: 1em 1em;
+  cursor: pointer;
+}
+
+.centerGridAction{
+  margin-left: 1%;
+  padding: 1em 1em;
+}
+
+.ActionRow1{
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.trash{
+  width: 1em;
+  color: #ff6363;
+}
+
+.isActive{
+  font-weight: 600;
+  font-size: medium;
+}
+
+.trash:hover{
+  width: 1em;
+  color: #fd8c8c;
+  cursor: pointer;
+}
+
+.ActionRow2{
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.actionTextInput{
+  width: 50px;
+}
+
+.addParent{
+  display: flex;
+  justify-content: center;
+}
+
+.add{
+  width: 2em;
+  margin: 1em 0.5em;  
+  align-self: center;
   text-align: center;
 }
 
-.description {
-  line-height: 1.5;
-  font-size: 1.5rem;
+/* Statistic column */
+.rightModule{
+  border-radius: 1em;
+  background-color: rgb(247, 250, 248);
+  height: 100%;
+  margin: 0 1%;
+  padding: 1em 0.5em;
 }
 
-.code {
-  background: #fafafa;
-  border-radius: 5px;
-  padding: 0.75rem;
-  font-size: 1.1rem;
-  font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono,
-    Bitstream Vera Sans Mono, Courier New, monospace;
-}
-
-.grid {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  max-width: 800px;
-  margin-top: 3rem;
-}
-
-.card {
-  margin: 1rem;
-  flex-basis: 45%;
-  padding: 1.5rem;
-  text-align: left;
-  color: inherit;
-  text-decoration: none;
-  border: 1px solid #eaeaea;
-  border-radius: 10px;
-  transition: color 0.15s ease, border-color 0.15s ease;
-}
-
-.card:hover,
-.card:focus,
-.card:active {
-  color: #0070f3;
-  border-color: #0070f3;
-}
-
-.card h3 {
-  margin: 0 0 1rem 0;
-  font-size: 1.5rem;
-}
-
-.card p {
+.rightHeading{
   margin: 0;
-  font-size: 1.25rem;
-  line-height: 1.5;
+  padding: 0;
+  /* border-bottom: 1px solid #000000; */
+  color: #008ACF;
+  font-weight: 500;
 }
 
-.logo {
-  height: 1em;
+.rightContent{
+  margin: 1%;
+  padding: 0.3em ;
+  color: #009CDE;
+  /* font-weight: 400; */
 }
 
-@media (max-width: 600px) {
-  .grid {
-    width: 100%;
-    flex-direction: column;
+
+/* On screens that are 992px wide or less, go from four columns to two columns */
+@media screen and (max-width: 992px) {
+  .container {
+    grid-template-columns: 30% 70% 0%;
+  }
+
+  .rightModule{
+    display: none;
+  }
+
+  .centerModule{
+    margin-right: 1%;
+  }
+}
+
+/* On screens that are 600px wide or less, make the columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 450px) {
+  .container {
+    grid-template-columns: 100% 0%;
+  }
+
+  .leftModule{
+    display: none;
+  }
+
+  .centerModule{
+    margin-left: 1%;
+  }
+
+  .dropdown {
+    display: block;
   }
 }
