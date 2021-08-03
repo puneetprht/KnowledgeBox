@@ -14,124 +14,98 @@ import styles from '../../styles/Home.module.css';
 
 export default function Home(props) {
   const router = useRouter();
-  const object = router.query.object;
 
   const [user, setUser] = useState(JSON.parse(props.user));
 
-  const [category, setCategory] = useState(0);
-  const [list, setList] = useState([]);
-   
-  const [editMode, setEditMode] = useState(false);
-  const [editSubject, setEditSubject] = useState(0);
-  const [oldSubject, setOldSubject] = useState('');
-  const [newSubject, setNewSubject] = useState('');
+  const [centralItem, setCentralItem] = useState('feed');
+
+  const displayToasterMessage = (toastType, message) => {
+    if(toastType = 'error'){
+      toast.error(Message, {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        draggable: true,
+      });
+    } else if (toastType = 'success') {
+        toast.success(Message, {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          draggable: true,
+        });
+    } else if (toastType = 'warning') {
+        toast.warning(Message, {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          draggable: true,
+        });
+    } else if (toastType = 'info') {
+      toast.info(Message, {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        draggable: true,
+      });
+    } else if (toastType = 'dark') {
+      toast.dark(Message, {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        draggable: true,
+      });
+    } else {
+        toast.default(Message, {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          draggable: true,
+        });
+    }
+  }
+
+  const switchCentralModule = () => {
+    if(!centralItem){
+      return (<feed user={user} toast={displayToasterMessage}/>);
+    } else if(centralItem == 'category'){
+      return (<category user={user} toast={displayToasterMessage}/>);
+    } else if(centralItem == 'profile'){
+      return (<profile user={user}  toast={displayToasterMessage}/>);
+    } else if(centralItem == 'users'){
+      return (<users user={user} toast={displayToasterMessage}/>);
+    } else if(centralItem == 'wallet'){
+      return (<wallet user={user} toast={displayToasterMessage}/>);
+    } else if(centralItem == 'payment'){
+      return (<payment user={user} toast={displayToasterMessage}/>);
+    } else if(centralItem == 'refer'){
+      return (<refer user={user} toast={displayToasterMessage}/>);
+    } else {
+      return (<feed user={user} toast={displayToasterMessage}/>);
+    }
+  };
 
   return (
     <div className={styles.wrapper}>
       <main className={styles.container}>
         <div className={styles.leftModule}>
-          <p className={styles.leftHeading}>Internal Links</p>
+          <p className={styles.leftContent}>Home Feed</p>
+          <p className={styles.leftContent}>Categories</p>
+          <p className={styles.leftContent}>My Profile</p>
+          <p className={styles.leftContent}>Users</p>
+          <p className={styles.leftContent}>Wallet</p>
+          <p className={styles.leftContent}>Payments</p>
+          <p className={styles.leftContent}>Refer and Earn</p>
         </div>
         <div className={styles.centerModule}>
           {
-            list.map(item => {return(
-              <div className={styles.centerGrid} key={item.id}>
-                <div className={styles.centerGridSubject}>
-                  {
-                    editSubject == item.id 
-                    ? 
-                    <div className={styles.centerConfirmSubject}>
-                      <span className={styles.textInputSubject}>
-                        <input type="text"
-                          value={item.subjectName}
-                          onChange={(e)=>changeSubject(item.id, e.target.value)}
-                        />
-                      </span>
-                      <span>
-                        <FontAwesomeIcon className={styles.confirm} size="1x" icon={faCheck} onClick={() => updateSubject(item.id, item.subjectName)}/>
-                        <FontAwesomeIcon className={styles.confirmCross} size="1x" icon={faTimes} onClick={() => {setEditSubject(0); changeSubject(item.id, oldSubject);}}/>
-                      </span>
-                    </div>
-                    :
-                    <div className={styles.centerEditSubject}>
-                      <Link href={`/${router.query.object}/topic?sId=${item.id}&cId=${item.category}`}>
-                        <p>
-                          {item.categoryName? item.subjectName.trim() + ' (' + item.categoryName + ')':item.subjectName}
-                        </p>
-                      </Link> 
-                      <FontAwesomeIcon className={styles.confirm} size="1x" icon={faEdit} onClick={() => {setEditSubject(item.id); setOldSubject(item.subjectName);}}/>
-                    </div>
-                  }
-                </div>
-                <Link href={`/${router.query.object}/topic?sId=${item.id}&cId=${item.category}`}>
-                <p className={styles.centerGridCount}>
-                  {item.count} {countString(item.count)}
-                </p>
-                </Link>
-                <div className={styles.centerGridAction}>
-                  <div className={styles.ActionRow1}>
-                    <label>
-                      <input type="checkbox" value={item.isActive} checked={item.isActive?"checked":''} onChange={()=> updateFlags(item.id,false)}/>
-                      <span className={styles.isActive}> Is Active </span>
-                    </label>
-                    <FontAwesomeIcon className={styles.trash} size="1x" icon={faTrashAlt} onClick={() => deleteSubject(item.id)}/>
-                  </div>
-                  {object == 'video' || object == 'test'? 
-                  <div className={styles.ActionRow2}>
-                    <label>
-                      <input type="checkbox" value={item.isPaid} checked={item.isPaid?"checked":''} onChange={()=> updateFlags(item.id,true)}/>
-                      <span className={styles.isActive}> Is Paid </span>
-                    </label>
-                    <div className={styles.actionTextInput}>
-                      <div className="row">
-                        <div className="input-field">
-                          <input id={"amount" + item.id} type="text"
-                            value={item.amount || ''}
-                            onChange={e => {updateAmountList(item.id, e.target.value); postAmount(item.id, e.target.value);}}
-                          />
-                          <label htmlFor={"amount" + item.id} className={item.amount?"active": ""}>Amount</label>
-                        </div>
-                      </div>
-                    </div>
-                  </div> :<>
-                  </>}
-                </div>
-              </div>
-            )
-            })
-          }
-          {
-            editMode && category != 0 ? 
-            (
-              <div className={styles.boxSimple}>
-                <div className={styles.centerConfirmSubject}>
-                  <span className={styles.textInputSubject}>
-                  <input
-                    value={newSubject}
-                    placeholder="Enter Subject"
-                    onChange={(e) => setNewSubject(e.target.value)}
-                  />
-                  </span>
-                  <span>
-                    <FontAwesomeIcon className={styles.confirm} size="1x" icon={faCheck} onClick={() => postSubject(newSubject)}/>
-                    <FontAwesomeIcon className={styles.confirmCross} size="1x" icon={faTimes} onClick={() => setEditMode(false)}/>
-                  </span>
-                </div>
-              </div>
-            ) : (
-              <div className={styles.addParent}>
-              <FontAwesomeIcon className={styles.add} size="1x" icon={faPlus} onClick={() => {
-                category != 0 ? setEditMode(true) :
-                toast.error('Please select anyone category.', {
-                  position: "top-center",
-                  autoClose: 3000,
-                  hideProgressBar: true,
-                  closeOnClick: true,
-                  draggable: true,
-                });
-              }}/>
-              </div>
-            )
+            switchCentralModule()
           }  
         </div>
         <div className={styles.rightModule}>
