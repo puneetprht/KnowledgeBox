@@ -1,4 +1,5 @@
 const sql = require('./db.js');
+const query = require('./db.service.js');
 
 const Video = function(video) {};
 
@@ -25,6 +26,12 @@ Video.getAllSubjects = (categories, user, admin, result) => {
 	}	else{
 		SQL += ` where c.hmy in (${categories}) and s.objectType = 2 group by s.hmy `;
 	}
+	
+	/*try{
+		let res = await query.executeQuery(SQL)
+	} catch (err){
+
+	}*/
 	sql.query(
 		SQL,
 		(err, res) => {
