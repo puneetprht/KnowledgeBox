@@ -1,0 +1,1 @@
+mysqldump.exe -u admin -p api_db > db.sql
