@@ -7,5 +7,6 @@ export const error = '#de3500';
 export const textColor1 = '#003e92';
 export const textColor2 = '#008ACF';
 export const googleApiKey = 'AIzaSyCHMa3V4ZeF49SXVJ1QAzOHp8WTEIgtoEg';
-export const apiDomain = 'http://10.0.2.2:3000';
+//export const apiDomain = 'http://10.0.2.2:3000';
 //export const apiDomain = 'http://3.7.66.184:3000';
+export const apiDomain = 'http://api.knowledgebox.site';
