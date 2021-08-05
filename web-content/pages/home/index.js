@@ -10,6 +10,14 @@ import { ToastContainer, toast } from 'react-toastify';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTimes, faEdit, faPlus, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 
+import Feed from './feed';
+import Category from './category';
+import Profile from './userProfile';
+import Payments from './payments';
+import Refer from './referEarn';
+import Users from './usersList';
+import Wallet from './wallet';
+
 import styles from '../../styles/Home.module.css';
 
 export default function Home(props) {
@@ -73,21 +81,21 @@ export default function Home(props) {
 
   const switchCentralModule = () => {
     if(!centralItem){
-      return (<feed user={user} toast={displayToasterMessage}/>);
+      return (<Feed user={user} toast={displayToasterMessage}/>);
     } else if(centralItem == 'category'){
-      return (<category user={user} toast={displayToasterMessage}/>);
+      return (<Category user={user} toast={displayToasterMessage}/>);
     } else if(centralItem == 'profile'){
-      return (<profile user={user}  toast={displayToasterMessage}/>);
+      return (<Profile user={user}  toast={displayToasterMessage}/>);
     } else if(centralItem == 'users'){
-      return (<users user={user} toast={displayToasterMessage}/>);
+      return (<Users user={user} toast={displayToasterMessage}/>);
     } else if(centralItem == 'wallet'){
-      return (<wallet user={user} toast={displayToasterMessage}/>);
+      return (<Wallet user={user} toast={displayToasterMessage}/>);
     } else if(centralItem == 'payment'){
-      return (<payment user={user} toast={displayToasterMessage}/>);
+      return (<Payments user={user} toast={displayToasterMessage}/>);
     } else if(centralItem == 'refer'){
-      return (<refer user={user} toast={displayToasterMessage}/>);
+      return (<Refer user={user} toast={displayToasterMessage}/>);
     } else {
-      return (<feed user={user} toast={displayToasterMessage}/>);
+      return (<Feed user={user} toast={displayToasterMessage}/>);
     }
   };
 
