@@ -106,6 +106,18 @@ app.post('/postVideo', (req, res) => {
 	});
 });
 
+app.post('/saveAttachment', (req, res) => {
+	console.log("Item Body:", req.body);
+	model.saveAttachment(req.body, (err, data) => {
+		console.log('Error:', err);
+		if (err)
+			res.status(500).send({
+				message: err.message || 'Error processing request..'
+			});
+		else res.status(200).send(data);
+	});
+});
+
 app.delete('/deleteVideo', (req, res) => {
 	model.deleteVideo(req.body, (err, data) => {
 		if (err)

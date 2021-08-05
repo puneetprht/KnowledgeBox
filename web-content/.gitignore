@@ -36,3 +36,4 @@ yarn-error.log*
 /src
 /constants/
 constants.js
+aws.js

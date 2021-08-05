@@ -210,6 +210,34 @@
   /* font-weight: 400; */
 }
 
+.attachment{
+  display: flex;
+  flex-direction: column;
+  background-color: #26b3fa;
+  border-radius: 0.5em;
+  color: white;
+  border: 2 solid white;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+}
+
+.attachmentLink{
+  margin: 0;
+  padding: 0;
+}
+
+.attachmentAction{
+  margin: 0;
+  padding: 0;
+}
+
+.attachmentActionButtons{
+  width: 1em;
+  margin: 0em 0.5em;
+  cursor: pointer;
+}
+
 /* On screens that are 600px wide or less, make the columns stack on top of each other instead of next to each other */
 @media screen and (max-width: 450px) {
   .container {

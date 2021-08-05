@@ -171,6 +171,7 @@ Video.getVideoList = (id, user, result) => {
 	let SQL = '';
 	SQL += ` select v.hmy as id,videoname as value, url as url, urlVideoId,
 	IFNULL(v.isPaid,0) as isPaid, v.amount as amount, IFNULL(v.isActive,0) as isActive,
+	v.attachmentName as attachmentName, v.attachmentUrl as attachmentUrl, v.attachmentId as attachmentId,
 	st.isPaid as isParentPaid, st.amount as parentAmount,
 	s.isPaid as isSuperParentPaid, s.amount as superParentAmount `;
 	if(user && user.id){
@@ -273,6 +274,31 @@ Video.postVideo = (body, result) => {
 			return;
 		}		
 	}	
+};
+
+Video.saveAttachment = async (body, result) => {	
+	if(body.id){
+		let sql = ''
+		if(body.attachmentUrl){
+		sql = `update video set attachmentUrl = '${body.attachmentUrl}',
+		attachmentName = '${body.attachmentName}', attachmentId = '${body.attachmentName}'
+		where hmy = ${body.id}`
+		} else{
+			sql = `update video set attachmentUrl = null, attachmentId = null
+			where hmy = ${body.id}`
+		}
+		console.log(sql);
+		try{
+			let res = await query.executeQuery(sql)
+
+			result(null, null);
+				return;
+		} catch (err){
+			console.log('error: ', err);
+			result(err, null);
+			return;
+		}
+	}
 };
 
 Video.deleteVideo = (body, result) => {

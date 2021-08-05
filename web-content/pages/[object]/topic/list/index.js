@@ -1,7 +1,9 @@
 import _ from 'lodash';
 import Link from 'next/link';
+import S3 from 'aws-s3';
 import {parseCookies} from 'nookies';
 import {useRouter} from 'next/router';
+import FileDownload from 'js-file-download';
 import 'react-toastify/dist/ReactToastify.css';
 import {useState, useEffect, useRef} from 'react';
 import axios from '../../../../src/services/axios';
@@ -9,8 +11,9 @@ import { confirmAlert } from 'react-confirm-alert';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faTimes, faEdit, faPlus, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faTimes, faEdit, faPlus, faTrashAlt, faDownload } from '@fortawesome/free-solid-svg-icons';
 
+import {aws} from '../../../../src/constants/aws';
 import styles from '../../../../styles/List.module.css';
 
 export default function List({user}) {
@@ -28,9 +31,17 @@ export default function List({user}) {
   const [oldVideoUrl, setOldVideoUrl] = useState('');
   const [newVideo, setNewVideo] = useState('');
   const [newVideoUrl, setNewVideoUrl] = useState('');
+  const [isUpload, setIsUpload] = useState(0);
 
-  const [videoUrl, setVideoUrl] = useState('');
-  const [videoName, setVideoName] = useState('');
+  const S3config ={
+      bucketName: aws.Bucket,
+      dirName: 'PDFs/Video',
+      region: aws.Region,
+      accessKeyId: aws.Access_Key_ID2,
+      secretAccessKey: aws.Secret_Access_Key2
+  }
+
+  const S3Client = new S3(S3config);
   
   useEffect(() => {
     fetchAllTopics();
@@ -236,6 +247,96 @@ export default function List({user}) {
       });
   };
 
+  /* AWS functions */
+  const uploadPdf = (event, item) => {
+    setIsUpload(item.id);
+    //console.log(event.target.files[0]);
+    let fileName = event.target.files[0].name.split('.')[0];
+    S3Client.uploadFile(event.target.files[0], fileName)
+    .then((data) => {
+      console.log(data);
+      item.attachmentUrl = data.location;
+      item.attachmentName = event.target.files[0].name;
+      item.attachmentId = data.key;
+      return axios.post('/video/saveAttachment', item);
+    }).then((result) => {
+      setIsUpload(0);
+      toast.success('PDF added successfully!', {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        draggable: true,
+      });
+    })
+    .catch((err) => {
+      item.attachmentUrl = null;
+      item.attachmentName = null;
+      item.attachmentId = null;
+      setIsUpload(0);
+      toast.error('Error Uploading PDF, contact developer.', {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        draggable: true,
+      });
+    })
+  }
+
+  const deletePdf = (item) => {
+    setIsUpload(item.id);
+    /*S3Client
+    .deleteFile(item.attachmentName)
+    .then((data) => {
+      console.log(data);*/
+    let videoObject = JSON.parse(JSON.stringify(item));
+    videoObject.attachmentUrl = null;
+    videoObject.attachmentName = null;
+    videoObject.attachmentId = null;
+
+    axios.post('/video/saveAttachment', videoObject)
+    .then((result) => {
+      setIsUpload(0);
+      item.attachmentUrl = null;
+      item.attachmentName = null;
+      item.attachmentId = null;
+      const lists = JSON.parse(JSON.stringify(list));
+      let index = lists.findIndex(l => l.id == item.id);
+      lists[index].attachmentUrl = null;
+      lists[index].attachmentId = null;
+      lists[index].attachmentName = null;
+      setList(lists);
+      toast.success('PDF Deleted successfully!', {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        draggable: true,
+      });
+    })
+    .catch((err) => {
+      setIsUpload(0);
+      toast.error('Error Deleting PDF, contact developer.', {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        draggable: true,
+      });
+    })
+  }
+
+  const downloadPdf = (item) => {
+    axios({
+      url: item.attachmentUrl,
+      method: 'GET',
+      responseType: 'blob', // Important
+    }).then((response) => {
+        FileDownload(response.data, item.attachmentName);
+    });
+  }
+
   /* Normal function definitions*/
   const updateAmountList = (id,amount) => {
       const lists = JSON.parse(JSON.stringify(list));
@@ -341,11 +442,28 @@ export default function List({user}) {
                       </div>
                     </div>
                     :
-                    <div className={styles.leftEditSubject}>
-                      <p>
-                        {item.url}
-                      </p>
-                      <FontAwesomeIcon className={styles.confirm} size="1x" icon={faEdit} onClick={() => {setEditVideoUrl(item.id); setOldVideoUrl(item.url);}}/>
+                    <div>
+                      <div className={styles.leftEditSubject}>
+                        <p>
+                          {item.url}
+                        </p>
+                        <FontAwesomeIcon className={styles.confirm} size="1x" icon={faEdit} onClick={() => {setEditVideoUrl(item.id); setOldVideoUrl(item.url);}}/>
+                      </div>
+                      <div>
+                        {item.attachmentUrl?
+                        <div className={styles.attachment}>
+                          <div className={styles.attachmentLink}> 
+                            <p>{item.attachmentName}</p>
+                          </div>
+                          <div className={styles.attachmentAction}>
+                            <FontAwesomeIcon className={styles.attachmentActionButtons} size="1x" icon={faDownload} onClick={() => downloadPdf(item)}/>
+                            <FontAwesomeIcon className={styles.attachmentActionButtons} size="1x" icon={faTrashAlt} onClick={() => deletePdf(item)}/>
+                          </div>
+                        </div>
+                        :
+                        <input type='file' accept='.pdf' onChange={(e) => uploadPdf(e, item)} />
+                        }
+                      </div>
                     </div>
                   ) : 
                   (
