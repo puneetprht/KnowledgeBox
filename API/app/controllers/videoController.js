@@ -97,7 +97,6 @@ app.get('/getVideoList', (req, res) => {
 
 app.post('/postVideo', (req, res) => {
 	model.postVideo(req.body, (err, data) => {
-		console.log('Error:', err);
 		if (err)
 			res.status(500).send({
 				message: err.message || 'Error processing request..'
@@ -109,7 +108,6 @@ app.post('/postVideo', (req, res) => {
 app.post('/saveAttachment', (req, res) => {
 	console.log("Item Body:", req.body);
 	model.saveAttachment(req.body, (err, data) => {
-		console.log('Error:', err);
 		if (err)
 			res.status(500).send({
 				message: err.message || 'Error processing request..'
