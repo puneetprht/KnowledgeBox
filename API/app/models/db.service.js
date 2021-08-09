@@ -1,9 +1,10 @@
 const sql = require('./db.js');
 
 module.exports = {
-  executeQuery: (query) => {
+  executeQuery: (queryString) => {
     return new Promise((resolve, reject) => {
-      sql.query(query, (err, results) => {
+      queryString = queryString.replace(/\n|\t|\r/g,'');	
+      sql.query(queryString, (err, results) => {
         if(err){
           return reject(err);
         }
