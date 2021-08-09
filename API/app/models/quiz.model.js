@@ -1,4 +1,5 @@
 const sql = require('./db.js');
+const query = require('./db.service');
 
 const Quiz = function(quiz) {};
 
@@ -290,47 +291,29 @@ Quiz.postQuizAnswers = (quizResult, result) => {
 	);
 };
 
-Quiz.postQuiz = (quiz, result) => {
+Quiz.postQuiz = async (quiz, result) => {
 	console.log(quiz);
-	if (quiz.quizId) {
-		sql.query(
-			`update quiz SET quizname = '${quiz.quizName}', duration = ${quiz.quizTime} where hmy = ${quiz.quizId}`,
-			(err, data) => {
-				if (err) {
-					console.log('error2: ', err);
-					result(err, null);
-					return;
-				}
-				console.log(data.insertId || quiz.quizId);
-				console.log("Questions to be saved:", quiz.questions);
-
-				quiz.questions.forEach((question) => {
-					if (question.id) {
-						sql.query(
-							`update quizdetail set question = '${question.question.toString()}',option1 = '${question.option1.toString()}',
-						option2='${question.option2.toString()}',
-							option3 = '${question.option3.toString()}',option4 = '${question.option4.toString()}'
-							,correctoption = '${question.correctOption.toString()}',isMultiple = ${question.isMultiple} 
-							,questionLang=${toSqlString(question.questionLang)},
-							optionLang1=${toSqlString(question.optionLang1)},optionLang2=${toSqlString(question.optionLang2)},
-							optionLang3=${toSqlString(question.optionLang3)}, optionLang4=${toSqlString(question.optionLang4)},
-							videoUrl=${toSqlString(question.videoUrl)},
-							videoUrlId=${toSqlString(question.videoUrlId)}, explaination=${toSqlString(
-								question.explaination
-							)}, explainationLang=${toSqlString(
-								question.explainationLang
-							)} where hmy = ${question.id}`,
-							(err, res) => {
-								if (err) {
-									console.log('error: ', err);
-									result(err, null);
-									return;
-								}
-							}
-						);
-					} else {
-						sql.query(
-							setTimeout(`insert into quizdetail (fquiz,fsubtopic,fsubject,fcategory,question,option1,option2,
+	try{
+		if (quiz.quizId) {
+			let data = await query.executeQuery(`update quiz SET quizname = '${quiz.quizName}', duration = ${quiz.quizTime} where hmy = ${quiz.quizId}`);
+			console.log("Quiz Id:", data.insertId || quiz.quizId);
+			console.log("Questions to be saved:", quiz.questions);
+			for (let question of quiz.questions) {
+				if (question.id) {
+					let sql = `update quizdetail set question = '${question.question.toString()}',option1 = '${question.option1.toString()}',
+							option2='${question.option2.toString()}',
+								option3 = '${question.option3.toString()}',option4 = '${question.option4.toString()}'
+								,correctoption = '${question.correctOption.toString()}',isMultiple = ${question.isMultiple} 
+								,questionLang=${toSqlString(question.questionLang)},
+								optionLang1=${toSqlString(question.optionLang1)},optionLang2=${toSqlString(question.optionLang2)},
+								optionLang3=${toSqlString(question.optionLang3)}, optionLang4=${toSqlString(question.optionLang4)},
+								videoUrl=${toSqlString(question.videoUrl)},
+								videoUrlId=${toSqlString(question.videoUrlId)}, explaination=${toSqlString(question.explaination)}, 
+								explainationLang=${toSqlString(question.explainationLang)} where hmy = ${question.id}`;
+					sql = sql.replace(/\n|\t/g,'');								
+					let res = await query.executeQuery(sql);
+				} else {
+						let sql = `insert into quizdetail (fquiz,fsubtopic,fsubject,fcategory,question,option1,option2,
 								option3,option4,correctoption,isMultiple, questionLang, optionLang1, optionLang2, optionLang3, optionLang4,
 								videoUrl, videoUrlId, explaination, explainationLang) values 
 								(${data.insertId || quiz.quizId}, ${quiz.subTopicId}, ${quiz.subjectId}, ${quiz.categoryId},
@@ -338,83 +321,55 @@ Quiz.postQuiz = (quiz, result) => {
 									'${question.option3.toString()}','${question.option4.toString()}',
 									'${question.correctOption.toString()}',${question.isMultiple},'${question.questionLang}',
 									'${question.optionLang1}','${question.optionLang2}','${question.optionLang3}','${question.optionLang4}',
-									'${question.videoUrl}','${question.videoUrlId}','${question.explaination}','${question.explainationLang}')`,
-							(err, res) => {
-								if (err) {
-									console.log('error: ', err);
-									result(err, null);
-									return;
-								}
-							}
-						), (question.count || 1) * 100);
-					}
-				});
-				deleteSaved(data.insertId || quiz.quizId, quiz.questions);
-				result(null, {id: data.insertId || quiz.quizId});
-				return;
-			}
-		);
-	} else {
-		sql.query(
-			`insert into quiz (quizname,fsubtopic,fsubject,fcategory,duration ) values 
-		('${quiz.quizName}', ${quiz.subTopicId}, ${quiz.subjectId}, ${quiz.categoryId}, ${quiz.quizTime})`,
-			(err, data) => {
-				if (err) {
-					console.log('error1 : ', err);
-					result(err, null);
-					return;
+									'${question.videoUrl}','${question.videoUrlId}','${question.explaination}','${question.explainationLang}')`;
+						sql = sql.replace(/\n|\t|\r/g,'');			
+						let res = await query.executeQuery(sql);
+						question.id = res.insertId; 
 				}
-				console.log(data.insertId);
-				console.log("Questions to be saved:", quiz.questions);
-				
-				quiz.questions.forEach((question) => {
-					setTimeout(sql.query(
-						`insert into quizdetail (fquiz,fsubtopic,fsubject,fcategory,question,option1,option2,
-						option3,option4,correctoption,isMultiple, questionLang, optionLang1, optionLang2, optionLang3, optionLang4,
-						videoUrl, videoUrlId, explaination, explainationLang) values 
-						(${data.insertId}, ${quiz.subTopicId}, ${quiz.subjectId}, ${quiz.categoryId},
-							'${question.question.toString()}','${question.option1.toString()}','${question.option2.toString()}',
-							'${question.option3.toString()}','${question.option4.toString()}',
-							'${question.correctOption.toString()}',${question.isMultiple},'${question.questionLang}',
-							'${question.optionLang1}','${question.optionLang2}','${question.optionLang3}','${question.optionLang4}',
-							'${question.videoUrl}','${question.videoUrlId}','${question.explaination}','${question.explainationLang}')`,
-						(err, res) => {
-							if (err) {
-								console.log('error: ', err);
-								result(err, null);
-								return;
-							}
-						}
-					), (question.count || 1) * 100);
-				});
-				deleteSaved(data.insertId, quiz.questions);
-				result(null, {id: data.insertId});
-				return;
 			}
-		);
+			await deleteSaved(data.insertId || quiz.quizId, quiz.questions);
+			result(null, {id: data.insertId || quiz.quizId});
+			return;
+		} else {
+			let data = await query.executeQuery(`insert into quiz (quizname,fsubtopic,fsubject,fcategory,duration ) values 
+											('${quiz.quizName}', ${quiz.subTopicId}, ${quiz.subjectId}, ${quiz.categoryId}, ${quiz.quizTime})`);
+			console.log("Quiz Id:", data.insertId);
+			console.log("Questions to be saved:", quiz.questions);
+			for (let question of quiz.questions) {
+				let sql = `insert into quizdetail (fquiz,fsubtopic,fsubject,fcategory,question,option1,option2,
+							option3,option4,correctoption,isMultiple, questionLang, optionLang1, optionLang2, optionLang3, optionLang4,
+							videoUrl, videoUrlId, explaination, explainationLang) values 
+							(${data.insertId}, ${quiz.subTopicId}, ${quiz.subjectId}, ${quiz.categoryId},
+								'${question.question.toString()}','${question.option1.toString()}','${question.option2.toString()}',
+								'${question.option3.toString()}','${question.option4.toString()}',
+								'${question.correctOption.toString()}',${question.isMultiple},'${question.questionLang}',
+								'${question.optionLang1}','${question.optionLang2}','${question.optionLang3}','${question.optionLang4}',
+								'${question.videoUrl}','${question.videoUrlId}','${question.explaination}','${question.explainationLang}')`;
+				sql = sql.replace(/\n|\t|\r/g,'');			
+				let res = await query.executeQuery(sql);
+				question.id = res.insertId;
+			}
+			await deleteSaved(data.insertId, quiz.questions);
+			result(null, {id: data.insertId});
+			return;
+		}
+	} catch (err){
+		result(err, null);
+		return;
 	}
 };
 
-const deleteSaved = (id, quizData) => {
+const deleteSaved = async (id, quizData) => {
 	let inputIds = quizData.map((q) => {return q.id});
 	try {
-	sql.query(
-		`select hmy from quizdetail where fquiz = ${id}`,
-		(err, data) => {
-			//console.log("data: ", JSON.stringify(data))
-			let toDelete = data.map((q) => {return q.hmy}).filter(d => {return !inputIds.includes(d)});
-			//console.log("todelete: ", JSON.stringify(toDelete))
-			if(toDelete.length){
-				toDelete.forEach(id => {
-					sql.query(
-						`delete from quizDetail where hmy = ${id}`,
-						(err, res) => {}
-					);
-				})
-			}
-			return;
-		}
-	);
+	let data = await query.executeQuery(`select hmy from quizdetail where fquiz = ${id}`);
+	let toDelete = data.map((q) => {return q.hmy}).filter(d => {return !inputIds.includes(d)});
+	if(toDelete.length){
+		toDelete.forEach(async (id) => {
+			await query.executeQuery(`delete from quizDetail where hmy = ${id}`);
+		})
+	}
+	return;
 	}
 	catch (e) {
 		console.log("error: ", e);

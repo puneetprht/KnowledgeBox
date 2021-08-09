@@ -1,4 +1,5 @@
 const sql = require('./db.js');
+const query = require('./db.service');
 
 const toSqlString = (string) => {
 	if (string) return `'${string.toString()}'`;
@@ -385,109 +386,75 @@ Test.postTestAnswers = (testResult, result) => {
 	);
 };
 
-Test.postTest = (test, result) => {
-	console.log("This is test:", test);
-	if (test.testId) {
-		sql.query(
-			`update test SET testname = '${test.testName}', duration = ${test.testTime}, instructions = '${test.testInstructions}'	 where hmy = ${test.testId}`,
-			(err, data) => {
-				if (err) {
-					console.log('error2: ', err);
-					result(err, null);
-					return;
+Test.postTest = async (test, result) => {
+	console.log(test);
+	try{
+		if (test.testId) {
+			let data = await query.executeQuery(`update test SET testname = '${test.testName}', duration = ${test.testTime}, instructions = '${test.testInstructions}'	 where hmy = ${test.testId}`);
+			console.log("Test Id: ", data.insertId || test.testId);
+			console.log("Questions to be saved:", test.questions);
+			for (let question of test.questions) {
+				if (question.id) {
+					let sql = `update testdetail set question = '${question.question.toString()}',option1 = '${question.option1.toString()}',
+					option2='${question.option2.toString()}',
+						option3 = '${question.option3.toString()}',option4 = '${question.option4.toString()}'
+						,correctoption = '${question.correctOption.toString()}',isMultiple = ${question.isMultiple} 
+						,questionLang=${toSqlString(question.questionLang)},
+						optionLang1=${toSqlString(question.optionLang1)},optionLang2=${toSqlString(question.optionLang2)},
+						optionLang3=${toSqlString(question.optionLang3)}, optionLang4=${toSqlString(question.optionLang4)},
+						weightage=${question.weightage},
+						negativeWeightage=${question.negativeWeightage},videoUrl=${toSqlString(question.videoUrl)},
+						videoUrlId=${toSqlString(question.videoUrlId)}, explaination=${toSqlString(
+							question.explaination
+						)}, explainationLang=${toSqlString(
+							question.explainationLang
+						)} where hmy = ${question.id}`;
+					sql = sql.replace(/\n|\t/g,'');								
+					await query.executeQuery(sql);
+				} else {
+						let sql = `insert into testdetail (ftest,fsubtopic,fsubject,fcategory,question,option1,option2,
+							option3,option4,correctoption,isMultiple, questionLang, optionLang1, optionLang2, optionLang3, optionLang4, weightage, negativeWeightage,
+							videoUrl, videoUrlId, explaination, explainationLang) values 
+							(${data.insertId || test.testId}, ${test.subTopicId}, ${test.subjectId}, ${test.categoryId},
+								'${question.question.toString()}','${question.option1.toString()}','${question.option2.toString()}',
+								'${question.option3.toString()}','${question.option4.toString()}',
+								'${question.correctOption.toString()}',${question.isMultiple},'${question.questionLang}',
+								'${question.optionLang1}','${question.optionLang2}','${question.optionLang3}','${question.optionLang4}',
+								${question.weightage},${question.negativeWeightage},'${question.videoUrl}','${question.videoUrlId}','${question.explaination}','${question.explainationLang}')`;
+						sql = sql.replace(/\n|\t|\r/g,'');			
+						let res = await query.executeQuery(sql);
+						question.id = res.insertId;
 				}
-				console.log(data.insertId || test.testId);
-				console.log(test.questions);
-
-				test.questions.forEach((question) => {
-					if (question.id) {
-						sql.query(
-							`update testdetail set question = '${question.question.toString()}',option1 = '${question.option1.toString()}',
-						option2='${question.option2.toString()}',
-							option3 = '${question.option3.toString()}',option4 = '${question.option4.toString()}'
-							,correctoption = '${question.correctOption.toString()}',isMultiple = ${question.isMultiple} 
-							,questionLang=${toSqlString(question.questionLang)},
-							optionLang1=${toSqlString(question.optionLang1)},optionLang2=${toSqlString(question.optionLang2)},
-							optionLang3=${toSqlString(question.optionLang3)}, optionLang4=${toSqlString(question.optionLang4)},
-							weightage=${question.weightage},
-							negativeWeightage=${question.negativeWeightage},videoUrl=${toSqlString(question.videoUrl)},
-							videoUrlId=${toSqlString(question.videoUrlId)}, explaination=${toSqlString(
-								question.explaination
-							)}, explainationLang=${toSqlString(
-								question.explainationLang
-							)} where hmy = ${question.id}`,
-							(err, res) => {
-								if (err) {
-									console.log('error: ', err);
-									result(err, null);
-									return;
-								}
-							}
-						);
-					} else {
-						setTimeout(sql.query(
-							`insert into testdetail (ftest,fsubtopic,fsubject,fcategory,question,option1,option2,
-								option3,option4,correctoption,isMultiple, questionLang, optionLang1, optionLang2, optionLang3, optionLang4, weightage, negativeWeightage,
-								videoUrl, videoUrlId, explaination, explainationLang) values 
-								(${data.insertId || test.testId}, ${test.subTopicId}, ${test.subjectId}, ${test.categoryId},
-									'${question.question.toString()}','${question.option1.toString()}','${question.option2.toString()}',
-									'${question.option3.toString()}','${question.option4.toString()}',
-									'${question.correctOption.toString()}',${question.isMultiple},'${question.questionLang}',
-									'${question.optionLang1}','${question.optionLang2}','${question.optionLang3}','${question.optionLang4}',
-									${question.weightage},${question.negativeWeightage},'${question.videoUrl}','${question.videoUrlId}','${question.explaination}','${question.explainationLang}')`,
-							(err, res) => {
-								if (err) {
-									console.log('error: ', err);
-									result(err, null);
-									return;
-								}
-							}
-						), ( question.count || 1 ) * 100);
-					}
-				});
-				deleteSaved(test.testId, test.questions);
-				result(null, {id: test.testId});
-				return;
 			}
-		);
-	} else {
-		sql.query(
-			`insert into test (testname,fsubtopic,fsubject,fcategory,duration, instructions ) values 
-		('${test.testName}', ${test.subTopicId}, ${test.subjectId}, ${test.categoryId}, ${test.testTime}, '${test.testInstructions}')`,
-			(err, data) => {
-				if (err) {
-					console.log('error: ', err);
-					result(err, null);
-					return;
-				}
-				console.log(data.insertId);
-				console.log(test.questions);
-
-				test.questions.forEach((question) => {
-					setTimeout(sql.query(
-						`insert into testdetail (ftest,fsubtopic,fsubject,fcategory,question,option1,option2,
-						option3,option4,correctoption,isMultiple, questionLang, optionLang1, optionLang2, optionLang3, optionLang4, weightage, negativeWeightage,
-						videoUrl, videoUrlId, explaination, explainationLang) values 
-						(${data.insertId}, ${test.subTopicId}, ${test.subjectId}, ${test.categoryId},
-							'${question.question.toString()}','${question.option1.toString()}','${question.option2.toString()}',
-							'${question.option3.toString()}','${question.option4.toString()}',
-							'${question.correctOption.toString()}',${question.isMultiple},'${question.questionLang}',
-							'${question.optionLang1}','${question.optionLang2}','${question.optionLang3}','${question.optionLang4}',
-							${question.weightage},${question.negativeWeightage},'${question.videoUrl}','${question.videoUrlId}','${question.explaination}','${question.explainationLang}')`,
-						(err, res) => {
-							if (err) {
-								console.log('error: ', err);
-								result(err, null);
-								return;
-							}
-						}
-					), ( question.count || 1 ) * 100);
-				});
-				//deleteSaved(data.insertId, test.questions);
-				result(null, {id: data.insertId});
-				return;
+			await deleteSaved(data.insertId || test.testId, test.questions);
+			result(null, {id: data.insertId || test.testId});
+			return;
+		} else {
+			let data = await query.executeQuery(`insert into test (testname,fsubtopic,fsubject,fcategory,duration, instructions ) values 
+			('${test.testName}', ${test.subTopicId}, ${test.subjectId}, ${test.categoryId}, ${test.testTime}, '${test.testInstructions}')`);
+			console.log("Test Id: ", data.insertId);
+			console.log("Questions to be saved:", test.questions);
+			for (let question of test.questions) {
+				let sql = `insert into testdetail (ftest,fsubtopic,fsubject,fcategory,question,option1,option2,
+					option3,option4,correctoption,isMultiple, questionLang, optionLang1, optionLang2, optionLang3, optionLang4, weightage, negativeWeightage,
+					videoUrl, videoUrlId, explaination, explainationLang) values 
+					(${data.insertId}, ${test.subTopicId}, ${test.subjectId}, ${test.categoryId},
+						'${question.question.toString()}','${question.option1.toString()}','${question.option2.toString()}',
+						'${question.option3.toString()}','${question.option4.toString()}',
+						'${question.correctOption.toString()}',${question.isMultiple},'${question.questionLang}',
+						'${question.optionLang1}','${question.optionLang2}','${question.optionLang3}','${question.optionLang4}',
+						${question.weightage},${question.negativeWeightage},'${question.videoUrl}','${question.videoUrlId}','${question.explaination}','${question.explainationLang}')`;
+				sql = sql.replace(/\n|\t|\r/g,'');			
+				let res = await query.executeQuery(sql);
+				question.id = res.insertId;
 			}
-		);
+			await deleteSaved(data.insertId, test.questions);
+			result(null, {id: data.insertId});
+			return;
+		}
+	} catch (err){
+		result(err, null);
+		return;
 	}
 };
 
@@ -583,26 +550,17 @@ Test.postPaymentStatus = (req, result) => {
 	}
 };
 
-const deleteSaved = (id, testData) => {
-	let inputIds = testData.map((t) => {return t.id});
+const deleteSaved = async (id, testData) => {
+	let inputIds = testData.map((q) => {return q.id});
 	try {
-	sql.query(
-		`select hmy from testdetail where ftest = ${id}`,
-		(err, data) => {
-			//console.log("data: ", JSON.stringify(data))
-			let toDelete = data.map((q) => {return q.hmy}).filter(d => {return !inputIds.includes(d)});
-			//console.log("todelete: ", JSON.stringify(toDelete))
-			if(toDelete.length){
-				toDelete.forEach(id => {
-					sql.query(
-						`delete from testdetail where hmy = ${id}`,
-						(err, res) => {}
-					);
-				})
-			}
-			return;
-		}
-	);
+	let data = await query.executeQuery(`select hmy from testdetail where ftest = ${id}`);
+	let toDelete = data.map((q) => {return q.hmy}).filter(d => {return !inputIds.includes(d)});
+	if(toDelete.length){
+		toDelete.forEach(async (id) => {
+			await query.executeQuery(`delete from testDetail where hmy = ${id}`);
+		})
+	}
+	return;
 	}
 	catch (e) {
 		console.log("error: ", e);
