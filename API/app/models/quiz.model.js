@@ -216,8 +216,8 @@ Quiz.getQuizListById = (id, user, result) => {
 Quiz.getQuizDetail = (id, result) => {
 	console.log(id, ' Time: ', new Date());
 	sql.query(
-		`select qd.hmy as id,question , option1, option2, option3, option4, explaination,correctOption, isMultiple,questionLang, 
-		optionLang1, optionLang2, optionLang3, optionLang4, explainationLang,
+		`select qd.hmy as id,question , option1, option2, option3, option4, option5, explaination,correctOption, isMultiple,questionLang, 
+		optionLang1, optionLang2, optionLang3, optionLang4, optionLang5, explainationLang,
 		videoUrl, videoUrlId from quizdetail qd
 		inner join quiz q on q.hmy = qd.fquiz
 		where q.hmy = ${id} `,
@@ -302,25 +302,25 @@ Quiz.postQuiz = async (quiz, result) => {
 				if (question.id) {
 					let sql = `update quizdetail set question = '${question.question.toString()}',option1 = '${question.option1.toString()}',
 							option2='${question.option2.toString()}',
-								option3 = '${question.option3.toString()}',option4 = '${question.option4.toString()}'
+								option3 = '${question.option3.toString()}', option4 = '${question.option4.toString()}', option5 = ${toSqlString(question.option5)}
 								,correctoption = '${question.correctOption.toString()}',isMultiple = ${question.isMultiple} 
 								,questionLang=${toSqlString(question.questionLang)},
 								optionLang1=${toSqlString(question.optionLang1)},optionLang2=${toSqlString(question.optionLang2)},
 								optionLang3=${toSqlString(question.optionLang3)}, optionLang4=${toSqlString(question.optionLang4)},
-								videoUrl=${toSqlString(question.videoUrl)},
+								optionLang5=${toSqlString(question.optionLang5)}, videoUrl=${toSqlString(question.videoUrl)},
 								videoUrlId=${toSqlString(question.videoUrlId)}, explaination=${toSqlString(question.explaination)}, 
 								explainationLang=${toSqlString(question.explainationLang)} where hmy = ${question.id}`;
 					sql = sql.replace(/\n|\t/g,'');								
 					let res = await query.executeQuery(sql);
 				} else {
-						let sql = `insert into quizdetail (fquiz,fsubtopic,fsubject,fcategory,question,option1,option2,
-								option3,option4,correctoption,isMultiple, questionLang, optionLang1, optionLang2, optionLang3, optionLang4,
+						let sql = `insert into quizdetail (fquiz, fsubtopic, fsubject, fcategory, question, option1, option2,
+								option3, option4, option5, correctoption, isMultiple, questionLang, optionLang1, optionLang2, optionLang3, optionLang4, optionLang5,
 								videoUrl, videoUrlId, explaination, explainationLang) values 
 								(${data.insertId || quiz.quizId}, ${quiz.subTopicId}, ${quiz.subjectId}, ${quiz.categoryId},
 									'${question.question.toString()}','${question.option1.toString()}','${question.option2.toString()}',
-									'${question.option3.toString()}','${question.option4.toString()}',
+									'${question.option3.toString()}','${question.option4.toString()}',${toSqlString(question.option5)},
 									'${question.correctOption.toString()}',${question.isMultiple},'${question.questionLang}',
-									'${question.optionLang1}','${question.optionLang2}','${question.optionLang3}','${question.optionLang4}',
+									'${question.optionLang1}','${question.optionLang2}','${question.optionLang3}','${question.optionLang4}', ${toSqlString(question.optionLang5)},
 									'${question.videoUrl}','${question.videoUrlId}','${question.explaination}','${question.explainationLang}')`;
 						sql = sql.replace(/\n|\t|\r/g,'');			
 						let res = await query.executeQuery(sql);
@@ -336,14 +336,14 @@ Quiz.postQuiz = async (quiz, result) => {
 			console.log("Quiz Id:", data.insertId);
 			console.log("Questions to be saved:", quiz.questions);
 			for (let question of quiz.questions) {
-				let sql = `insert into quizdetail (fquiz,fsubtopic,fsubject,fcategory,question,option1,option2,
-							option3,option4,correctoption,isMultiple, questionLang, optionLang1, optionLang2, optionLang3, optionLang4,
-							videoUrl, videoUrlId, explaination, explainationLang) values 
+				let sql = `insert into quizdetail (fquiz, fsubtopic, fsubject, fcategory, question, option1, option2,
+							option3, option4, option5, correctoption, isMultiple, questionLang, optionLang1, optionLang2, optionLang3, optionLang4,
+							optionLang5, videoUrl, videoUrlId, explaination, explainationLang) values 
 							(${data.insertId}, ${quiz.subTopicId}, ${quiz.subjectId}, ${quiz.categoryId},
-								'${question.question.toString()}','${question.option1.toString()}','${question.option2.toString()}',
-								'${question.option3.toString()}','${question.option4.toString()}',
-								'${question.correctOption.toString()}',${question.isMultiple},'${question.questionLang}',
-								'${question.optionLang1}','${question.optionLang2}','${question.optionLang3}','${question.optionLang4}',
+								'${question.question.toString()}', '${question.option1.toString()}', '${question.option2.toString()}',
+								'${question.option3.toString()}', '${question.option4.toString()}', ${toSqlString(question.option5)},
+								'${question.correctOption.toString()}', ${question.isMultiple}, '${question.questionLang}',
+								'${question.optionLang1}', '${question.optionLang2}', '${question.optionLang3}', '${question.optionLang4}', ${toSqlString(question.optionLang5)},
 								'${question.videoUrl}','${question.videoUrlId}','${question.explaination}','${question.explainationLang}')`;
 				sql = sql.replace(/\n|\t|\r/g,'');			
 				let res = await query.executeQuery(sql);

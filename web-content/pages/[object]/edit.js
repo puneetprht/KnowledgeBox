@@ -32,11 +32,13 @@ export default function ObjectEdit({user}) {
     option2: '',
     option3: '',
     option4: '',
+    option5: '',
     questionLang: '',
     optionLang1: '',
     optionLang2: '',
     optionLang3: '',
     optionLang4: '',
+    optionLang5: '',
     explaination: '',
     explainationLang: '',
     videoUrl: '',
@@ -449,6 +451,15 @@ export default function ObjectEdit({user}) {
                           onChange={(e)=>setQuestionProperty(e.target.value, item, item.languageFlag? "optionLang4": "option4")}
                         />
                         <label htmlFor={"question"+item.count} className={(item.languageFlag? item.optionLang4: item.option4)?"active": ""}>{item.languageFlag? "विकल्प": "Option"} 4</label>
+                      </div>
+                    </div>
+                    <div className={styles.optionBox}>
+                      <div className="input-field">
+                        <textarea id={"question"+item.count} type="text" className="materialize-textarea"
+                          value={item.languageFlag? item.optionLang5: item.option5}
+                          onChange={(e)=>setQuestionProperty(e.target.value, item, item.languageFlag? "optionLang5": "option5")}
+                        />
+                        <label htmlFor={"question"+item.count} className={(item.languageFlag? item.optionLang5: item.option5)?"active": ""}>{item.languageFlag? "विकल्प": "Option"} 5</label>
                       </div>
                     </div>
                   </div>

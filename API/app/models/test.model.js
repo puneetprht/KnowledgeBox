@@ -302,9 +302,9 @@ Test.deleteTest = (body, result) => {
 Test.getTestDetail = (id, result) => {
 	console.log(id, ' Time: ', new Date());
 	sql.query(
-		`select qd.hmy as id, question, option1, option2, option3, option4, explaination, correctOption, isMultiple,
+		`select qd.hmy as id, question, option1, option2, option3, option4, option5, explaination, correctOption, isMultiple,
 		qd.negativeWeightage as negativeWeightage , qd.weightage as weightage, questionLang, 
-		optionLang1, optionLang2, optionLang3, optionLang4, explainationLang,
+		optionLang1, optionLang2, optionLang3, optionLang4, optionLang5, explainationLang,
 		videoUrl, videoUrlId from testdetail qd
 		inner join test q on q.hmy = qd.ftest
 		where q.hmy = ${id} `,
@@ -397,11 +397,12 @@ Test.postTest = async (test, result) => {
 				if (question.id) {
 					let sql = `update testdetail set question = '${question.question.toString()}',option1 = '${question.option1.toString()}',
 					option2='${question.option2.toString()}',
-						option3 = '${question.option3.toString()}',option4 = '${question.option4.toString()}'
+						option3 = '${question.option3.toString()}', option4 = '${question.option4.toString()}', option5 = ${toSqlString(question.option5)}
 						,correctoption = '${question.correctOption.toString()}',isMultiple = ${question.isMultiple} 
 						,questionLang=${toSqlString(question.questionLang)},
 						optionLang1=${toSqlString(question.optionLang1)},optionLang2=${toSqlString(question.optionLang2)},
 						optionLang3=${toSqlString(question.optionLang3)}, optionLang4=${toSqlString(question.optionLang4)},
+						optionLang5=${toSqlString(question.optionLang5)},
 						weightage=${question.weightage},
 						negativeWeightage=${question.negativeWeightage},videoUrl=${toSqlString(question.videoUrl)},
 						videoUrlId=${toSqlString(question.videoUrlId)}, explaination=${toSqlString(
@@ -412,15 +413,15 @@ Test.postTest = async (test, result) => {
 					sql = sql.replace(/\n|\t/g,'');								
 					await query.executeQuery(sql);
 				} else {
-						let sql = `insert into testdetail (ftest,fsubtopic,fsubject,fcategory,question,option1,option2,
-							option3,option4,correctoption,isMultiple, questionLang, optionLang1, optionLang2, optionLang3, optionLang4, weightage, negativeWeightage,
+						let sql = `insert into testdetail (ftest, fsubtopic, fsubject, fcategory, question, option1, option2,
+							option3, option4, option5, correctoption, isMultiple, questionLang, optionLang1, optionLang2, optionLang3, optionLang4, optionLang5, weightage, negativeWeightage,
 							videoUrl, videoUrlId, explaination, explainationLang) values 
 							(${data.insertId || test.testId}, ${test.subTopicId}, ${test.subjectId}, ${test.categoryId},
-								'${question.question.toString()}','${question.option1.toString()}','${question.option2.toString()}',
-								'${question.option3.toString()}','${question.option4.toString()}',
-								'${question.correctOption.toString()}',${question.isMultiple},'${question.questionLang}',
-								'${question.optionLang1}','${question.optionLang2}','${question.optionLang3}','${question.optionLang4}',
-								${question.weightage},${question.negativeWeightage},'${question.videoUrl}','${question.videoUrlId}','${question.explaination}','${question.explainationLang}')`;
+								'${question.question.toString()}', '${question.option1.toString()}', '${question.option2.toString()}',
+								'${question.option3.toString()}', '${question.option4.toString()}', ${toSqlString(question.option5)},
+								'${question.correctOption.toString()}', ${question.isMultiple}, '${question.questionLang}',
+								'${question.optionLang1}', '${question.optionLang2}', '${question.optionLang3}', '${question.optionLang4}', ${toSqlString(question.optionLang5)},
+								${question.weightage}, ${question.negativeWeightage}, '${question.videoUrl}', '${question.videoUrlId}', '${question.explaination}','${question.explainationLang}')`;
 						sql = sql.replace(/\n|\t|\r/g,'');			
 						let res = await query.executeQuery(sql);
 						question.id = res.insertId;
@@ -435,15 +436,15 @@ Test.postTest = async (test, result) => {
 			console.log("Test Id: ", data.insertId);
 			console.log("Questions to be saved:", test.questions);
 			for (let question of test.questions) {
-				let sql = `insert into testdetail (ftest,fsubtopic,fsubject,fcategory,question,option1,option2,
-					option3,option4,correctoption,isMultiple, questionLang, optionLang1, optionLang2, optionLang3, optionLang4, weightage, negativeWeightage,
-					videoUrl, videoUrlId, explaination, explainationLang) values 
+				let sql = `insert into testdetail (ftest, fsubtopic, fsubject, fcategory, question, option1, option2,
+					option3, option4, option5, correctoption, isMultiple, questionLang, optionLang1, optionLang2, optionLang3, optionLang4, optionLang5, 
+					weightage, negativeWeightage,	videoUrl, videoUrlId, explaination, explainationLang) values 
 					(${data.insertId}, ${test.subTopicId}, ${test.subjectId}, ${test.categoryId},
-						'${question.question.toString()}','${question.option1.toString()}','${question.option2.toString()}',
-						'${question.option3.toString()}','${question.option4.toString()}',
-						'${question.correctOption.toString()}',${question.isMultiple},'${question.questionLang}',
-						'${question.optionLang1}','${question.optionLang2}','${question.optionLang3}','${question.optionLang4}',
-						${question.weightage},${question.negativeWeightage},'${question.videoUrl}','${question.videoUrlId}','${question.explaination}','${question.explainationLang}')`;
+						'${question.question.toString()}', '${question.option1.toString()}', '${question.option2.toString()}',
+						'${question.option3.toString()}', '${question.option4.toString()}', ${toSqlString(question.option5)},
+						'${question.correctOption.toString()}', ${question.isMultiple}, '${question.questionLang}',
+						'${question.optionLang1}', '${question.optionLang2}', '${question.optionLang3}', '${question.optionLang4}', ${toSqlString(question.optionLang5)},
+						${question.weightage}, ${question.negativeWeightage}, '${question.videoUrl}', '${question.videoUrlId}', '${question.explaination}', '${question.explainationLang}')`;
 				sql = sql.replace(/\n|\t|\r/g,'');			
 				let res = await query.executeQuery(sql);
 				question.id = res.insertId;
