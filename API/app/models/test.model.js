@@ -242,6 +242,7 @@ Test.getTestListById = (id, user, result) => {
 			}
 
 			if (res.length) {
+				res = JSON.parse(JSON.stringify(res).replace(/<br>/g,'\\n'));	
 				result(null, res[0]);
 				return;
 			}
@@ -300,7 +301,7 @@ Test.deleteTest = (body, result) => {
 };
 
 Test.getTestDetail = (id, result) => {
-	console.log(id, ' Time: ', new Date());
+	console.log("Test Id: ", id, ' Time: ', new Date());
 	sql.query(
 		`select qd.hmy as id, question, option1, option2, option3, option4, option5, explaination, correctOption, isMultiple,
 		qd.negativeWeightage as negativeWeightage , qd.weightage as weightage, questionLang, 
@@ -316,7 +317,7 @@ Test.getTestDetail = (id, result) => {
 			}
 			let count = 1;
 			if (res.length) {
-				res = JSON.parse(JSON.stringify(res));
+				res = JSON.parse(JSON.stringify(res).replace(/<br>/g,'\\n'));	
 				var maxMarks = 0;
 				res.forEach((element) => {
 					console.log('ELEMENT IS THIS PLEASE LOOK:', element);
@@ -387,6 +388,7 @@ Test.postTestAnswers = (testResult, result) => {
 };
 
 Test.postTest = async (test, result) => {
+	test = JSON.parse(JSON.stringify(test).replace(/\\n/g,'<br>'));	
 	console.log(test);
 	try{
 		if (test.testId) {

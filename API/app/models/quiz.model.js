@@ -203,6 +203,7 @@ Quiz.getQuizListById = (id, user, result) => {
 			}
 
 			if (res.length) {
+				res = JSON.parse(JSON.stringify(res).replace(/<br>/g,'\\n'));	
 				result(null, res[0]);
 				return;
 			}
@@ -214,7 +215,7 @@ Quiz.getQuizListById = (id, user, result) => {
 };
 
 Quiz.getQuizDetail = (id, result) => {
-	console.log(id, ' Time: ', new Date());
+	console.log("Quiz Id: ", id, ' Time: ', new Date());
 	sql.query(
 		`select qd.hmy as id,question , option1, option2, option3, option4, option5, explaination,correctOption, isMultiple,questionLang, 
 		optionLang1, optionLang2, optionLang3, optionLang4, optionLang5, explainationLang,
@@ -229,7 +230,7 @@ Quiz.getQuizDetail = (id, result) => {
 			}
 			let count = 1;
 			if (res.length) {
-				res = JSON.parse(JSON.stringify(res));
+				res = JSON.parse(JSON.stringify(res).replace(/<br>/g,'\\n'));	
 				res.forEach((element) => {
 					element.options = [];
 					element.optionsLang = [];
@@ -292,6 +293,7 @@ Quiz.postQuizAnswers = (quizResult, result) => {
 };
 
 Quiz.postQuiz = async (quiz, result) => {
+	quiz = JSON.parse(JSON.stringify(quiz).replace(/\\n/g,'<br>'));	
 	console.log(quiz);
 	try{
 		if (quiz.quizId) {
