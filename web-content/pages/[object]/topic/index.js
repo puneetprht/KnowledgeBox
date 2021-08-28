@@ -5,7 +5,9 @@ import {useRouter} from 'next/router';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from '../../../src/services/axios';
 import {useState, useEffect, useRef} from 'react';
+import { confirmAlert } from 'react-confirm-alert';
 import { ToastContainer, toast } from 'react-toastify';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTimes, faEdit, faPlus, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 
@@ -84,32 +86,47 @@ export default function Topic({user}) {
 
   const deleteSubject = (id) => {
     if (id) {
-      axios
-        .delete('/common/deleteSubTopic', {
-          data: {
-            id: id,
-          },
-        })
-        .then((response) => {
-          fetchAllTopics();
-          toast.success('Topic deleted successfully.', {
-            position: "top-center",
-            autoClose: 3000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            draggable: true,
-          });
-        })
-        .catch((err) => {
-          console.error(err);
-          toast.error('Error deleting topic, contact developer.', {
-            position: "top-center",
-            autoClose: 3000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            draggable: true,
-          });
-        });
+      confirmAlert({
+        title: 'Delete ' + countString(1),
+        message: 'Are you sure you want to delete this?',
+        buttons: [
+          {
+            label: 'Yes',
+            onClick: () => {
+            axios
+            .delete('/common/deleteSubTopic', {
+              data: {
+                id: id,
+              },
+            })
+            .then((response) => {
+              fetchAllTopics();
+              toast.success('Topic deleted successfully.', {
+                position: "top-center",
+                autoClose: 3000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                draggable: true,
+              });
+            })
+            .catch((err) => {
+              console.error(err);
+              toast.error('Error deleting topic, contact developer.', {
+                position: "top-center",
+                autoClose: 3000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                draggable: true,
+              });
+            });
+          }
+        },
+        {
+          label: 'No',
+          onClick: () => console.log("No Pressed")
+        }
+      ]
+      });
     }
   };
 

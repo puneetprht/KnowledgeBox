@@ -5,7 +5,9 @@ import {useRouter} from 'next/router';
 import axios from '../../src/services/axios';
 import 'react-toastify/dist/ReactToastify.css';
 import {useState, useEffect, useRef} from 'react';
+import { confirmAlert } from 'react-confirm-alert';
 import { ToastContainer, toast } from 'react-toastify';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTimes, faEdit, faPlus, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 
@@ -143,36 +145,51 @@ export default function Objects(props) {
 
   const deleteSubject = (id) => {
     if (id) {
-      axios
-        .delete('/' + object + '/deleteSubject', {
-          data: {
-            id: id,
+      confirmAlert({
+        title: 'Delete ' + countString(1),
+        message: 'Are you sure you want to delete this?',
+        buttons: [
+          {
+            label: 'Yes',
+            onClick: () => {
+            axios
+             .delete('/' + object + '/deleteSubject', {
+               data: {
+                 id: id,
+               },
+             })
+             .then((response) => {
+               if(category){
+                 fetchSubject(category);
+               }else{
+                 fetchAllSubjects();
+               }
+               toast.success('Delete successfully subject.', {
+                 position: "top-center",
+                 autoClose: 3000,
+                 hideProgressBar: true,
+                 closeOnClick: true,
+                 draggable: true,
+               });
+             })
+             .catch((err) => {
+               console.error(err);
+               toast.error('Error deleting Subject, contact developer.', {
+                 position: "top-center",
+                 autoClose: 3000,
+                 hideProgressBar: true,
+                 closeOnClick: true,
+                 draggable: true,
+               });
+             });
+           }
           },
-        })
-        .then((response) => {
-          if(category){
-            fetchSubject(category);
-          }else{
-            fetchAllSubjects();
+          {
+            label: 'No',
+            onClick: () => console.log("No Pressed")
           }
-          toast.success('Delete successfully subject.', {
-            position: "top-center",
-            autoClose: 3000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            draggable: true,
-          });
-        })
-        .catch((err) => {
-          console.error(err);
-          toast.error('Error deleting Subject, contact developer.', {
-            position: "top-center",
-            autoClose: 3000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            draggable: true,
-          });
-        });
+        ]
+      });
     }
     setEditMode(false);
   };
