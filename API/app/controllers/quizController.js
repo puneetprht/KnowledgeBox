@@ -174,4 +174,14 @@ app.post('/postAmount', (req, res) => {
 	});
 });
 
+app.post('/saveImage', (req, res) => {
+	model.saveImage(req.body, (err, data) => {
+		if (err)
+			res.status(500).send({
+				message: err.message || 'Error processing request..'
+			});
+		else res.status(200).send(data);
+	});
+});
+
 module.exports = app;

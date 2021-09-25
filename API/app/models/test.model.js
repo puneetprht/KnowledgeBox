@@ -306,8 +306,18 @@ Test.getTestDetail = (id, result) => {
 		`select qd.hmy as id, question, option1, option2, option3, option4, option5, explaination, correctOption, isMultiple,
 		qd.negativeWeightage as negativeWeightage , qd.weightage as weightage, questionLang, 
 		optionLang1, optionLang2, optionLang3, optionLang4, optionLang5, explainationLang,
+		a1.hmy as optionAttachmentId1, a1.attachmentUrl as optionAttachmentUrl1,
+		a2.hmy as optionAttachmentId2, a2.attachmentUrl as optionAttachmentUrl2,
+		a3.hmy as optionAttachmentId3, a3.attachmentUrl as optionAttachmentUrl3,
+		a4.hmy as optionAttachmentId4, a4.attachmentUrl as optionAttachmentUrl4,
+		a5.hmy as optionAttachmentId5, a5.attachmentUrl as optionAttachmentUrl5,
 		videoUrl, videoUrlId from testdetail qd
 		inner join test q on q.hmy = qd.ftest
+		left outer join attachment a1 on qd.hmy = a1.fObjectDetail and a1.fOption = 1 and a1.objectType = 3 and a1.deleted = 0
+		left outer join attachment a2 on qd.hmy = a2.fObjectDetail and a2.fOption = 2 and a2.objectType = 3 and a2.deleted = 0
+		left outer join attachment a3 on qd.hmy = a3.fObjectDetail and a3.fOption = 3 and a3.objectType = 3 and a3.deleted = 0
+		left outer join attachment a4 on qd.hmy = a4.fObjectDetail and a4.fOption = 4 and a4.objectType = 3 and a4.deleted = 0
+		left outer join attachment a5 on qd.hmy = a5.fObjectDetail and a5.fOption = 5 and a5.objectType = 3 and a5.deleted = 0 
 		where q.hmy = ${id} `,
 		(err, res) => {
 			if (err) {
@@ -563,6 +573,26 @@ Test.postPaymentStatus = (req, result) => {
 	}
 };
 
+Test.saveImage = async (object, result) => {
+	console.log(object);
+	try {
+		if(object.deleted){
+			let req = await query.executeQuery(`update attachment set deleted = 1 where  hmy = ${object.id}`);
+			result(null, {status: String(req.status)});
+		} else {
+			let data = await query.executeQuery(`insert into attachment (attachmentUrl, attachmentId, attachmentName, objectType,
+				fObject, fObjectDetail, fOption) value (${toSqlString(object.attachmentUrl)}, ${toSqlString(object.attachmentId)},
+				${toSqlString(object.attachmentName)}, 3, ${toSqlString(object.parentId)}, ${toSqlString(object.questionId)}, 
+				${toSqlString(object.option)})`);
+			result(null, {url: String(object.attachmentUrl), id: data.insertId});
+		}
+		return;
+	}
+	catch (e) {
+		console.log("error: ", e);
+	}
+};
+
 const deleteSaved = async (id, testData) => {
 	let inputIds = testData.map((q) => {return q.id});
 	try {
@@ -582,6 +612,5 @@ const deleteSaved = async (id, testData) => {
 		console.log("Test Details not deleted.");
 	}
 }
-
 
 module.exports = Test;
