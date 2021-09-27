@@ -132,6 +132,28 @@
   align-items: center;
 }
 
+.optionBox{
+  position: relative;
+}
+
+.optionImage{
+  color:#008ACF;
+  position: absolute;
+  width: 1em;
+  right: 0.5em;
+  top: 0.5em;
+  margin: 0em 1em;
+}
+
+.optionImage2{
+  color:#008ACF;
+  position: absolute;
+  width: 1em;
+  right: 0.5em;
+  top: 2em;
+  margin: 0em 1em;
+}
+
 .selectionBox{
   height: 3em;
   width: 3em;
@@ -142,6 +164,28 @@
   border: 1px solid white;
   border-radius: 50%;
   background-color: white;
+}
+
+.uploadImage{
+  display: none;
+}
+
+.imageOption{
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  cursor: pointer;
+}
+
+.imageOptionIcon{
+  color:#ff5151;
+  border-radius: 0.2em;
+  background-color: #ffffff;
+  position: inline;
+  width: 1em;
+  right: 1em;
+  top: 0.5em;
+  margin: 0.5em 0.5em;
 }
 
 .selectionBoxSelected{

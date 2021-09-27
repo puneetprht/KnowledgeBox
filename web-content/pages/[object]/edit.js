@@ -1,6 +1,8 @@
+import S3 from 'aws-s3';
 import Link from 'next/link';
 import {parseCookies} from 'nookies';
 import {useRouter} from 'next/router';
+import FsLightbox from 'fslightbox-react';
 import axios from '../../src/services/axios';
 import 'react-toastify/dist/ReactToastify.css';
 import {useState, useEffect, useRef} from 'react';
@@ -8,8 +10,9 @@ import { confirmAlert } from 'react-confirm-alert';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLanguage, faCheckDouble, faArrowLeft, faPlus, faTrashAlt, faTimes} from '@fortawesome/free-solid-svg-icons';
+import { faLanguage, faCheckDouble, faArrowLeft, faPlus, faTrashAlt, faTimes, faImages} from '@fortawesome/free-solid-svg-icons';
 
+import {aws} from '../../src/constants/aws';
 import styles from '../../styles/Edit.module.css';
 
 export default function ObjectEdit({user}) {
@@ -48,9 +51,39 @@ export default function ObjectEdit({user}) {
     correctOption: [],
     isMultiple: false,
     languageFlag: false,
+    optionAttachmentUrl1: null,
+    optionAttachmentUrl2: null,
+    optionAttachmentUrl3: null,
+    optionAttachmentUrl4: null,
+    optionAttachmentUrl5: null,
+    optionAttachmentId1: null,
+    optionAttachmentId2: null,
+    optionAttachmentId3: null,
+    optionAttachmentId4: null,
+    optionAttachmentId5: null,
   };
   const [questionsList, setQuestionsList] = useState([questionObject]);
   const [instructions, setInstructions] = useState('');
+  const [openLightBox, setOpenLightBox] = useState(false);
+  const [lightBoxArray, setLightBoxArray] = useState(['https://knowledge2020box.s3.ap-south-1.amazonaws.com/Images/testUpload.png']);
+
+  let inputFile1 = useRef(null);
+  let inputFile2 = useRef(null);
+  let inputFile3 = useRef(null);
+  let inputFile4 = useRef(null);
+  let inputFile5 = useRef(null);
+  const [isUpload, setIsUpload] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  const S3config ={
+    bucketName: aws.Bucket,
+    dirName: 'Images/' + object,
+    region: aws.Region,
+    accessKeyId: aws.Access_Key_ID2,
+    secretAccessKey: aws.Secret_Access_Key2
+}
+
+const S3Client = new S3(S3config);
 
   //API Calls
   useEffect(() => {
@@ -229,10 +262,14 @@ export default function ObjectEdit({user}) {
   };
 
   // Normal Functions
-  const setQuestionProperty = (val, item, prop) => {
+  const setQuestionProperty = (val, item, prop, val2, prop2) => {
     const questions = JSON.parse(JSON.stringify(questionsList));
     let index = questions.findIndex(q => q.count == item.count);
     questions[index][prop] = val;
+    if(prop2){
+      questions[index][prop2] = val2 ;
+    }
+    console.log(questions[index]);
     setQuestionsList(questions);
     setSaved(false);
   };
@@ -277,12 +314,17 @@ export default function ObjectEdit({user}) {
   const onOptionPress = (item, option) => {
     const questions = JSON.parse(JSON.stringify(questionsList));
     let index = questions.findIndex(q => q.count == item.count);
+    console.log(!questions[index].option5 && questions[index].correctOption.findIndex(q => q == 5) > -1);
+    console.log(questions[index].correctOption);
     if (questions[index].correctOption.includes(option)) {
       questions[index].correctOption.splice(questions[index].correctOption.findIndex(q => q == option),1);
     } 
     else {
         questions[index].correctOption.push(option);
         questions[index].correctOption.sort();
+    }
+    if(!questions[index].option5 && questions[index].correctOption.findIndex(q => q == 5) > -1){
+      questions[index].correctOption.splice(questions[index].correctOption.findIndex(q => q == 5),1);
     }
     questions[index].isMultiple = (questions[index].correctOption.length > 1);
     setQuestionsList(questions);
@@ -338,6 +380,105 @@ export default function ObjectEdit({user}) {
     questions.push(question);
     setQuestionsList(questions);
     setSaved(false);
+  }
+
+  const openImagePicker = (event, item, index) => {
+    console.log(inputFile1);
+    setSelectedIndex(questionsList.findIndex(q => q.count == item.count));
+    event.preventDefault();
+    switch(index){
+      case 1:
+        inputFile1.current.click();
+        break;
+      case 2:
+        inputFile2.current.click();
+        break;
+      case 3:
+        inputFile3.current.click();
+        break;
+      case 4:
+        inputFile4.current.click();
+        break;
+      case 5:
+        inputFile5.current.click();
+        break;
+    }
+  }
+
+  const imagePicker = (event, index) => {
+    event.preventDefault(); 
+    
+    //setIsUpload(item.id);
+    //console.log(item);
+    console.log('Index: ', selectedIndex);
+    console.log(event.target.files[0]);
+    let fileName = event.target.files[0].name.split('.')[0];
+    S3Client.uploadFile(event.target.files[0], fileName)
+    .then((data) => {
+      //console.log(data);
+      let obj = {};
+      obj.attachmentUrl = data.location;
+      obj.attachmentName = event.target.files[0].name;
+      obj.attachmentId = data.key;
+      obj.questionId = questionsList[selectedIndex].id || 0;
+      obj.parentId = objectId || 0;
+      obj.option = index || 0;
+      obj.deleted = false;
+      return axios.post('/' + object + '/saveImage', obj);
+    }).then((result) => {
+      setIsUpload(0);
+      let tempItem = questionsList[selectedIndex]
+      setQuestionProperty(result.data.url, tempItem, 'optionAttachmentUrl' + index, result.data.id, 'optionAttachmentId' + index) ;
+      //console.log(item);
+      toast.success('Image uploaded successfully!', {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        draggable: true,
+      });
+    })
+    .catch((err) => {
+      setIsUpload(0);
+      toast.error('Error Uploading Image, contact developer.', {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        draggable: true,
+      });
+    })
+  }
+
+  const removeAttachment = (item, index) => {
+    let obj = {};
+    obj.id = item['optionAttachmentId' + index] || 0
+    obj.questionId = item.id || 0;
+    obj.parentId = objectId || 0;
+    obj.option = index;
+    obj.deleted = true;
+    axios.post('/' + object + '/saveImage', obj)
+    .then((result) => {
+      setIsUpload(0);
+      setQuestionProperty(null, item, 'optionAttachmentUrl' + index, 0, 'optionAttachmentId' + index);
+      toast.success('Image Removed successfully!', {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        draggable: true,
+      });
+    })
+    .catch((err) => {
+      setIsUpload(0);
+      toast.error('Error removing Image, contact developer.', {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        draggable: true,
+      });
+    })
   }
 
   return (
@@ -415,6 +556,12 @@ export default function ObjectEdit({user}) {
                     <span className={item.correctOption.includes(2)?styles.selectionBoxSelected:styles.selectionBox} onClick={() => {onOptionPress(item,2)}}>2</span>
                     <span className={item.correctOption.includes(3)?styles.selectionBoxSelected:styles.selectionBox} onClick={() => {onOptionPress(item,3)}}>3</span>
                     <span className={item.correctOption.includes(4)?styles.selectionBoxSelected:styles.selectionBox} onClick={() => {onOptionPress(item,4)}}>4</span>
+                    <span className={item.correctOption.includes(5)?styles.selectionBoxSelected:styles.selectionBox} onClick={() => {onOptionPress(item,5)}}>5</span>
+                    <input className={styles.uploadImage} ref={inputFile1} onChange={(e) => imagePicker(e,1)} type='file' accept="image/*"/>
+                    <input className={styles.uploadImage} ref={inputFile2} onChange={(e) => imagePicker(e,2)} type='file' accept="image/*"/>
+                    <input className={styles.uploadImage} ref={inputFile3} onChange={(e) => imagePicker(e,3)} type='file' accept="image/*"/>
+                    <input className={styles.uploadImage} ref={inputFile4} onChange={(e) => imagePicker(e,4)} type='file' accept="image/*"/>
+                    <input className={styles.uploadImage} ref={inputFile5} onChange={(e) => imagePicker(e,5)} type='file' accept="image/*"/>
                   </div>
                   <div className={styles.optionContainer}>
                     <div className={styles.optionBox}>
@@ -425,15 +572,48 @@ export default function ObjectEdit({user}) {
                         />
                         <label htmlFor={"question"+item.count} className={(item.languageFlag? item.optionLang1: item.option1)?"active": ""}>{item.languageFlag? "विकल्प": "Option"} 1</label>
                       </div>
+                      {
+                        !item.optionAttachmentUrl1 ?
+                        <div>
+                          <FontAwesomeIcon className={(item.languageFlag? item.optionLang1: item.option1)?styles.optionImage: styles.optionImage2} onClick={(e) => openImagePicker(e, item, 1)} size="1x" icon={faImages}/>
+                        </div>
+                        :<></>
+                      }
+                      {
+                        item.optionAttachmentUrl1 ?
+                        <div className={styles.imageOption}>
+                          <img src={item.optionAttachmentUrl1} height="100"
+                            onClick={ (e) => {e.preventDefault(); setOpenLightBox(!openLightBox) }}></img>
+                          <FontAwesomeIcon className={styles.imageOptionIcon} size="1x" icon={faTrashAlt} onClick={(e) => removeAttachment(item,1)}/>
+                        </div> 
+                      : <></>
+                      }
                     </div>
                     <div className={styles.optionBox}>
                       <div className="input-field">
-                        <textarea id={"question"+item.count} type="text" className="materialize-textarea"
+                        <textarea id={"question"+item.count} type="text" width="90%" className="materialize-textarea"
                           value={item.languageFlag? item.optionLang2: item.option2}
                           onChange={(e)=>setQuestionProperty(e.target.value, item, item.languageFlag? "optionLang2": "option2")}
                         />
                         <label htmlFor={"question"+item.count} className={(item.languageFlag? item.optionLang2: item.option2)?"active": ""}>{item.languageFlag? "विकल्प": "Option"} 2</label>
                       </div>
+                      {
+                        !item.optionAttachmentUrl2 ?
+                        <div>
+                          {/* <input className={styles.uploadImage} ref={inputFile2} onChange={(e) => imagePicker(e,item,2)} type='file' accept="image/*"/> */}
+                          <FontAwesomeIcon className={(item.languageFlag? item.optionLang2: item.option2)?styles.optionImage: styles.optionImage2} onClick={(e) => openImagePicker(e, item, 2)} size="1x" icon={faImages}/>
+                        </div>
+                        :<></>
+                      }
+                      {
+                        item.optionAttachmentUrl2 ?
+                        <div className={styles.imageOption}>
+                          <img src={item.optionAttachmentUrl2} height="100"
+                          onClick={ (e) => {e.preventDefault(); setOpenLightBox(!openLightBox) }}></img>
+                          <FontAwesomeIcon className={styles.imageOptionIcon} size="1x" icon={faTrashAlt} onClick={(e) => removeAttachment(item,2)}/>
+                        </div> 
+                      : <></>
+                      }
                     </div>
                     <div className={styles.optionBox}>
                       <div className="input-field">
@@ -443,6 +623,23 @@ export default function ObjectEdit({user}) {
                         />
                         <label htmlFor={"question"+item.count} className={(item.languageFlag? item.optionLang3: item.option3)?"active": ""}>{item.languageFlag? "विकल्प": "Option"} 3</label>
                       </div>
+                      {
+                        !item.optionAttachmentUrl3 ?
+                      <div>
+                        {/* <input className={styles.uploadImage} ref={inputFile3} onChange={(e) => imagePicker(e,item,3)} type='file' accept="image/*"/> */}
+                        <FontAwesomeIcon className={(item.languageFlag? item.optionLang3: item.option3)?styles.optionImage: styles.optionImage2} onClick={(e) => openImagePicker(e, item, 3)} size="1x" icon={faImages}/>
+                      </div>
+                      : <></>
+                      }
+                      {
+                        item.optionAttachmentUrl3 ?
+                        <div className={styles.imageOption}>
+                          <img src={item.optionAttachmentUrl3} height="100" 
+                          onClick={ (e) => {e.preventDefault(); setOpenLightBox(!openLightBox) }}></img>
+                          <FontAwesomeIcon className={styles.imageOptionIcon} size="1x" icon={faTrashAlt} onClick={(e) => removeAttachment(item,3)}/>
+                        </div> 
+                      : <></>
+                      }
                     </div>
                     <div className={styles.optionBox}>
                       <div className="input-field">
@@ -452,6 +649,22 @@ export default function ObjectEdit({user}) {
                         />
                         <label htmlFor={"question"+item.count} className={(item.languageFlag? item.optionLang4: item.option4)?"active": ""}>{item.languageFlag? "विकल्प": "Option"} 4</label>
                       </div>
+                      {!item.optionAttachmentUrl4?
+                        <div>
+                          {/* <input className={styles.uploadImage} ref={inputFile4} onChange={(e) => imagePicker(e,item,4)} type='file' accept="image/*"/> */}
+                          <FontAwesomeIcon className={(item.languageFlag? item.optionLang4: item.option4)?styles.optionImage: styles.optionImage2} onClick={(e) => openImagePicker(e, item, 4)} size="1x" icon={faImages}/>
+                        </div>:
+                        <></>
+                      }
+                      {
+                        item.optionAttachmentUrl4 ?
+                        <div className={styles.imageOption}>
+                          <img src={item.optionAttachmentUrl4} height="100"
+                          onClick={ (e) => {e.preventDefault(); setOpenLightBox(!openLightBox) }}></img>
+                          <FontAwesomeIcon className={styles.imageOptionIcon} size="1x" icon={faTrashAlt} onClick={(e) => removeAttachment(item,4)}/>
+                        </div> 
+                      : <></>
+                      }
                     </div>
                     <div className={styles.optionBox}>
                       <div className="input-field">
@@ -461,6 +674,22 @@ export default function ObjectEdit({user}) {
                         />
                         <label htmlFor={"question"+item.count} className={(item.languageFlag? item.optionLang5: item.option5)?"active": ""}>{item.languageFlag? "विकल्प": "Option"} 5</label>
                       </div>
+                      {!item.optionAttachmentUrl5?
+                        <div>
+                          {/* <input className={styles.uploadImage} ref={inputFile5} onChange={(e) => imagePicker(e,item,5)} type='file' accept="image/*"/> */}
+                          <FontAwesomeIcon className={(item.languageFlag? item.optionLang5: item.option5)?styles.optionImage: styles.optionImage2} onClick={(e) => openImagePicker(e, item, 5)} size="1x" icon={faImages}/>
+                        </div>:
+                        <></>
+                      }
+                      {
+                        item.optionAttachmentUrl5?
+                        <div className={styles.imageOption}>
+                          <img src={item.optionAttachmentUrl5} height="100"
+                          onClick={ (e) => {e.preventDefault(); setOpenLightBox(!openLightBox) }}></img>
+                          <FontAwesomeIcon className={styles.imageOptionIcon} size="1x" icon={faTrashAlt} onClick={(e) => removeAttachment(item,5)}/>
+                        </div> 
+                      : <></>
+                      }
                     </div>
                   </div>
                   <div className={styles.videoParent}>
@@ -527,6 +756,11 @@ export default function ObjectEdit({user}) {
                 onClick={(e) => addQuestion(e)}/>
         </div>
       </div>
+      <button onClick={ (e) => {e.preventDefault(); setOpenLightBox(!openLightBox) }}>
+                Toggle Lightbox {openLightBox}
+            </button>
+      <FsLightbox toggler={openLightBox}
+      sources={lightBoxArray}/>
       <ToastContainer
         position="top-center"
         autoClose={3000}
