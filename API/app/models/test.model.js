@@ -439,6 +439,27 @@ Test.postTest = async (test, result) => {
 							sql = sql.replace(/\n|\t|\r/g,'');			
 							let res = await query.executeQuery(sql);
 							question.id = res.insertId;
+
+							if(question.optionAttachmentId1 > 0){
+								let att1 =  await query.executeQuery(`update attachment set fObject = ${data.insertId || test.testId || 0 }, 
+								fObjectDetail = ${question.id || 0} where hmy = ${question.optionAttachmentId1}`);		
+							}
+							if(question.optionAttachmentId2 > 0){
+								let att1 =  await query.executeQuery(`update attachment set fObject = ${data.insertId || test.testId || 0 }, 
+								fObjectDetail = ${question.id || 0} where hmy = ${question.optionAttachmentId2}`);		
+							}
+							if(question.optionAttachmentId3 > 0){
+								let att1 =  await query.executeQuery(`update attachment set fObject = ${data.insertId || test.testId|| 0 }, 
+								fObjectDetail = ${question.id || 0} where hmy = ${question.optionAttachmentId3}`);		
+							}
+							if(question.optionAttachmentId4 > 0){
+								let att1 =  await query.executeQuery(`update attachment set fObject = ${data.insertId || test.testId || 0 }, 
+								fObjectDetail = ${question.id || 0} where hmy = ${question.optionAttachmentId4}`);		
+							}
+							if(question.optionAttachmentId5 > 0){
+								let att1 =  await query.executeQuery(`update attachment set fObject = ${data.insertId || test.testId || 0 }, 
+								fObjectDetail = ${question.id || 0} where hmy = ${question.optionAttachmentId5}`);		
+							}
 					}
 				} catch (e) {
 					console.error("Error:" + e + " \n in question: " + question)
@@ -467,6 +488,27 @@ Test.postTest = async (test, result) => {
 					sql = sql.replace(/\n|\t|\r/g,'');			
 					let res = await query.executeQuery(sql);
 					question.id = res.insertId;
+
+					if(question.optionAttachmentId1 > 0){
+						let att1 =  await query.executeQuery(`update attachment set fObject = ${data.insertId || 0 }, 
+						fObjectDetail = ${question.id || 0} where hmy = ${question.optionAttachmentId1}`);		
+					}
+					if(question.optionAttachmentId2 > 0){
+						let att1 =  await query.executeQuery(`update attachment set fObject = ${data.insertId || 0 }, 
+						fObjectDetail = ${question.id || 0} where hmy = ${question.optionAttachmentId2}`);		
+					}
+					if(question.optionAttachmentId3 > 0){
+						let att1 =  await query.executeQuery(`update attachment set fObject = ${data.insertId || 0 }, 
+						fObjectDetail = ${question.id || 0} where hmy = ${question.optionAttachmentId3}`);		
+					}
+					if(question.optionAttachmentId4 > 0){
+						let att1 =  await query.executeQuery(`update attachment set fObject = ${data.insertId || 0 }, 
+						fObjectDetail = ${question.id || 0} where hmy = ${question.optionAttachmentId4}`);		
+					}
+					if(question.optionAttachmentId5 > 0){
+						let att1 =  await query.executeQuery(`update attachment set fObject = ${data.insertId || 0 }, 
+						fObjectDetail = ${question.id || 0} where hmy = ${question.optionAttachmentId5}`);		
+					}
 				} catch (e) {
 					console.error("Error:" + e + " \n in question: " + question)
 				}
@@ -601,6 +643,7 @@ const deleteSaved = async (id, testData) => {
 	if(toDelete.length){
 		toDelete.forEach(async (id) => {
 			await query.executeQuery(`delete from testDetail where hmy = ${id}`);
+			await query.executeQuery(`delete from attachment where fObjectDetail = ${id}`);
 		})
 	}
 	return;

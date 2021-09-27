@@ -339,6 +339,27 @@ Quiz.postQuiz = async (quiz, result) => {
 							sql = sql.replace(/\n|\t|\r/g,'');			
 							let res = await query.executeQuery(sql);
 							question.id = res.insertId; 
+
+							if(question.optionAttachmentId1 > 0){
+								let att1 =  await query.executeQuery(`update attachment set fObject = ${data.insertId || quiz.quizId || 0 }, 
+								fObjectDetail = ${question.id || 0} where hmy = ${question.optionAttachmentId1}`);		
+							}
+							if(question.optionAttachmentId2 > 0){
+								let att1 =  await query.executeQuery(`update attachment set fObject = ${data.insertId || quiz.quizId || 0 }, 
+								fObjectDetail = ${question.id || 0} where hmy = ${question.optionAttachmentId2}`);		
+							}
+							if(question.optionAttachmentId3 > 0){
+								let att1 =  await query.executeQuery(`update attachment set fObject = ${data.insertId || quiz.quizId || 0 }, 
+								fObjectDetail = ${question.id || 0} where hmy = ${question.optionAttachmentId3}`);		
+							}
+							if(question.optionAttachmentId4 > 0){
+								let att1 =  await query.executeQuery(`update attachment set fObject = ${data.insertId || quiz.quizId || 0 }, 
+								fObjectDetail = ${question.id || 0} where hmy = ${question.optionAttachmentId4}`);		
+							}
+							if(question.optionAttachmentId5 > 0){
+								let att1 =  await query.executeQuery(`update attachment set fObject = ${data.insertId || quiz.quizId || 0 }, 
+								fObjectDetail = ${question.id || 0} where hmy = ${question.optionAttachmentId5}`);		
+							}
 					}
 				} catch (e) {
 					console.error("Error:" + e + " \n in question: " + question)
@@ -367,6 +388,27 @@ Quiz.postQuiz = async (quiz, result) => {
 					sql = sql.replace(/\n|\t|\r/g,'');			
 					let res = await query.executeQuery(sql);
 					question.id = res.insertId;
+
+					if(question.optionAttachmentId1 > 0){
+						let att1 =  await query.executeQuery(`update attachment set fObject = ${data.insertId || 0 }, 
+						fObjectDetail = ${question.id || 0} where hmy = ${question.optionAttachmentId1}`);		
+					}
+					if(question.optionAttachmentId2 > 0){
+						let att1 =  await query.executeQuery(`update attachment set fObject = ${data.insertId || 0 }, 
+						fObjectDetail = ${question.id || 0} where hmy = ${question.optionAttachmentId2}`);		
+					}
+					if(question.optionAttachmentId3 > 0){
+						let att1 =  await query.executeQuery(`update attachment set fObject = ${data.insertId || 0 }, 
+						fObjectDetail = ${question.id || 0} where hmy = ${question.optionAttachmentId3}`);		
+					}
+					if(question.optionAttachmentId4 > 0){
+						let att1 =  await query.executeQuery(`update attachment set fObject = ${data.insertId || 0 }, 
+						fObjectDetail = ${question.id || 0} where hmy = ${question.optionAttachmentId4}`);		
+					}
+					if(question.optionAttachmentId5 > 0){
+						let att1 =  await query.executeQuery(`update attachment set fObject = ${data.insertId || 0 }, 
+						fObjectDetail = ${question.id || 0} where hmy = ${question.optionAttachmentId5}`);		
+					}
 				} catch (e) {
 					console.error("Error:" + e + " \n in question: " + question)
 				}
@@ -389,6 +431,7 @@ const deleteSaved = async (id, quizData) => {
 	if(toDelete.length){
 		toDelete.forEach(async (id) => {
 			await query.executeQuery(`delete from quizDetail where hmy = ${id}`);
+			await query.executeQuery(`delete from attachment where fObjectDetail = ${id}`);
 		})
 	}
 	return;
@@ -447,7 +490,7 @@ Quiz.postAmount = (req, result) => {
 	);
 };
 
-Test.saveImage = async (object, result) => {
+Quiz.saveImage = async (object, result) => {
 	console.log(object);
 	try {
 		if(object.deleted){
