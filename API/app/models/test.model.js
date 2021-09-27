@@ -409,10 +409,10 @@ Test.postTest = async (test, result) => {
 				try{
 				console.log("Question processing:", question);
 					if (question.id) {
-						let sql = `update testdetail set question = '${question.question.toString()}',option1 = '${question.option1.toString()}',
-						option2='${question.option2.toString()}',
-							option3 = '${question.option3.toString()}', option4 = '${question.option4.toString()}', option5 = ${toSqlString(question.option5)}
-							,correctoption = '${question.correctOption.toString()}',isMultiple = ${question.isMultiple} 
+						let sql = `update testdetail set question = ${toSqlString(question.question)},option1 = ${toSqlString(question.option1)},
+						option2=${toSqlString(question.option2)},
+							option3 = ${toSqlString(question.option3)}, option4 = ${toSqlString(question.option4)}, option5 = ${toSqlString(question.option5)}
+							,correctoption = ${toSqlString(question.correctOption)},isMultiple = ${question.isMultiple} 
 							,questionLang=${toSqlString(question.questionLang)},
 							optionLang1=${toSqlString(question.optionLang1)},optionLang2=${toSqlString(question.optionLang2)},
 							optionLang3=${toSqlString(question.optionLang3)}, optionLang4=${toSqlString(question.optionLang4)},
@@ -431,9 +431,9 @@ Test.postTest = async (test, result) => {
 								option3, option4, option5, correctoption, isMultiple, questionLang, optionLang1, optionLang2, optionLang3, optionLang4, optionLang5, weightage, negativeWeightage,
 								videoUrl, videoUrlId, explaination, explainationLang) values 
 								(${data.insertId || test.testId}, ${test.subTopicId}, ${test.subjectId}, ${test.categoryId},
-									'${question.question.toString()}', '${question.option1.toString()}', '${question.option2.toString()}',
-									'${question.option3.toString()}', '${question.option4.toString()}', ${toSqlString(question.option5)},
-									'${question.correctOption.toString()}', ${question.isMultiple}, '${question.questionLang}',
+									${toSqlString(question.question)}, ${toSqlString(question.option1)}, ${toSqlString(question.option2)},
+									${toSqlString(question.option3)}, ${toSqlString(question.option4)}, ${toSqlString(question.option5)},
+									${toSqlString(question.correctOption)}, ${question.isMultiple}, '${question.questionLang}',
 									'${question.optionLang1}', '${question.optionLang2}', '${question.optionLang3}', '${question.optionLang4}', ${toSqlString(question.optionLang5)},
 									${question.weightage}, ${question.negativeWeightage}, '${question.videoUrl}', '${question.videoUrlId}', '${question.explaination}','${question.explainationLang}')`;
 							sql = sql.replace(/\n|\t|\r/g,'');			
@@ -480,9 +480,9 @@ Test.postTest = async (test, result) => {
 						option3, option4, option5, correctoption, isMultiple, questionLang, optionLang1, optionLang2, optionLang3, optionLang4, optionLang5, 
 						weightage, negativeWeightage,	videoUrl, videoUrlId, explaination, explainationLang) values 
 						(${data.insertId}, ${test.subTopicId}, ${test.subjectId}, ${test.categoryId},
-							'${question.question.toString()}', '${question.option1.toString()}', '${question.option2.toString()}',
-							'${question.option3.toString()}', '${question.option4.toString()}', ${toSqlString(question.option5)},
-							'${question.correctOption.toString()}', ${question.isMultiple}, '${question.questionLang}',
+							${toSqlString(question.question)}, ${toSqlString(question.option1)}, ${toSqlString(question.option2)},
+							${toSqlString(question.option3)}, ${toSqlString(question.option4)}, ${toSqlString(question.option5)},
+							${toSqlString(question.correctOption)}, ${question.isMultiple}, '${question.questionLang}',
 							'${question.optionLang1}', '${question.optionLang2}', '${question.optionLang3}', '${question.optionLang4}', ${toSqlString(question.optionLang5)},
 							${question.weightage}, ${question.negativeWeightage}, '${question.videoUrl}', '${question.videoUrlId}', '${question.explaination}', '${question.explainationLang}')`;
 					sql = sql.replace(/\n|\t|\r/g,'');			
