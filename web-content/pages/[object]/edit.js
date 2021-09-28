@@ -67,7 +67,7 @@ export default function ObjectEdit({user}) {
   const [questionsList, setQuestionsList] = useState([questionObject]);
   const [instructions, setInstructions] = useState('');
   const [openLightBox, setOpenLightBox] = useState(false);
-  const [lightBoxArray, setLightBoxArray] = useState(['https://knowledge2020box.s3.ap-south-1.amazonaws.com/Images/testUpload.png']);
+  const [lightBoxArray, setLightBoxArray] = useState([]);
 
   let inputFileQuestion = useRef(null);
   let inputFile1 = useRef(null);
@@ -575,7 +575,7 @@ const S3Client = new S3(S3config);
                       item.questionAttachmentUrl ?
                         <div className={styles.imageOption}>
                           <img src={item.questionAttachmentUrl} height="100" 
-                          onClick={ (e) => {e.preventDefault(); setOpenLightBox(!openLightBox) }}></img>
+                          onClick={ (e) => {e.preventDefault(); setLightBoxArray([item.questionAttachmentUrl]); setOpenLightBox(!openLightBox) }}></img>
                           <FontAwesomeIcon className={styles.imageOptionIcon} size="1x" icon={faTrashAlt} onClick={(e) => removeAttachment(item,7)}/>
                         </div> 
                       : <></>
@@ -614,7 +614,7 @@ const S3Client = new S3(S3config);
                         item.optionAttachmentUrl1 ?
                         <div className={styles.imageOption}>
                           <img src={item.optionAttachmentUrl1} height="100"
-                            onClick={ (e) => {e.preventDefault(); setOpenLightBox(!openLightBox) }}></img>
+                            onClick={ (e) => {e.preventDefault(); setLightBoxArray([item.optionAttachmentUrl1]); setOpenLightBox(!openLightBox) }}></img>
                           <FontAwesomeIcon className={styles.imageOptionIcon} size="1x" icon={faTrashAlt} onClick={(e) => removeAttachment(item,1)}/>
                         </div> 
                       : <></>
@@ -640,7 +640,7 @@ const S3Client = new S3(S3config);
                         item.optionAttachmentUrl2 ?
                         <div className={styles.imageOption}>
                           <img src={item.optionAttachmentUrl2} height="100"
-                          onClick={ (e) => {e.preventDefault(); setOpenLightBox(!openLightBox) }}></img>
+                          onClick={ (e) => {e.preventDefault(); setLightBoxArray([item.optionAttachmentUrl2]); setOpenLightBox(!openLightBox) }}></img>
                           <FontAwesomeIcon className={styles.imageOptionIcon} size="1x" icon={faTrashAlt} onClick={(e) => removeAttachment(item,2)}/>
                         </div> 
                       : <></>
@@ -666,7 +666,7 @@ const S3Client = new S3(S3config);
                         item.optionAttachmentUrl3 ?
                         <div className={styles.imageOption}>
                           <img src={item.optionAttachmentUrl3} height="100" 
-                          onClick={ (e) => {e.preventDefault(); setOpenLightBox(!openLightBox) }}></img>
+                          onClick={ (e) => {e.preventDefault(); setLightBoxArray([item.optionAttachmentUrl3]); setOpenLightBox(!openLightBox) }}></img>
                           <FontAwesomeIcon className={styles.imageOptionIcon} size="1x" icon={faTrashAlt} onClick={(e) => removeAttachment(item,3)}/>
                         </div> 
                       : <></>
@@ -691,7 +691,7 @@ const S3Client = new S3(S3config);
                         item.optionAttachmentUrl4 ?
                         <div className={styles.imageOption}>
                           <img src={item.optionAttachmentUrl4} height="100"
-                          onClick={ (e) => {e.preventDefault(); setOpenLightBox(!openLightBox) }}></img>
+                          onClick={ (e) => {e.preventDefault(); setLightBoxArray([item.optionAttachmentUrl4]); setOpenLightBox(!openLightBox) }}></img>
                           <FontAwesomeIcon className={styles.imageOptionIcon} size="1x" icon={faTrashAlt} onClick={(e) => removeAttachment(item,4)}/>
                         </div> 
                       : <></>
@@ -716,7 +716,7 @@ const S3Client = new S3(S3config);
                         item.optionAttachmentUrl5?
                         <div className={styles.imageOption}>
                           <img src={item.optionAttachmentUrl5} height="100"
-                          onClick={ (e) => {e.preventDefault(); setOpenLightBox(!openLightBox) }}></img>
+                          onClick={ (e) => {e.preventDefault(); setLightBoxArray([item.optionAttachmentUrl5]); setOpenLightBox(!openLightBox) }}></img>
                           <FontAwesomeIcon className={styles.imageOptionIcon} size="1x" icon={faTrashAlt} onClick={(e) => removeAttachment(item,5)}/>
                         </div> 
                       : <></>
@@ -787,8 +787,8 @@ const S3Client = new S3(S3config);
                 onClick={(e) => addQuestion(e)}/>
         </div>
       </div>
-      <button onClick={ (e) => {e.preventDefault(); setOpenLightBox(!openLightBox) }}>
-                Toggle Lightbox {openLightBox}
+      <button className={styles.uploadImage} onClick={ (e) => {e.preventDefault(); setOpenLightBox(!openLightBox) }}>
+                Toggle Lightbox 
             </button>
       <FsLightbox toggler={openLightBox}
       sources={lightBoxArray}/>
