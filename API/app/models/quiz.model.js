@@ -219,6 +219,7 @@ Quiz.getQuizDetail = (id, result) => {
 	sql.query(
 		`select qd.hmy as id,question , option1, option2, option3, option4, option5, explaination,correctOption, isMultiple,questionLang, 
 		optionLang1, optionLang2, optionLang3, optionLang4, optionLang5, explainationLang,
+		aq.hmy as questionAttachmentId, aq.attachmentUrl as questionAttachmentUrl,
 		a1.hmy as optionAttachmentId1, a1.attachmentUrl as optionAttachmentUrl1,
 		a2.hmy as optionAttachmentId2, a2.attachmentUrl as optionAttachmentUrl2,
 		a3.hmy as optionAttachmentId3, a3.attachmentUrl as optionAttachmentUrl3,
@@ -226,6 +227,7 @@ Quiz.getQuizDetail = (id, result) => {
 		a5.hmy as optionAttachmentId5, a5.attachmentUrl as optionAttachmentUrl5,
 		videoUrl, videoUrlId from quizdetail qd
 		inner join quiz q on q.hmy = qd.fquiz
+		left outer join attachment aq on qd.hmy = aq.fObjectDetail and aq.fOption = 7 and aq.objectType = 1 and aq.deleted = 0 
 		left outer join attachment a1 on qd.hmy = a1.fObjectDetail and a1.fOption = 1 and a1.objectType = 1 and a1.deleted = 0
 		left outer join attachment a2 on qd.hmy = a2.fObjectDetail and a2.fOption = 2 and a2.objectType = 1 and a2.deleted = 0
 		left outer join attachment a3 on qd.hmy = a3.fObjectDetail and a3.fOption = 3 and a3.objectType = 1 and a3.deleted = 0
@@ -340,6 +342,10 @@ Quiz.postQuiz = async (quiz, result) => {
 							let res = await query.executeQuery(sql);
 							question.id = res.insertId; 
 
+							if(question.questionAttachmentId > 0){
+								let att1 =  await query.executeQuery(`update attachment set fObject = ${data.insertId || test.testId || 0 }, 
+								fObjectDetail = ${question.id || 0} where hmy = ${question.questionAttachmentId}`);		
+							}
 							if(question.optionAttachmentId1 > 0){
 								let att1 =  await query.executeQuery(`update attachment set fObject = ${data.insertId || quiz.quizId || 0 }, 
 								fObjectDetail = ${question.id || 0} where hmy = ${question.optionAttachmentId1}`);		
@@ -389,6 +395,10 @@ Quiz.postQuiz = async (quiz, result) => {
 					let res = await query.executeQuery(sql);
 					question.id = res.insertId;
 
+					if(question.questionAttachmentId > 0){
+						let att1 =  await query.executeQuery(`update attachment set fObject = ${data.insertId || test.testId || 0 }, 
+						fObjectDetail = ${question.id || 0} where hmy = ${question.questionAttachmentId}`);		
+					}
 					if(question.optionAttachmentId1 > 0){
 						let att1 =  await query.executeQuery(`update attachment set fObject = ${data.insertId || 0 }, 
 						fObjectDetail = ${question.id || 0} where hmy = ${question.optionAttachmentId1}`);		

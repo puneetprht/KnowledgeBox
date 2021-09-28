@@ -306,6 +306,7 @@ Test.getTestDetail = (id, result) => {
 		`select qd.hmy as id, question, option1, option2, option3, option4, option5, explaination, correctOption, isMultiple,
 		qd.negativeWeightage as negativeWeightage , qd.weightage as weightage, questionLang, 
 		optionLang1, optionLang2, optionLang3, optionLang4, optionLang5, explainationLang,
+		aq.hmy as questionAttachmentId, aq.attachmentUrl as questionAttachmentUrl,
 		a1.hmy as optionAttachmentId1, a1.attachmentUrl as optionAttachmentUrl1,
 		a2.hmy as optionAttachmentId2, a2.attachmentUrl as optionAttachmentUrl2,
 		a3.hmy as optionAttachmentId3, a3.attachmentUrl as optionAttachmentUrl3,
@@ -313,6 +314,7 @@ Test.getTestDetail = (id, result) => {
 		a5.hmy as optionAttachmentId5, a5.attachmentUrl as optionAttachmentUrl5,
 		videoUrl, videoUrlId from testdetail qd
 		inner join test q on q.hmy = qd.ftest
+		left outer join attachment aq on qd.hmy = aq.fObjectDetail and aq.fOption = 7 and aq.objectType = 3 and aq.deleted = 0 
 		left outer join attachment a1 on qd.hmy = a1.fObjectDetail and a1.fOption = 1 and a1.objectType = 3 and a1.deleted = 0
 		left outer join attachment a2 on qd.hmy = a2.fObjectDetail and a2.fOption = 2 and a2.objectType = 3 and a2.deleted = 0
 		left outer join attachment a3 on qd.hmy = a3.fObjectDetail and a3.fOption = 3 and a3.objectType = 3 and a3.deleted = 0
@@ -440,6 +442,10 @@ Test.postTest = async (test, result) => {
 							let res = await query.executeQuery(sql);
 							question.id = res.insertId;
 
+							if(question.questionAttachmentId > 0){
+								let att1 =  await query.executeQuery(`update attachment set fObject = ${data.insertId || test.testId || 0 }, 
+								fObjectDetail = ${question.id || 0} where hmy = ${question.questionAttachmentId}`);		
+							}
 							if(question.optionAttachmentId1 > 0){
 								let att1 =  await query.executeQuery(`update attachment set fObject = ${data.insertId || test.testId || 0 }, 
 								fObjectDetail = ${question.id || 0} where hmy = ${question.optionAttachmentId1}`);		
@@ -489,6 +495,10 @@ Test.postTest = async (test, result) => {
 					let res = await query.executeQuery(sql);
 					question.id = res.insertId;
 
+					if(question.questionAttachmentId > 0){
+						let att1 =  await query.executeQuery(`update attachment set fObject = ${data.insertId || test.testId || 0 }, 
+						fObjectDetail = ${question.id || 0} where hmy = ${question.questionAttachmentId}`);		
+					}
 					if(question.optionAttachmentId1 > 0){
 						let att1 =  await query.executeQuery(`update attachment set fObject = ${data.insertId || 0 }, 
 						fObjectDetail = ${question.id || 0} where hmy = ${question.optionAttachmentId1}`);		

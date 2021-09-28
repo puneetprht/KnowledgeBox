@@ -51,6 +51,8 @@ export default function ObjectEdit({user}) {
     correctOption: [],
     isMultiple: false,
     languageFlag: false,
+    questionAttachmentUrl: null,
+    questionAttachmentId: null,
     optionAttachmentUrl1: null,
     optionAttachmentUrl2: null,
     optionAttachmentUrl3: null,
@@ -67,6 +69,7 @@ export default function ObjectEdit({user}) {
   const [openLightBox, setOpenLightBox] = useState(false);
   const [lightBoxArray, setLightBoxArray] = useState(['https://knowledge2020box.s3.ap-south-1.amazonaws.com/Images/testUpload.png']);
 
+  let inputFileQuestion = useRef(null);
   let inputFile1 = useRef(null);
   let inputFile2 = useRef(null);
   let inputFile3 = useRef(null);
@@ -269,7 +272,7 @@ const S3Client = new S3(S3config);
     if(prop2){
       questions[index][prop2] = val2 ;
     }
-    console.log(questions[index]);
+    //console.log(questions[index]);
     setQuestionsList(questions);
     setSaved(false);
   };
@@ -383,9 +386,9 @@ const S3Client = new S3(S3config);
   }
 
   const openImagePicker = (event, item, index) => {
-    console.log(inputFile1);
-    setSelectedIndex(questionsList.findIndex(q => q.count == item.count));
     event.preventDefault();
+
+    setSelectedIndex(questionsList.findIndex(q => q.count == item.count));
     switch(index){
       case 1:
         inputFile1.current.click();
@@ -401,6 +404,9 @@ const S3Client = new S3(S3config);
         break;
       case 5:
         inputFile5.current.click();
+        break;
+      case 7:
+        inputFileQuestion.current.click();
         break;
     }
   }
@@ -428,7 +434,11 @@ const S3Client = new S3(S3config);
     }).then((result) => {
       setIsUpload(0);
       let tempItem = questionsList[selectedIndex]
-      setQuestionProperty(result.data.url, tempItem, 'optionAttachmentUrl' + index, result.data.id, 'optionAttachmentId' + index) ;
+      if(index == 7){
+        setQuestionProperty(result.data.url, tempItem, 'questionAttachmentUrl', result.data.id, 'questionAttachmentId') ;
+      } else{
+        setQuestionProperty(result.data.url, tempItem, 'optionAttachmentUrl' + index, result.data.id, 'optionAttachmentId' + index) ;
+      }
       //console.log(item);
       toast.success('Image uploaded successfully!', {
         position: "top-center",
@@ -452,7 +462,7 @@ const S3Client = new S3(S3config);
 
   const removeAttachment = (item, index) => {
     let obj = {};
-    obj.id = item['optionAttachmentId' + index] || 0
+    obj.id = index == 7 ? item.questionAttachmentId :item['optionAttachmentId' + index] || 0
     obj.questionId = item.id || 0;
     obj.parentId = objectId || 0;
     obj.option = index;
@@ -460,7 +470,11 @@ const S3Client = new S3(S3config);
     axios.post('/' + object + '/saveImage', obj)
     .then((result) => {
       setIsUpload(0);
-      setQuestionProperty(null, item, 'optionAttachmentUrl' + index, 0, 'optionAttachmentId' + index);
+      if(index == 7){
+        setQuestionProperty(null, item, 'questionAttachmentUrl', 0, 'questionAttachmentId') ;
+      } else{
+        setQuestionProperty(null, item, 'optionAttachmentUrl' + index, 0, 'optionAttachmentId' + index) ;
+      }
       toast.success('Image Removed successfully!', {
         position: "top-center",
         autoClose: 3000,
@@ -542,7 +556,7 @@ const S3Client = new S3(S3config);
             (questionsList.map((item, itemIndex) => {
               return (
                 <div key={itemIndex} className={isQuestionValid(item)? styles.question : styles.questionWrong}>
-                  <div>
+                  <div className={styles.optionBox}>
                     <div className="input-field">
                       <textarea id={"question"+item.count} type="text" className="materialize-textarea"
                         value={ item.languageFlag? item.questionLang: item.question }
@@ -550,6 +564,22 @@ const S3Client = new S3(S3config);
                       />
                       <label htmlFor={"question"+item.count} className={(item.languageFlag? item.questionLang: item.question) ?"active": ""}> {item.languageFlag? "प्रश्न": "Question"} {item.count}</label>
                     </div>
+                    {
+                      !item.questionAttachmentUrl ?
+                        <div>
+                          <FontAwesomeIcon className={(item.languageFlag? item.questionLang: item.question)?styles.optionImage: styles.optionImage2} onClick={(e) => openImagePicker(e, item, 7)} size="1x" icon={faImages}/>
+                        </div>
+                      : <></>
+                    }
+                    {
+                      item.questionAttachmentUrl ?
+                        <div className={styles.imageOption}>
+                          <img src={item.questionAttachmentUrl} height="100" 
+                          onClick={ (e) => {e.preventDefault(); setOpenLightBox(!openLightBox) }}></img>
+                          <FontAwesomeIcon className={styles.imageOptionIcon} size="1x" icon={faTrashAlt} onClick={(e) => removeAttachment(item,7)}/>
+                        </div> 
+                      : <></>
+                    }
                   </div>
                   <div className={styles.optionSelection}>
                     <span className={item.correctOption.includes(1)?styles.selectionBoxSelected:styles.selectionBox} onClick={() => {onOptionPress(item,1)}}>1</span>
@@ -562,6 +592,7 @@ const S3Client = new S3(S3config);
                     <input className={styles.uploadImage} ref={inputFile3} onChange={(e) => imagePicker(e,3)} type='file' accept="image/*"/>
                     <input className={styles.uploadImage} ref={inputFile4} onChange={(e) => imagePicker(e,4)} type='file' accept="image/*"/>
                     <input className={styles.uploadImage} ref={inputFile5} onChange={(e) => imagePicker(e,5)} type='file' accept="image/*"/>
+                    <input className={styles.uploadImage} ref={inputFileQuestion} onChange={(e) => imagePicker(e,7)} type='file' accept="image/*"/>
                   </div>
                   <div className={styles.optionContainer}>
                     <div className={styles.optionBox}>
