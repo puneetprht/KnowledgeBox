@@ -82,8 +82,8 @@ export default function ObjectEdit({user}) {
     bucketName: aws.Bucket,
     dirName: 'Images/' + object,
     region: aws.Region,
-    accessKeyId: aws.Access_Key_ID2,
-    secretAccessKey: aws.Secret_Access_Key2
+    accessKeyId: aws.Access_Key_ID,
+    secretAccessKey: aws.Secret_Access_Key
 }
 
 const S3Client = new S3(S3config);
@@ -450,6 +450,7 @@ const S3Client = new S3(S3config);
     })
     .catch((err) => {
       setIsUpload(0);
+      console.error(err);
       toast.error('Error Uploading Image, contact developer.', {
         position: "top-center",
         autoClose: 3000,

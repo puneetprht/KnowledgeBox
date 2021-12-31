@@ -2,7 +2,7 @@ const express = require('./node_modules/express');
 const bodyParser = require('./node_modules/body-parser');
 const router = require('./app/controllers/router');
 const cors = require('./node_modules/cors');
-const port = 3000;
+const port = 4000;
 
 const app = express();
 
