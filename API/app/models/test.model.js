@@ -535,7 +535,7 @@ Test.postTest = async (test, result) => {
 
 Test.postIsActive = (req, result) => {
 	sql.query(
-		`update ${req.table} set isActive = ${req.isActive} where hmy = ${req.id}`,
+		`update ${req.table} set isActive = ${req.flag} where hmy = ${req.id}`,
 		(err, data) => {
 			if (err) {
 				console.log('error: ', err);
@@ -550,7 +550,7 @@ Test.postIsActive = (req, result) => {
 
 Test.postIsPaid = (req, result) => {
 	sql.query(
-		`update ${req.table} set isPaid = ${req.isPaid} where hmy = ${req.id}`,
+		`update ${req.table} set isPaid = ${req.flag} where hmy = ${req.id}`,
 		(err, data) => {
 			if (err) {
 				console.log('error: ', err);

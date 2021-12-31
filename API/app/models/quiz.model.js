@@ -455,9 +455,9 @@ const deleteSaved = async (id, quizData) => {
 }
 
 Quiz.postIsActive = (req, result) => {
-	console.log(`update ${req.table} set isActive = ${req.isActive} where hmy = ${req.id}`);
+	console.log(`update ${req.table} set isActive = ${req.flag} where hmy = ${req.id}`);
 	sql.query(
-		`update ${req.table} set isActive = ${req.isActive} where hmy = ${req.id}`,
+		`update ${req.table} set isActive = ${req.flag} where hmy = ${req.id}`,
 		(err, data) => {
 			if (err) {
 				console.log('error: ', err);
@@ -472,7 +472,7 @@ Quiz.postIsActive = (req, result) => {
 
 Quiz.postIsPaid = (req, result) => {
 	sql.query(
-		`update ${req.table} set isPaid = ${req.isPaid} where hmy = ${req.id}`,
+		`update ${req.table} set isPaid = ${req.flag} where hmy = ${req.id}`,
 		(err, data) => {
 			if (err) {
 				console.log('error: ', err);

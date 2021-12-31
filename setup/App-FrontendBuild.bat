@@ -1,7 +1,7 @@
 ::emualtor build to 
-cd C:\Users\Puneet\Documents\Codes\Neeraj\KnowledgeBox\KnowledgeBox\android
+::cd C:\Users\Puneet\Documents\Codes\Neeraj\KnowledgeBox\KnowledgeBox\android
 
-call gradlew cleanBuildCache
+::call gradlew cleanBuildCache
 
 cd C:\Users\Puneet\Documents\Codes\Neeraj\KnowledgeBox\KnowledgeBox
 

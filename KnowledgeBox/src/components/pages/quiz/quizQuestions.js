@@ -5,6 +5,7 @@ import {
   View,
   Text,
   Image,
+  Dimensions,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
@@ -15,7 +16,7 @@ import PButton from '../../../widgets/Button/pButton';
 import ElevatedView from 'react-native-elevated-view';
 import Icon from 'react-native-vector-icons/Octicons';
 import LinearGradient from 'react-native-linear-gradient';
-import * as Constants from '../../../constants/constants';
+//import * as Constants from '../../../constants/constants';
 
 const QuizQuestionnaire = (props) => {
   const [key, setKey] = useState(0);
@@ -23,18 +24,20 @@ const QuizQuestionnaire = (props) => {
   const [isSubmit, setIsSubmit] = useState(false);
   const [languageFlag, setLanguage] = useState(false);
   const [questionsList, setQuestionsList] = useState([]);
-  const [timeDuration, setTimeDuration ] = useState(quizTime*60);  
-  const [timeDelay, setTimeDelay ] = useState(1000); 
+  const [timeDuration, setTimeDuration ] = useState(quizTime * 60);
+  const [timeDelay, setTimeDelay ] = useState(1000);
   var _interval = null;
-  const fetchQuizDetail = (quizId) => {
+  var textColor = 'black';
+  const fetchQuizDetail = (qId) => {
     axios
       .get('/quiz/getQuizDetail', {
         params: {
-          id: quizId,
+          id: qId,
         },
       })
       .then((response) => {
         if (response.data) {
+          //console.log(response.data);
           setQuestionsList(response.data);
         } else {
           setQuestionsList([]);
@@ -48,12 +51,12 @@ const QuizQuestionnaire = (props) => {
 
   function useInterval(callback, delay) {
     const savedCallback = useRef();
-  
+
     // Remember the latest callback.
     useEffect(() => {
       savedCallback.current = callback;
     }, [callback]);
-  
+
     // Set up the interval.
     useEffect(() => {
       function tick() {
@@ -70,16 +73,16 @@ const QuizQuestionnaire = (props) => {
   useEffect(() => {
     fetchQuizDetail(quizId);
     return () => clearInterval(_interval);
-  }, [quizId]);
+  }, [quizId, _interval]);
 
   useInterval(() => {
-    const time = parseInt(timeDuration);
+    const time = parseInt(timeDuration, 10);
       if (questionsList.length) {
       if (time <= 0) {
         setTimeDelay(null);
         submitAnswers();
       }
-      else{
+      else {
         setTimeDuration(timeDuration - 1);
       }
     }
@@ -138,7 +141,7 @@ const QuizQuestionnaire = (props) => {
 
   const submitAnswers = () => {
     setIsSubmit(true);
-    const submitAnswers = [];
+    const submitAnswer = [];
     for (let i = 0; i < questionsList.length; i++) {
       let answer = {};
       answer.selectedAnswer = questionsList[i].selectedAnswer.toString();
@@ -146,7 +149,7 @@ const QuizQuestionnaire = (props) => {
       answer.isCorrect =
         questionsList[i].selectedAnswer.toString() ===
         questionsList[i].correctOption;
-      submitAnswers.push(answer);
+      submitAnswer.push(answer);
     }
     if (user) {
       axios
@@ -154,13 +157,13 @@ const QuizQuestionnaire = (props) => {
           quizId: quizId,
           userId: user.id,
           score: calculateScore(),
-          answers: submitAnswers,
+          answers: submitAnswer,
         })
         .then((response) => {
           setIsSubmit(false);
           props.navigation.navigate('QuizResult', {
             questionsList: questionsList,
-            languageFlag: languageFlag
+            languageFlag: languageFlag,
           });
         })
         .catch((err) => {
@@ -171,7 +174,7 @@ const QuizQuestionnaire = (props) => {
       setIsSubmit(false);
       props.navigation.navigate('QuizResult', {
         questionsList: questionsList,
-        languageFlag: languageFlag
+        languageFlag: languageFlag,
       });
     }
   };
@@ -192,9 +195,9 @@ const QuizQuestionnaire = (props) => {
   return (
     <>
       {questionsList.length ? (
-        <ScrollView style={{marginBottom: 30}}>
-          <LinearGradient
-            colors={[Constants.gradientColor1, Constants.gradientColor2]}
+        <ScrollView style={{marginBottom: 30, height: '100%', minHeight: Dimensions.get('window').height}}>
+            <LinearGradient
+            colors={['#FFF', '#FFF']}
             style={{
               paddingVertical: 10,
               borderBottomLeftRadius: 15,
@@ -204,12 +207,12 @@ const QuizQuestionnaire = (props) => {
               <View style={{flex: 1, justifyContent: 'center'}}>
                 <Text
                   style={{
-                    color: 'white',
+                    color: '#555',
                     textAlign: 'center',
                     textAlignVertical: 'center',
                     flex: 1,
                     fontFamily: 'Roboto-Medium',
-                    fontSize: 22,
+                    fontSize: 18,
                   }}>
                   {title}
                 </Text>
@@ -217,8 +220,8 @@ const QuizQuestionnaire = (props) => {
                   <TouchableOpacity onPress={() => props.navigation.goBack()}>
                     <Icon
                       name="chevron-left"
-                      style={{color: 'white'}}
-                      size={35}
+                      style={{color: '#555'}}
+                      size={25}
                     />
                   </TouchableOpacity>
                 </View>
@@ -258,22 +261,24 @@ const QuizQuestionnaire = (props) => {
                 />
               </TouchableOpacity>
             </View>
-            <View style={{alignItems: 'center', justifyContent: 'center'}}>
+            <View style={{alignItems: 'flex-start', justifyContent: 'flex-start'}}>
               <Text
                 style={{
                   fontFamily: 'Roboto-Medium',
-                  fontSize: 18,
+                  fontSize: 14,
                   marginTop: 10,
-                  color: 'white',
+                  marginLeft: 10,
+                  color: textColor,
                 }}>
                 Question {questionsList[key].count}
               </Text>
               <Text
                 style={{
                   fontFamily: 'Roboto-Medium',
-                  fontSize: 18,
+                  fontSize: 16,
                   margin: 10,
-                  color: 'white',
+                  color: textColor,
+                  textAlign: 'left',
                 }}>
                 {languageFlag && questionsList[key].questionLang
                     ? questionsList[key].questionLang
@@ -281,7 +286,7 @@ const QuizQuestionnaire = (props) => {
               </Text>
             </View>
           </LinearGradient>
-          <View
+            {!questionsList[key].isMultiple ? <></> : <View
             style={{
               alignItems: 'center',
             }}>
@@ -305,8 +310,8 @@ const QuizQuestionnaire = (props) => {
                   : 'Multiple Choice'}
               </Text>
             </View>
-          </View>
-          <View style={{alignItems: 'center', margin: 10, marginTop: 15}}>
+          </View>}
+            <View style={{alignItems: 'center', margin: 5, marginTop: 10}}>
             {questionsList[key][languageFlag && questionsList[key].questionLang ? 'optionsLang' : 'options'].map((option) => {
               return (
                 <View
@@ -315,7 +320,7 @@ const QuizQuestionnaire = (props) => {
                     ...styles.stayElevated,
                     borderWidth: 3,
                     borderColor: option.isSelected
-                      ? Constants.textColor1
+                      ? 'black'
                       : 'white',
                   }}>
                   <TouchableOpacity
@@ -324,7 +329,7 @@ const QuizQuestionnaire = (props) => {
                       <Text
                         style={{
                           ...styles.answerText,
-                          color: Constants.textColor1,
+                          color: 'black',
                         }}>
                         {option.value}
                       </Text>
@@ -348,7 +353,7 @@ const QuizQuestionnaire = (props) => {
                   <Icon
                     name="chevron-left"
                     style={{
-                      color: Constants.textColor1,
+                      color: '#555',
                       justifyContent: 'center',
                       alignItems: 'center',
                     }}
@@ -365,13 +370,17 @@ const QuizQuestionnaire = (props) => {
               </View>
             ) : (
               <PButton
-                title={key == questionsList.length - 1 ? 'Submit' : 'Next'}
+                title={key === questionsList.length - 1 ? 'Submit' : 'Next'}
                 onPress={nextQuestion.bind(this, key)}
                 viewStyle={{
                   flexDirection: 'row',
                   justifyContent: 'center',
+                  borderColor: '#555',
+                  borderWidth: 3,
+                  backgroundColor: 'white',
                 }}
                 elementStyle={{flexDirection: 'row', justifyContent: 'center'}}
+                textStyle={{ color: '#555', fontWeight: 'bold'}}
               />
             )}
           </View>
@@ -389,20 +398,20 @@ const renderTimer = (time, showFull = true) => {
   let minutes,
     hours = null;
 
-  minutes = parseInt(time / 60);
-  hours = parseInt(minutes / 60);
+  minutes = parseInt(time / 60, 10);
+  hours = parseInt(minutes / 60, 10);
   let thresh = 10;
   return (
     <Text
       style={{
         fontFamily: 'Roboto-Medium',
-        fontSize: time < thresh?15:15,
+        fontSize: time < thresh ? 15 : 15,
         margin: 5,
         fontWeight: 'bold',
         justifyContent: 'center',
-        color: time < thresh?'red':'white',
+        color: time < thresh ? 'red' : 'black',
       }}>
-      {(time < thresh?(''):(!hours && !showFull ? '' : hours + ':'))+
+      {(time < thresh ? ('') : (!hours && !showFull ? '' : hours + ':')) +
         (minutes < 10 ? '0' + minutes : minutes) +
         ':' +
         (time % 60 < 10 ? '0' + (time % 60) : time % 60)}
@@ -414,7 +423,7 @@ const renderProgressBar = (length, inFocus) => {
   let junctions = [];
   for (var i = 0; i < length; i++) {
     if (i === inFocus - 1) {
-      junctions.push({key: i, color: 'yellow'});
+      junctions.push({key: i, color: 'orange'});
     } else {
       junctions.push({key: i, color: 'white'});
     }
@@ -436,6 +445,8 @@ const renderProgressBar = (length, inFocus) => {
               height: 7,
               width: (1 / length) * 100 + '%',
               backgroundColor: j.color,
+              borderWidth: 1,
+              borderColor: 'orange',
               borderRadius: 4,
             }}
           />
@@ -448,14 +459,14 @@ const renderProgressBar = (length, inFocus) => {
 const styles = StyleSheet.create({
   stayElevated: {
     width: '100%',
-    margin: 10,
+    margin: 5,
     backgroundColor: 'white',
     borderRadius: 10,
   },
   answerText: {
     textAlign: 'left',
     fontFamily: 'Roboto-Medium',
-    fontSize: 18,
+    fontSize: 15,
     margin: 10,
   },
 });
