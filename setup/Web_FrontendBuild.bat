@@ -4,4 +4,4 @@ call npm install
 
 call code .
 
-call npx next dev -p 4000
+call npx next dev -- -p 3000
