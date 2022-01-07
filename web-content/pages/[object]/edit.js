@@ -58,11 +58,13 @@ export default function ObjectEdit({user}) {
     optionAttachmentUrl3: null,
     optionAttachmentUrl4: null,
     optionAttachmentUrl5: null,
+    expAttachmentUrl: null,
     optionAttachmentId1: null,
     optionAttachmentId2: null,
     optionAttachmentId3: null,
     optionAttachmentId4: null,
     optionAttachmentId5: null,
+    expAttachmentId: null,
   };
   const [questionsList, setQuestionsList] = useState([questionObject]);
   const [instructions, setInstructions] = useState('');
@@ -70,6 +72,7 @@ export default function ObjectEdit({user}) {
   const [lightBoxArray, setLightBoxArray] = useState([]);
 
   let inputFileQuestion = useRef(null);
+  let inputFileExplanation = useRef(null);
   let inputFile1 = useRef(null);
   let inputFile2 = useRef(null);
   let inputFile3 = useRef(null);
@@ -408,6 +411,9 @@ const S3Client = new S3(S3config);
       case 7:
         inputFileQuestion.current.click();
         break;
+      case 8:
+        inputFileExplanation.current.click();
+        break;
     }
   }
 
@@ -436,6 +442,8 @@ const S3Client = new S3(S3config);
       let tempItem = questionsList[selectedIndex]
       if(index == 7){
         setQuestionProperty(result.data.url, tempItem, 'questionAttachmentUrl', result.data.id, 'questionAttachmentId') ;
+      } else if(index == 8){
+        setQuestionProperty(result.data.url, tempItem, 'expAttachmentUrl', result.data.id, 'expAttachmentId') ;
       } else{
         setQuestionProperty(result.data.url, tempItem, 'optionAttachmentUrl' + index, result.data.id, 'optionAttachmentId' + index) ;
       }
@@ -464,6 +472,7 @@ const S3Client = new S3(S3config);
   const removeAttachment = (item, index) => {
     let obj = {};
     obj.id = index == 7 ? item.questionAttachmentId :item['optionAttachmentId' + index] || 0
+    obj.id = index == 8 ? item.expAttachmentId : obj.id
     obj.questionId = item.id || 0;
     obj.parentId = objectId || 0;
     obj.option = index;
@@ -473,7 +482,10 @@ const S3Client = new S3(S3config);
       setIsUpload(0);
       if(index == 7){
         setQuestionProperty(null, item, 'questionAttachmentUrl', 0, 'questionAttachmentId') ;
-      } else{
+      } else if (index == 8){
+        setQuestionProperty(null, item, 'expAttachmentUrl', 0, 'expAttachmentId') ;
+      }
+      else{
         setQuestionProperty(null, item, 'optionAttachmentUrl' + index, 0, 'optionAttachmentId' + index) ;
       }
       toast.success('Image Removed successfully!', {
@@ -558,6 +570,15 @@ const S3Client = new S3(S3config);
               return (
                 <div key={itemIndex} className={isQuestionValid(item)? styles.question : styles.questionWrong}>
                   <div className={styles.optionBox}>
+                    {
+                      item.questionAttachmentUrl ?
+                        <div className={styles.imageOption}>
+                          <FontAwesomeIcon className={styles.imageOptionIcon} size="1x" icon={faTrashAlt} onClick={(e) => removeAttachment(item,7)}/>
+                          <img src={item.questionAttachmentUrl} height="100" 
+                          onClick={ (e) => {e.preventDefault(); setLightBoxArray([item.questionAttachmentUrl]); setOpenLightBox(!openLightBox) }}></img>
+                        </div> 
+                      : <></>
+                    }
                     <div className="input-field">
                       <textarea id={"question"+item.count} type="text" className="materialize-textarea"
                         value={ item.languageFlag? item.questionLang: item.question }
@@ -570,15 +591,6 @@ const S3Client = new S3(S3config);
                         <div>
                           <FontAwesomeIcon className={(item.languageFlag? item.questionLang: item.question)?styles.optionImage: styles.optionImage2} onClick={(e) => openImagePicker(e, item, 7)} size="1x" icon={faImages}/>
                         </div>
-                      : <></>
-                    }
-                    {
-                      item.questionAttachmentUrl ?
-                        <div className={styles.imageOption}>
-                          <img src={item.questionAttachmentUrl} height="100" 
-                          onClick={ (e) => {e.preventDefault(); setLightBoxArray([item.questionAttachmentUrl]); setOpenLightBox(!openLightBox) }}></img>
-                          <FontAwesomeIcon className={styles.imageOptionIcon} size="1x" icon={faTrashAlt} onClick={(e) => removeAttachment(item,7)}/>
-                        </div> 
                       : <></>
                     }
                   </div>
@@ -594,15 +606,16 @@ const S3Client = new S3(S3config);
                     <input className={styles.uploadImage} ref={inputFile4} onChange={(e) => imagePicker(e,4)} type='file' accept="image/*"/>
                     <input className={styles.uploadImage} ref={inputFile5} onChange={(e) => imagePicker(e,5)} type='file' accept="image/*"/>
                     <input className={styles.uploadImage} ref={inputFileQuestion} onChange={(e) => imagePicker(e,7)} type='file' accept="image/*"/>
+                    <input className={styles.uploadImage} ref={inputFileExplanation} onChange={(e) => imagePicker(e,8)} type='file' accept="image/*"/>
                   </div>
                   <div className={styles.optionContainer}>
                     <div className={styles.optionBox}>
                       {
                         item.optionAttachmentUrl1 ?
                         <div className={styles.imageOption}>
+                          <FontAwesomeIcon className={styles.imageOptionIcon} size="1x" icon={faTrashAlt} onClick={(e) => removeAttachment(item,1)}/>
                           <img src={item.optionAttachmentUrl1} height="100"
                             onClick={ (e) => {e.preventDefault(); setLightBoxArray([item.optionAttachmentUrl1]); setOpenLightBox(!openLightBox) }}></img>
-                          <FontAwesomeIcon className={styles.imageOptionIcon} size="1x" icon={faTrashAlt} onClick={(e) => removeAttachment(item,1)}/>
                         </div> 
                       : <></>
                       }
@@ -625,9 +638,9 @@ const S3Client = new S3(S3config);
                       {
                         item.optionAttachmentUrl2 ?
                         <div className={styles.imageOption}>
+                          <FontAwesomeIcon className={styles.imageOptionIcon} size="1x" icon={faTrashAlt} onClick={(e) => removeAttachment(item,2)}/>
                           <img src={item.optionAttachmentUrl2} height="100"
                           onClick={ (e) => {e.preventDefault(); setLightBoxArray([item.optionAttachmentUrl2]); setOpenLightBox(!openLightBox) }}></img>
-                          <FontAwesomeIcon className={styles.imageOptionIcon} size="1x" icon={faTrashAlt} onClick={(e) => removeAttachment(item,2)}/>
                         </div> 
                       : <></>
                       }
@@ -651,9 +664,9 @@ const S3Client = new S3(S3config);
                       {
                         item.optionAttachmentUrl3 ?
                         <div className={styles.imageOption}>
+                          <FontAwesomeIcon className={styles.imageOptionIcon} size="1x" icon={faTrashAlt} onClick={(e) => removeAttachment(item,3)}/>
                           <img src={item.optionAttachmentUrl3} height="100" 
                           onClick={ (e) => {e.preventDefault(); setLightBoxArray([item.optionAttachmentUrl3]); setOpenLightBox(!openLightBox) }}></img>
-                          <FontAwesomeIcon className={styles.imageOptionIcon} size="1x" icon={faTrashAlt} onClick={(e) => removeAttachment(item,3)}/>
                         </div> 
                       : <></>
                       }
@@ -677,9 +690,9 @@ const S3Client = new S3(S3config);
                       {
                         item.optionAttachmentUrl4 ?
                         <div className={styles.imageOption}>
+                          <FontAwesomeIcon className={styles.imageOptionIcon} size="1x" icon={faTrashAlt} onClick={(e) => removeAttachment(item,4)}/>
                           <img src={item.optionAttachmentUrl4} height="100"
                           onClick={ (e) => {e.preventDefault(); setLightBoxArray([item.optionAttachmentUrl4]); setOpenLightBox(!openLightBox) }}></img>
-                          <FontAwesomeIcon className={styles.imageOptionIcon} size="1x" icon={faTrashAlt} onClick={(e) => removeAttachment(item,4)}/>
                         </div> 
                       : <></>
                       }
@@ -702,9 +715,9 @@ const S3Client = new S3(S3config);
                       {
                         item.optionAttachmentUrl5?
                         <div className={styles.imageOption}>
+                          <FontAwesomeIcon className={styles.imageOptionIcon} size="1x" icon={faTrashAlt} onClick={(e) => removeAttachment(item,5)}/>
                           <img src={item.optionAttachmentUrl5} height="100"
                           onClick={ (e) => {e.preventDefault(); setLightBoxArray([item.optionAttachmentUrl5]); setOpenLightBox(!openLightBox) }}></img>
-                          <FontAwesomeIcon className={styles.imageOptionIcon} size="1x" icon={faTrashAlt} onClick={(e) => removeAttachment(item,5)}/>
                         </div> 
                       : <></>
                       }
@@ -736,12 +749,29 @@ const S3Client = new S3(S3config);
                     {item.videoUrl && !item.videoUrlId?<FontAwesomeIcon className={styles.videoChild1} size="1x" icon={faTimes}/>:<></>}
                     {item.videoUrlId?<FontAwesomeIcon className={styles.videoChild2} size="1x" icon={faCheckDouble}/>:<></>}
                   </div>
-                  <div className="input-field">
-                    <textarea id={"explaination"+item.count} type="text" className="materialize-textarea"
-                      value={item.languageFlag? item.explainationLang: item.explaination}
-                      onChange={(e)=>setQuestionProperty(e.target.value, item, item.languageFlag? "explainationLang": "explaination")}
-                    />
-                    <label htmlFor={"explaination"+item.count} className={(item.languageFlag? item.explainationLang: item.explaination)?"active": ""}>{item.languageFlag? "विवरण": "Explanation"}</label>
+                  <div className={styles.optionBox}>
+                    {
+                        item.expAttachmentUrl?
+                        <div className={styles.imageOption}>
+                          <FontAwesomeIcon className={styles.imageOptionIcon} size="1x" icon={faTrashAlt} onClick={(e) => removeAttachment(item,8)}/>
+                          <img src={item.expAttachmentUrl} height="100"
+                          onClick={ (e) => {e.preventDefault(); setLightBoxArray([item.expAttachmentUrl]); setOpenLightBox(!openLightBox) }}></img>
+                        </div> 
+                      : <></>
+                    }
+                    <div className="input-field">
+                      <textarea id={"explaination"+item.count} type="text" className="materialize-textarea"
+                        value={item.languageFlag? item.explainationLang: item.explaination}
+                        onChange={(e)=>setQuestionProperty(e.target.value, item, item.languageFlag? "explainationLang": "explaination")}
+                      />
+                      <label htmlFor={"explaination"+item.count} className={(item.languageFlag? item.explainationLang: item.explaination)?"active": ""}>{item.languageFlag? "विवरण": "Explanation"}</label>
+                    </div>
+                    {!item.expAttachmentUrl?
+                        <div>
+                          <FontAwesomeIcon className={(item.languageFlag? item.explainationLang: item.explaination)?styles.optionImage: styles.optionImage2} onClick={(e) => openImagePicker(e, item, 8)} size="1x" icon={faImages}/>
+                        </div>:
+                        <></>
+                      }
                   </div>
                   <div className={styles.footerContainer}>
                     {object == 'test'? 

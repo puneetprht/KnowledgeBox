@@ -176,6 +176,15 @@
   align-items: flex-end;
   justify-content: flex-start;
   cursor: pointer;
+  max-width: 20em;
+}
+
+.imageExplanation{
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  cursor: pointer;
+  margin-top: em;
 }
 
 .imageOptionIcon{

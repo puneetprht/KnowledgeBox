@@ -225,6 +225,7 @@ Quiz.getQuizDetail = (id, result) => {
 		a3.hmy as optionAttachmentId3, a3.attachmentUrl as optionAttachmentUrl3,
 		a4.hmy as optionAttachmentId4, a4.attachmentUrl as optionAttachmentUrl4,
 		a5.hmy as optionAttachmentId5, a5.attachmentUrl as optionAttachmentUrl5,
+		ae.hmy as expAttachmentId, ae.attachmentUrl as expAttachmentUrl,
 		videoUrl, videoUrlId from quizdetail qd
 		inner join quiz q on q.hmy = qd.fquiz
 		left outer join attachment aq on qd.hmy = aq.fObjectDetail and aq.fOption = 7 and aq.objectType = 1 and aq.deleted = 0 
@@ -233,6 +234,7 @@ Quiz.getQuizDetail = (id, result) => {
 		left outer join attachment a3 on qd.hmy = a3.fObjectDetail and a3.fOption = 3 and a3.objectType = 1 and a3.deleted = 0
 		left outer join attachment a4 on qd.hmy = a4.fObjectDetail and a4.fOption = 4 and a4.objectType = 1 and a4.deleted = 0
 		left outer join attachment a5 on qd.hmy = a5.fObjectDetail and a5.fOption = 5 and a5.objectType = 1 and a5.deleted = 0
+		left outer join attachment ae on qd.hmy = ae.fObjectDetail and ae.fOption = 8 and ae.objectType = 1 and ae.deleted = 0
 		where q.hmy = ${id} `,
 		(err, res) => {
 			if (err) {
@@ -366,6 +368,10 @@ Quiz.postQuiz = async (quiz, result) => {
 								let att1 =  await query.executeQuery(`update attachment set fObject = ${data.insertId || quiz.quizId || 0 }, 
 								fObjectDetail = ${question.id || 0} where hmy = ${question.optionAttachmentId5}`);		
 							}
+							if(question.expAttachmentId > 0){
+								let att1 =  await query.executeQuery(`update attachment set fObject = ${data.insertId || test.testId || 0 }, 
+								fObjectDetail = ${question.id || 0} where hmy = ${question.expAttachmentId}`);		
+							}
 					}
 				} catch (e) {
 					console.error("Error:" + e + " \n in question: " + question)
@@ -418,6 +424,10 @@ Quiz.postQuiz = async (quiz, result) => {
 					if(question.optionAttachmentId5 > 0){
 						let att1 =  await query.executeQuery(`update attachment set fObject = ${data.insertId || 0 }, 
 						fObjectDetail = ${question.id || 0} where hmy = ${question.optionAttachmentId5}`);		
+					}
+					if(question.expAttachmentId > 0){
+						let att1 =  await query.executeQuery(`update attachment set fObject = ${data.insertId || test.testId || 0 }, 
+						fObjectDetail = ${question.id || 0} where hmy = ${question.expAttachmentId}`);		
 					}
 				} catch (e) {
 					console.error("Error:" + e + " \n in question: " + question)
