@@ -103,13 +103,13 @@ export default function Home(props) {
     <div className={styles.wrapper}>
       <main className={styles.container}>
         <div className={styles.leftModule}>
-          <p className={styles.leftContent}>Home Feed</p>
-          <p className={styles.leftContent}>Categories</p>
-          <p className={styles.leftContent}>My Profile</p>
-          <p className={styles.leftContent}>Users</p>
-          <p className={styles.leftContent}>Wallet</p>
-          <p className={styles.leftContent}>Payments</p>
-          <p className={styles.leftContent}>Refer and Earn</p>
+          <p className={styles.leftContent} onClick={() => setCentralItem('feed')}>Home Feed</p>
+          <p className={styles.leftContent} onClick={() => setCentralItem('category')}>Categories</p>
+          <p className={styles.leftContent} onClick={() => setCentralItem('profile')}>My Profile</p>
+          <p className={styles.leftContent} onClick={() => setCentralItem('users')}>Users</p>
+          <p className={styles.leftContent} onClick={() => setCentralItem('wallet')}>Wallet</p>
+          <p className={styles.leftContent} onClick={() => setCentralItem('payment')}>Payments</p>
+          <p className={styles.leftContent} onClick={() => setCentralItem('refer')}>Refer and Earn</p>
         </div>
         <div className={styles.centerModule}>
           {
