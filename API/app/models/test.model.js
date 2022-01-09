@@ -321,7 +321,7 @@ Test.getTestDetail = (id, result) => {
 		left outer join attachment a3 on qd.hmy = a3.fObjectDetail and a3.fOption = 3 and a3.objectType = 3 and a3.deleted = 0
 		left outer join attachment a4 on qd.hmy = a4.fObjectDetail and a4.fOption = 4 and a4.objectType = 3 and a4.deleted = 0
 		left outer join attachment a5 on qd.hmy = a5.fObjectDetail and a5.fOption = 5 and a5.objectType = 3 and a5.deleted = 0
-		left outer join attachment ae on qd.hmy = ae.fObjectDetail and ae.fOption = 8 and ae.objectType = 1 and ae.deleted = 0 
+		left outer join attachment ae on qd.hmy = ae.fObjectDetail and ae.fOption = 8 and ae.objectType = 3 and ae.deleted = 0 
 		where q.hmy = ${id} `,
 		(err, res) => {
 			if (err) {
