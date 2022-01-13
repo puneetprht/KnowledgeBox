@@ -16,7 +16,6 @@ import Profile from './userProfile';
 import Payments from './payments';
 import Refer from './referEarn';
 import Users from './usersList';
-import Wallet from './wallet';
 
 import styles from '../../styles/Home.module.css';
 
@@ -29,7 +28,7 @@ export default function Home(props) {
 
   const displayToasterMessage = (toastType, message) => {
     if(toastType = 'error'){
-      toast.error(Message, {
+      return toast.error(Message, {
         position: "top-center",
         autoClose: 3000,
         hideProgressBar: true,
@@ -37,7 +36,7 @@ export default function Home(props) {
         draggable: true,
       });
     } else if (toastType = 'success') {
-        toast.success(Message, {
+      return toast.success(Message, {
           position: "top-center",
           autoClose: 3000,
           hideProgressBar: true,
@@ -45,7 +44,7 @@ export default function Home(props) {
           draggable: true,
         });
     } else if (toastType = 'warning') {
-        toast.warning(Message, {
+      return toast.warning(Message, {
           position: "top-center",
           autoClose: 3000,
           hideProgressBar: true,
@@ -53,7 +52,7 @@ export default function Home(props) {
           draggable: true,
         });
     } else if (toastType = 'info') {
-      toast.info(Message, {
+      return toast.info(Message, {
         position: "top-center",
         autoClose: 3000,
         hideProgressBar: true,
@@ -61,7 +60,7 @@ export default function Home(props) {
         draggable: true,
       });
     } else if (toastType = 'dark') {
-      toast.dark(Message, {
+      return returntoast.dark(Message, {
         position: "top-center",
         autoClose: 3000,
         hideProgressBar: true,
@@ -69,7 +68,7 @@ export default function Home(props) {
         draggable: true,
       });
     } else {
-        toast.default(Message, {
+      return toast.default(Message, {
           position: "top-center",
           autoClose: 3000,
           hideProgressBar: true,
@@ -88,8 +87,6 @@ export default function Home(props) {
       return (<Profile user={user}  toast={displayToasterMessage}/>);
     } else if(centralItem == 'users'){
       return (<Users user={user} toast={displayToasterMessage}/>);
-    } else if(centralItem == 'wallet'){
-      return (<Wallet user={user} toast={displayToasterMessage}/>);
     } else if(centralItem == 'payment'){
       return (<Payments user={user} toast={displayToasterMessage}/>);
     } else if(centralItem == 'refer'){
@@ -103,13 +100,12 @@ export default function Home(props) {
     <div className={styles.wrapper}>
       <main className={styles.container}>
         <div className={styles.leftModule}>
-          <p className={styles.leftContent} onClick={() => setCentralItem('feed')}>Home Feed</p>
-          <p className={styles.leftContent} onClick={() => setCentralItem('category')}>Categories</p>
-          <p className={styles.leftContent} onClick={() => setCentralItem('profile')}>My Profile</p>
-          <p className={styles.leftContent} onClick={() => setCentralItem('users')}>Users</p>
-          <p className={styles.leftContent} onClick={() => setCentralItem('wallet')}>Wallet</p>
-          <p className={styles.leftContent} onClick={() => setCentralItem('payment')}>Payments</p>
-          <p className={styles.leftContent} onClick={() => setCentralItem('refer')}>Refer and Earn</p>
+          <p className={centralItem == 'feed'? styles.leftContentBold: styles.leftContent} onClick={() => setCentralItem('feed')}>Home Feed</p>
+          <p className={centralItem == 'category'? styles.leftContentBold: styles.leftContent} onClick={() => setCentralItem('category')}>Categories</p>
+          <p className={centralItem == 'profile'? styles.leftContentBold: styles.leftContent} onClick={() => setCentralItem('profile')}>My Profile</p>
+          <p className={centralItem == 'users'? styles.leftContentBold: styles.leftContent} onClick={() => setCentralItem('users')}>Users</p>
+          <p className={centralItem == 'payment'? styles.leftContentBold: styles.leftContent} onClick={() => setCentralItem('payment')}>Payments</p>
+          <p className={centralItem == 'refer'? styles.leftContentBold: styles.leftContent} onClick={() => setCentralItem('refer')}>Referral & Coupon Code</p>
         </div>
         <div className={styles.centerModule}>
           {

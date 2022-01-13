@@ -30,6 +30,15 @@
   color: #009CDE;
 }
 
+.leftContentBold{
+  margin: 1%;
+  padding: 0.1em 1em ;
+  font-size: 20px;
+  color: #009CDE;
+  font-weight: 500;
+  cursor: pointer;
+}
+
 .leftContentActive{
   margin: 1%;
   padding: 0.3em ;
