@@ -2,7 +2,7 @@
 
 Streaming multer storage engine for AWS S3.
 
-This project is mostly an integration piece for existing code samples from Multer's [storage engine documentation](https://github.com/expressjs/multer/blob/master/StorageEngine.md) with [s3fs](https://github.com/RiptideElements/s3fs) as the substitution piece for file system.  Existing solutions I found required buffering the multipart uploads into the actual filesystem which is difficult to scale.
+This project is mostly an integration piece for existing code samples from Multer's [storage engine documentation](https://github.com/expressjs/multer/blob/master/StorageEngine.md) with a call to `s3.upload` (see the [aws-sdk docs](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#upload-property)) as the substitution piece for file system.  Existing solutions I found required buffering the multipart uploads into the actual filesystem which is difficult to scale.
 
 ## Installation
 
@@ -56,6 +56,7 @@ Key | Description | Note
 `contentDisposition` | The `contentDisposition` used to upload the file | `S3Storage`
 `storageClass` | The `storageClass` to be used for the uploaded file in S3 | `S3Storage`
 `versionId` | The `versionId` is an optional param returned by S3 for versioned buckets. | `S3Storage`
+`contentEncoding` | The `contentEncoding` used to upload the file | `S3Storage`
 
 ### Setting ACL
 
@@ -201,6 +202,25 @@ var upload = multer({
   })
 })
 ```
+
+## Setting Content-Encoding
+
+The optional `contentEncoding` option can be used to set the `Content-Encoding` header for the uploaded file. By default, the `contentEncoding` isn't forwarded. As an example below, using the value `gzip`, a file can be uploaded as a gzip file - and when it is downloaded, the browser will uncompress it automatically.
+
+```javascript
+var upload = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: 'some-bucket',
+    acl: 'public-read',
+    contentEncoding: 'gzip',
+    key: function (req, file, cb) {
+      cb(null, Date.now().toString())
+    }
+  })
+})
+```
+You may also use a function as the `contentEncoding`, which should be of the form `function(req, file, cb)`.
 
 ## Testing
 
