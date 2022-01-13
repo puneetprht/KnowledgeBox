@@ -1,3 +1,4 @@
 sendgrid.env
 aws.env
 config/aws.config.js
+node_modules
