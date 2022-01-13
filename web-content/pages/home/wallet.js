@@ -1,13 +1,13 @@
 import { useRouter } from 'next/router';
 
-function Category(props) {
+function Wallet(props) {
     const router = useRouter();
 
     return (
         <div>
-          Category
+          Wallet
         </div>
     )
   }
   
-  export default Category
+  export default Wallet

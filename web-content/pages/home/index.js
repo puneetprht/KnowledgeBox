@@ -11,11 +11,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTimes, faEdit, faPlus, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 
 import Feed from './feed';
-import Refer from './referEarn';
-import Users from './usersList';
-import Payments from './payments';
 import Category from './category';
 import Profile from './userProfile';
+import Payments from './payments';
+import Refer from './referEarn';
+import Users from './usersList';
+import Wallet from './wallet';
 
 import styles from '../../styles/Home.module.css';
 
@@ -87,6 +88,8 @@ export default function Home(props) {
       return (<Profile user={user}  toast={displayToasterMessage}/>);
     } else if(centralItem == 'users'){
       return (<Users user={user} toast={displayToasterMessage}/>);
+    } else if(centralItem == 'wallet'){
+      return (<Wallet user={user} toast={displayToasterMessage}/>);
     } else if(centralItem == 'payment'){
       return (<Payments user={user} toast={displayToasterMessage}/>);
     } else if(centralItem == 'refer'){
@@ -104,8 +107,9 @@ export default function Home(props) {
           <p className={styles.leftContent} onClick={() => setCentralItem('category')}>Categories</p>
           <p className={styles.leftContent} onClick={() => setCentralItem('profile')}>My Profile</p>
           <p className={styles.leftContent} onClick={() => setCentralItem('users')}>Users</p>
+          <p className={styles.leftContent} onClick={() => setCentralItem('wallet')}>Wallet</p>
           <p className={styles.leftContent} onClick={() => setCentralItem('payment')}>Payments</p>
-          <p className={styles.leftContent} onClick={() => setCentralItem('refer')}>Referral & Coupon</p>
+          <p className={styles.leftContent} onClick={() => setCentralItem('refer')}>Refer and Earn</p>
         </div>
         <div className={styles.centerModule}>
           {
