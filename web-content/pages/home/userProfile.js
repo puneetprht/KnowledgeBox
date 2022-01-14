@@ -17,9 +17,6 @@ function Profile(props) {
 
   const [saving, setSaving] = useState(false);
   const [editMode, setEditMode] = useState(false);
-  const [editSubject, setEditSubject] = useState(0);
-  const [oldCategory, setOldCategory] = useState('');
-  const [newCategory, setNewCategory] = useState({categoryName: '', id: 0});
   const [profile, setProfile] = useState([]);
 
   //API Calls
@@ -86,7 +83,7 @@ function Profile(props) {
           label: 'Yes',
           onClick: () => {
             axios
-              .delete('/user/deleteUser', profile)
+              .delete('/user/deleteUser', {data:profile})
               .then((response) => {
                 router.back();
                 toast.success('User deleted successfully.', {
@@ -194,7 +191,7 @@ function Profile(props) {
               <span className={styles.isActive}> Is Admin </span>
             </label>
             <div className={styles.wallet}>
-              Wallet Amount: &nbsp; {profile.walletamount || 0}
+              Wallet Amount: &nbsp; {profile.walletAmount || 0}
             </div>
           </div>
           {/* <div className={styles.payment}>

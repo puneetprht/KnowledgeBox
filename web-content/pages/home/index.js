@@ -23,6 +23,7 @@ export default function Home(props) {
   const router = useRouter();
 
   const [user, setUser] = useState(JSON.parse(props.user));
+  const [selectedId, setSelectedId] = useState(props.user.id);
 
   const [centralItem, setCentralItem] = useState('feed');
 
@@ -84,9 +85,9 @@ export default function Home(props) {
     } else if(centralItem == 'category'){
       return (<Category user={user} toast={displayToasterMessage}/>);
     } else if(centralItem == 'profile'){
-      return (<Profile user={user} id={user.id} back={setCentralItem} toast={displayToasterMessage}/>);
+      return (<Profile user={user} id={selectedId} back={setCentralItem} toast={displayToasterMessage}/>);
     } else if(centralItem == 'users'){
-      return (<Users user={user} toast={displayToasterMessage}/>);
+      return (<Users user={user} setUserId={setSelectedId} redirect={setCentralItem} toast={displayToasterMessage}/>);
     } else if(centralItem == 'payment'){
       return (<Payments user={user} toast={displayToasterMessage}/>);
     } else if(centralItem == 'refer'){
