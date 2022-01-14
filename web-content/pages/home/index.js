@@ -84,7 +84,7 @@ export default function Home(props) {
     } else if(centralItem == 'category'){
       return (<Category user={user} toast={displayToasterMessage}/>);
     } else if(centralItem == 'profile'){
-      return (<Profile user={user}  toast={displayToasterMessage}/>);
+      return (<Profile user={user} id={user.id} back={setCentralItem} toast={displayToasterMessage}/>);
     } else if(centralItem == 'users'){
       return (<Users user={user} toast={displayToasterMessage}/>);
     } else if(centralItem == 'payment'){

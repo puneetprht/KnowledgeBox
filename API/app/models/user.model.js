@@ -10,7 +10,8 @@ const user = function(user) {
 
 //GetUser should fetch details for the logged in user.
 const getUser = (userId, result) => {
-	sql.query(`SELECT hmy as id, firstname, lastname, email, password, phone, isAdmin, password, stateId, referralCode, walletAmount FROM user WHERE hmy = ${userId}`, (err, res) => {
+	sql.query(`SELECT hmy as id, firstname, lastname, email, password, phone, 
+	isAdmin, password, stateId, referralCode, walletAmount FROM user WHERE hmy = ${userId}`, (err, res) => {
 		if (err) {
 			console.log('error: ', err);
 			result(err, null);
@@ -25,6 +26,68 @@ const getUser = (userId, result) => {
 	});
 };
 user.getUser = getUser;
+
+const getUserDetail = (userId, result) => {
+	sql.query(`SELECT u.hmy as id, u.firstname, u.lastname, u.email, u.password, u.phone, 
+	u.isAdmin, u.stateId, u.referralCode, u.walletAmount, sum(referralAmount) as TotalReferral, sum(referralAmount) - u.walletAmount as paid 
+    FROM user u 
+    left outer join paymentxref px on px.freferraluser = u.hmy
+    WHERE u.hmy = ${userId}
+    group by px.freferraluser;`, (err, res) => {
+		if (err) {
+			console.log('error: ', err);
+			result(err, null);
+			return;
+		}
+		if (res.length) {
+			// console.log('found user: ', res[0]);
+			result(null, res[0]);
+			return;
+		}
+		result(null, null);
+	});
+};
+user.getUserDetail = getUserDetail;
+
+const getUserList = (limit, offset, search, result) => {
+	limit = limit || 10;
+	offset = offset || 0;
+
+	let where = search ? ` where (firstname like '%${search}%' or lastname like '%${search}%' or email like '%${search}%' or phone like '%${search}%') ` : '';
+
+	console.log(`SELECT hmy as id, firstname, lastname, email, password, phone, 
+	isAdmin, stateId, referralCode, walletAmount FROM user ${where} limit ${limit} offset ${offset}`);
+	sql.query(`SELECT hmy as id, firstname, lastname, email, password, phone, 
+	isAdmin, stateId, referralCode, walletAmount FROM user ${where} limit ${limit} offset ${offset}`, (err, res) => {
+		if (err) {
+			console.log('error: ', err);
+			result(err, null);
+			return;
+		}
+		if (res.length) {
+			result(null, res);
+			return;
+		}
+		result(null, null);
+	});
+};
+user.getUserList = getUserList;
+
+user.deleteUser = (body, result) => {
+	//console.log(body);
+	sql.query(
+		`delete from user
+		where hmy = ${body.id || body.Id}`,
+		(err, res) => {
+			if (err) {
+				console.log('error: ', err);
+				result(err, null);
+				return;
+			}
+			result(null, null);
+		}
+	);
+};
 
 const getUserByEmail = async (userEmail) => {
 	sql.query(`SELECT hmy as id, firstname, lastname, email, password, phone, isAdmin, password, stateId, referralCode, walletAmount FROM user WHERE email = '${userEmail}'`, (err, res) => {
@@ -74,6 +137,54 @@ user.registerUser = async (user, result) => {
 				}
 			);
 		});
+	} catch (error) {
+		result(error, null);
+		return;
+	}
+};
+
+user.updateUser = async function (user, result) {
+	try {
+		console.log(user);
+		console.log(`update user set firstname = '${user.firstName || user.firstname}', lastname = '${user.lastName || user.lastname}', phone='${user.phone || 0}', isAdmin=${user.isAdmin || 0} 
+		where hmy = ${user.id}`);
+		sql.query(
+			`update user set firstname = '${user.firstName || user.firstname}', lastname = '${user.lastName || user.lastname}', phone='${user.phone || 0}', isAdmin=${user.isAdmin||0} 
+			where hmy = ${user.id}`,
+			(err, res) => {
+				if (err) {
+					console.log('error: ', err);
+					result(err, null);
+					return;
+				}
+				console.log('Updated user: ', { hmy: res.insertId, ...user });
+				result(null, { hmy: res.insertId, ...user, isAdmin: 0 });
+				return;
+			}
+		);
+	} catch (error) {
+		result(error, null);
+		return;
+	}
+};
+
+user.payUser = async function (user, result) {
+	try {
+		console.log(user);
+		sql.query(
+			`update user set walletamount= ${user.amountleft || 0} 
+			where hmy = ${user.id}`,
+			(err, res) => {
+				if (err) {
+					console.log('error: ', err);
+					result(err, null);
+					return;
+				}
+				console.log('Updated user: ', { hmy: res.insertId, ...user });
+				result(null, { hmy: res.insertId, ...user, isAdmin: 0 });
+				return;
+			}
+		);
 	} catch (error) {
 		result(error, null);
 		return;

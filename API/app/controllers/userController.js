@@ -16,6 +16,60 @@ app.post('/register', async (req, res) => {
 	});
 });
 
+app.get('/GetUser/:id', (req, res) => {
+	//console.log(req.params);
+	model.getUserDetail(req.params.id, (err, data) => {
+		if (err)
+			res.status(500).send({
+				message: err.message || 'Some error occurred while fetching user.'
+			});
+		else res.send(data);
+	});
+});
+
+app.get('/GetUserList/:limit/:offset', (req, res) => {
+	//console.log(req.params);
+	model.getUserList(req.params.limit, req.params.offset, req.query.search, (err, data) => {
+		if (err)
+			res.status(500).send({
+				message: err.message || 'Some error occurred while fetching user.'
+			});
+		else res.send(data);
+	});
+});
+
+app.delete('/deleteUser', (req, res) => {
+	//console.log(req);
+	model.deleteUser(req.body, (err, data) => {
+		if (err)
+			res.status(500).send({
+				message: err.message || 'Error processing request..'
+			});
+		else res.status(200).send();
+	});
+});
+
+app.post('/updateUser', async (req, res) => {
+	//console.log(req);
+	model.updateUser(req.body, (err, data) => {
+		if (err)
+			res.status(500).send({
+				message: err.message || 'Some error occurred while fetching user.'
+			});
+		else res.status(200).send(data);
+	});
+});
+
+app.post('/payUser', async (req, res) => {
+	model.payUser(req.body, (err, data) => {
+		if (err)
+			res.status(500).send({
+				message: err.message || 'Some error occurred while fetching user.'
+			});
+		else res.status(200).send(data);
+	});
+});
+
 app.get('/refreshUser', async (req, res) => {
 	await model.getUser(req.query.id, (err, data) => {
 		if (err)
