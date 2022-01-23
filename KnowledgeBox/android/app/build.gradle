@@ -132,8 +132,8 @@ android {
         applicationId "com.knowledgebox"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 9
-        versionName "1.7"
+        versionCode 10
+        versionName "2.0"
 		multiDexEnabled true
     }
     splits {
