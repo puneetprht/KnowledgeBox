@@ -9,6 +9,8 @@ attrib /S /D /L -R *.*
 
 ::call npm install
 
+::emulator -avd Pixel_3_XL_API_29
+
 call code .
 
 call npx react-native run-android
