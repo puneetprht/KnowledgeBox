@@ -4,7 +4,7 @@ import React, {useState, useEffect, useRef} from 'react';
 import {
   View,
   Text,
-  Image,
+  Image,  
   Dimensions,
   ScrollView,
   StyleSheet,
@@ -12,6 +12,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import axios from '../../../services/axios';
+import Lightbox from 'react-native-lightbox-v2';
 import PButton from '../../../widgets/Button/pButton';
 import ElevatedView from 'react-native-elevated-view';
 import Icon from 'react-native-vector-icons/Octicons';
@@ -20,6 +21,7 @@ import LinearGradient from 'react-native-linear-gradient';
 
 const QuizQuestionnaire = (props) => {
   const [key, setKey] = useState(0);
+  const [isOpen, setIsOpen] = useState(false);
   const {quizId, title, quizTime, user} = props.route.params;
   const [isSubmit, setIsSubmit] = useState(false);
   const [languageFlag, setLanguage] = useState(false);
@@ -284,6 +286,15 @@ const QuizQuestionnaire = (props) => {
                     ? questionsList[key].questionLang
                     : questionsList[key].question}
               </Text>
+              { questionsList[key].questionAttachmentUrl ? 
+              <Lightbox underlayColor="white" longPressCallback={() => console.log('cess')} 
+                onOpen={() => setIsOpen(true)} onClose={() => setIsOpen(false)}>
+                <Image
+                  style={isOpen ? styles.containOpen : styles.contain}
+                  resizeMode="contain"
+                  source={{uri: questionsList[key].questionAttachmentUrl}}
+                />
+              </Lightbox> : null }
             </View>
           </LinearGradient>
             {!questionsList[key].isMultiple ? <></> : <View
@@ -312,7 +323,7 @@ const QuizQuestionnaire = (props) => {
             </View>
           </View>}
             <View style={{alignItems: 'center', margin: 5, marginTop: 10}}>
-            {questionsList[key][languageFlag && questionsList[key].questionLang ? 'optionsLang' : 'options'].map((option) => {
+            {questionsList[key][languageFlag && questionsList[key].questionLang ? 'optionsLang' : 'options'].map((option, index) => {
               return (
                 <View
                   key={option.id}
@@ -333,6 +344,15 @@ const QuizQuestionnaire = (props) => {
                         }}>
                         {option.value}
                       </Text>
+                      {questionsList[key]['optionAttachmentUrl'+(index+1)] ? 
+                      <Lightbox underlayColor="white" longPressCallback={() => console.log('cess')} 
+                        onOpen={() => setIsOpen(true)} onClose={() => setIsOpen(false)}>
+                        <Image
+                          style={isOpen ? styles.containAnswerOpen : styles.containAnswer}
+                          resizeMode="contain"
+                          source={{uri: questionsList[key]['optionAttachmentUrl'+(index+1)]}}
+                        />
+                      </Lightbox> : null }
                     </ElevatedView>
                   </TouchableOpacity>
                 </View>
@@ -468,6 +488,26 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto-Medium',
     fontSize: 15,
     margin: 10,
+  },
+  contain: {
+    // flex: 1,
+    height: 150,
+    width: Dimensions.get('window').width * 0.6,
+    marginHorizontal: Dimensions.get('window').width * 0.2
+  },
+  containOpen: {
+    // flex: 1,
+    height: '100%',
+    width: Dimensions.get('window').width ,
+  },
+  containAnswer: {
+    // flex: 1,
+    height: 100,
+  },
+  containAnswerOpen: {
+    // flex: 1,
+    height: '100%',
+    width: Dimensions.get('window').width ,
   },
 });
 

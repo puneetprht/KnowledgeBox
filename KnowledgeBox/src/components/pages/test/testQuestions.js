@@ -9,14 +9,16 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Image,
+  Dimensions,
 } from 'react-native';
+import axios from '../../../services/axios';
+import Lightbox from 'react-native-lightbox-v2';
 import Icon from 'react-native-vector-icons/Octicons';
+import PButton from '../../../widgets/Button/pButton';
+import ElevatedView from 'react-native-elevated-view';
 import IconAnt from 'react-native-vector-icons/AntDesign';
 import LinearGradient from 'react-native-linear-gradient';
 import * as Constants from '../../../constants/constants';
-import PButton from '../../../widgets/Button/pButton';
-import ElevatedView from 'react-native-elevated-view';
-import axios from '../../../services/axios';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import ContainerList from '../../../widgets/List/containerList';
 
@@ -29,13 +31,16 @@ const TestQuestionnaire = (props) => {
     testTime,
     testInstructions,
   } = props.route.params;
+  const [openDrawer, setOpenDrawer] = useState(false);
   const [isSubmit, setIsSubmit] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [languageFlag, setLanguage] = useState(false);
   const [introDone, setIntroDone] = useState(false);
   const [timeDuration, setTimeDuration] = useState(parseInt(testTime * 60));
   const [timeDelay, setTimeDelay ] = useState(1000); 
   var _interval = null;
   const [questionsList, setQuestionsList] = useState([]);
+  var textColor = 'black';
 
   const fetchTestDetail = (testId) => {
     axios
@@ -211,6 +216,101 @@ const TestQuestionnaire = (props) => {
     setQuestionsList(questions);
   };
 
+  const renderDrawer = () => {
+    if (!openDrawer){
+      return (<></>);
+    } else {
+    return (<View
+          style={{
+            position: 'absolute',
+            right: 0,
+            top: 0,
+            bottom: 0,
+            left: 0,
+            height: Dimensions.get('window').height,
+          }}
+          flexDirection="row"
+          alignItems="center"
+          justifyContent="center"
+        >
+            <TouchableOpacity
+              onPress={() => {setOpenDrawer(false);}}
+              style={{
+                position: 'absolute',
+                right: 0,
+                top: 0,
+                bottom: 0,
+                left: 0,
+                backgroundColor: 'rgba(52, 52, 52, 0.6)'
+              }}
+            />
+            <View
+            style={{
+              position: 'absolute',
+              top: 0,
+              bottom: 0,
+              right: 0,
+              width: Dimensions.get('window').width * 0.5,
+              backgroundColor: 'rgba(250, 240, 240, 1)',
+            }}
+            > 
+              <Text style={{fontSize: 18}}>Marked Questions:</Text>
+              <ScrollView>
+              <View style={{
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              }}>
+              { questionsList.filter(q => q.isMarked).map((question, index) => {
+                return (
+                <TouchableOpacity key={index} onPress={() => setKey(index)}
+                  style={{position: 'relative'}}
+                >
+                  {/* <IconAnt
+                    name={question.isMarked ? 'star' : 'staro'}
+                    size={45}
+                    style={{
+                      color: question.isMarked ? 'orange' : 'black',
+                      marginHorizontal: 12,
+                      marginVertical: 5,
+                      elevation: 1,
+                    }}
+                    elevatedElement= {{
+                      elevation: 3, // works on android
+                    }}
+                  /> */}
+                  <View style={{
+                      backgroundColor: question.isMarked ? 'orange' : 'white',
+                      marginVertical: 3,
+                      marginHorizontal: 3,
+                      borderRadius: 20,
+                      width: 40,
+                      height: 40,
+                      elevation: 1,
+                    }}/>
+                  <Text style={{
+                    position: 'absolute',
+                    fontSize:20,
+                    color: question.isMarked ?  'white' : 'black',
+                    fontWeight: '500',
+                    top: 10,
+                    left: index > 9 ? 14 : 18,
+                    elevation: 2,
+                    }}>
+                      {index+1}
+                    </Text>
+                </TouchableOpacity>
+                );
+              })
+              }
+              { questionsList.filter(q => q.isMarked).length === 0 ?
+              <Text style={{fontSize: 18}}>No Marked Question!</Text> : null }
+              </View>
+              </ScrollView>
+            </View>
+      </View>);
+    }
+  };
+
   return (
     <SafeAreaView>
       {questionsList.length ? (
@@ -255,15 +355,19 @@ const TestQuestionnaire = (props) => {
                   flexDirection: 'row',
                   justifyContent: 'center',
                   marginTop: 20,
+                  borderColor: '#555',
+                  borderWidth: 3,
+                  backgroundColor: 'white',
                 }}
                 elementStyle={{flexDirection: 'row', justifyContent: 'center'}}
+                textStyle={{ color: '#555', fontWeight: 'bold'}}
               />
             </ScrollView>
           </ContainerList>
         ) : (
           <ScrollView style={{marginBottom: 30}}>
             <LinearGradient
-              colors={[Constants.gradientColor1, Constants.gradientColor2]}
+              colors={['#FFF', '#FFF']}
               style={{
                 paddingVertical: 20,
                 //height: '100%',
@@ -276,7 +380,7 @@ const TestQuestionnaire = (props) => {
                   <View>
                     <Text
                       style={{
-                        color: 'white',
+                        color: '#555',
                         textAlign: 'center',
                         textAlignVertical: 'center',
                         flex: 1,
@@ -286,8 +390,8 @@ const TestQuestionnaire = (props) => {
                       {title}
                     </Text>
                   </View>
-                  {/* <TouchableOpacity
-                    onPress={() => openSideMenu()}
+                  <TouchableOpacity
+                    onPress={() => setOpenDrawer(true)}
                     style={{
                       position: 'absolute',
                       justifyContent: 'center',
@@ -298,18 +402,18 @@ const TestQuestionnaire = (props) => {
                       name="three-bars"
                       size={25}
                       style={{
-                        color: 'white',
+                        color: '#555',
                         marginHorizontal: 15,
                         marginVertical: 5,
                       }}
                     />
-                  </TouchableOpacity> */}
+                  </TouchableOpacity>
                   <View style={{position: 'absolute', paddingLeft: 15}}>
                     <TouchableOpacity onPress={() => props.navigation.goBack()}>
                       <Icon
                         name="chevron-left"
-                        style={{color: 'white'}}
-                        size={35}
+                        style={{color: '#555'}}
+                        size={25}
                       />
                     </TouchableOpacity>
                   </View>
@@ -356,9 +460,10 @@ const TestQuestionnaire = (props) => {
                     style={{
                       alignSelf: 'center',
                       fontFamily: 'Roboto-Medium',
-                      fontSize: 15,
+                      fontSize: 14,
                       marginTop: 10,
-                      color: 'white',
+                      marginLeft: 10,
+                      color: textColor,
                     }}>
                     Question {questionsList[key].count}
                   </Text>
@@ -424,12 +529,12 @@ const TestQuestionnaire = (props) => {
                       }}>
                       {questionsList[key].negativeWeightage}
                     </Text>
-                    <TouchableOpacity onPress={() => markStar()}>
+                    <TouchableOpacity onPress={() => markReview()}>
                       <IconAnt
-                        name={questionsList[key].isStar ? 'star' : 'staro'}
+                        name={questionsList[key].isMarked ? 'star' : 'staro'}
                         size={25}
                         style={{
-                          color: questionsList[key].isStar ? 'orange' : 'white',
+                          color: questionsList[key].isMarked ? 'orange' : 'white',
                           marginHorizontal: 12,
                           marginVertical: 5,
                         }}
@@ -437,21 +542,30 @@ const TestQuestionnaire = (props) => {
                     </TouchableOpacity>
                   </View>
                 </View>
-
                 <Text
                   style={{
-                    alignSelf: 'center',
                     fontFamily: 'Roboto-Medium',
                     fontSize: 15,
                     margin: 10,
-                    color: 'white',
+                    color: textColor,
+                    textAlign: 'left',
                   }}>
                   {languageFlag && questionsList[key].questionLang
                     ? questionsList[key].questionLang
                     : questionsList[key].question}
                 </Text>
+                { questionsList[key].questionAttachmentUrl ? 
+              <Lightbox underlayColor="white" longPressCallback={() => console.log('cess')} 
+                onOpen={() => setIsOpen(true)} onClose={() => setIsOpen(false)}>
+                <Image
+                  style={isOpen ? styles.containOpen : styles.contain}
+                  resizeMode="contain"
+                  source={{uri: questionsList[key].questionAttachmentUrl}}
+                />
+              </Lightbox> : null }
               </View>
             </LinearGradient>
+            {!questionsList[key].isMultiple ? <></> : 
             <View
               style={{
                 alignItems: 'center',
@@ -476,10 +590,10 @@ const TestQuestionnaire = (props) => {
                     : 'Multiple Choice'}
                 </Text>
               </View>
-            </View>
-            <View style={{alignItems: 'center', margin: 10, marginTop: 15}}>
+            </View>}
+            <View style={{alignItems: 'center', margin: 5, marginTop: 10}}>
               {questionsList[key][languageFlag  && questionsList[key].questionLang ? 'optionsLang' : 'options'].map(
-                (option) => {
+                (option, index) => {
                   return (
                     <View
                       key={option.id}
@@ -487,7 +601,7 @@ const TestQuestionnaire = (props) => {
                         ...styles.stayElevated,
                         borderWidth: 3,
                         borderColor: option.isSelected
-                          ? Constants.textColor1
+                          ? 'black'
                           : 'white',
                       }}>
                       <TouchableOpacity
@@ -496,10 +610,19 @@ const TestQuestionnaire = (props) => {
                           <Text
                             style={{
                               ...styles.answerText,
-                              color: Constants.textColor1,
+                              color: 'black',
                             }}>
                             {option.value}
                           </Text>
+                          {questionsList[key]['optionAttachmentUrl'+(index+1)] ? 
+                      <Lightbox underlayColor="white" longPressCallback={() => console.log('cess')} 
+                        onOpen={() => setIsOpen(true)} onClose={() => setIsOpen(false)}>
+                        <Image
+                          style={isOpen ? styles.containAnswerOpen : styles.containAnswer}
+                          resizeMode="contain"
+                          source={{uri: questionsList[key]['optionAttachmentUrl'+(index+1)]}}
+                        />
+                      </Lightbox> : null }
                         </ElevatedView>
                       </TouchableOpacity>
                     </View>
@@ -521,7 +644,7 @@ const TestQuestionnaire = (props) => {
                     <Icon
                       name="chevron-left"
                       style={{
-                        color: Constants.textColor1,
+                        color: '#555',
                         justifyContent: 'center',
                         alignItems: 'center',
                       }}
@@ -541,11 +664,12 @@ const TestQuestionnaire = (props) => {
                   viewStyle={{
                     flexDirection: 'row',
                     justifyContent: 'center',
+                    borderColor: '#555',
+                    borderWidth: 3,
+                    backgroundColor: 'white',
                   }}
-                  elementStyle={{
-                    flexDirection: 'row',
-                    justifyContent: 'center',
-                  }}
+                  elementStyle={{flexDirection: 'row', justifyContent: 'center'}}
+                  textStyle={{ color: '#555', fontWeight: 'bold'}}
                 />
               </View>
               {isSubmit ? (
@@ -560,14 +684,16 @@ const TestQuestionnaire = (props) => {
                   viewStyle={{
                     flexDirection: 'row',
                     justifyContent: 'center',
+                    borderColor: '#555',
+                    borderWidth: 3,
+                    backgroundColor: 'white',
                   }}
-                  elementStyle={{
-                    flexDirection: 'row',
-                    justifyContent: 'center',
-                  }}
+                  elementStyle={{flexDirection: 'row', justifyContent: 'center'}}
+                  textStyle={{ color: '#555', fontWeight: 'bold'}}
                 />
               )}
             </View>
+            {renderDrawer()}
           </ScrollView>
         )
       ) : (
@@ -583,18 +709,18 @@ const renderTimer = (time, showFull = true) => {
   let minutes,
     hours = null;
 
-  minutes = parseInt(time / 60);
-  hours = parseInt(minutes / 60);
+  minutes = parseInt(time / 60, 10);
+  hours = parseInt(minutes / 60, 10);
   let thresh = 10;
   return (
     <Text
       style={{
         fontFamily: 'Roboto-Medium',
-        fontSize: time < thresh?15:15,
+        fontSize: time < thresh ? 15 : 15,
         margin: 5,
         fontWeight: 'bold',
         justifyContent: 'center',
-        color: time < thresh?'red':'white',
+        color: time < thresh ? 'red' : 'black',
       }}>
       {(time < thresh?(''):(!hours && !showFull ? '' : hours + ':'))+
         (minutes < 10 ? '0' + minutes : minutes) +
@@ -608,7 +734,7 @@ const renderProgressBar = (length, inFocus) => {
   let junctions = [];
   for (var i = 0; i < length; i++) {
     if (i === inFocus - 1) {
-      junctions.push({key: i, color: 'yellow'});
+      junctions.push({key: i, color: 'orange'});
     } else {
       junctions.push({key: i, color: 'white'});
     }
@@ -644,7 +770,7 @@ const styles = StyleSheet.create({
   stayElevated: {
     width: '100%',
     //height: 10,
-    margin: 10,
+    margin: 5,
     //padding: 10,
     backgroundColor: 'white',
     borderRadius: 10,
@@ -657,6 +783,26 @@ const styles = StyleSheet.create({
     margin: 10,
 
     //color:
+  },
+  contain: {
+    // flex: 1,
+    height: 150,
+    width: Dimensions.get('window').width * 0.6,
+    marginHorizontal: Dimensions.get('window').width * 0.2
+  },
+  containOpen: {
+    // flex: 1,
+    height: '100%',
+    width: Dimensions.get('window').width ,
+  },
+  containAnswer: {
+    // flex: 1,
+    height: 100,
+  },
+  containAnswerOpen: {
+    // flex: 1,
+    height: '100%',
+    width: Dimensions.get('window').width ,
   },
 });
 

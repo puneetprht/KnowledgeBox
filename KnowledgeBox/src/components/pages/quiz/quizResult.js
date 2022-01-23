@@ -10,16 +10,18 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
+import Lightbox from 'react-native-lightbox-v2';
+import PButton from '../../../widgets/Button/pButton';
+import ElevatedView from 'react-native-elevated-view';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import LinearGradient from 'react-native-linear-gradient';
 import * as Constants from '../../../constants/constants';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
-import PButton from '../../../widgets/Button/pButton';
-import ElevatedView from 'react-native-elevated-view';
 
 const QuizResult = (props) => {
   const {questionsList, languageFlag} = props.route.params;
   const [displaylist, setDisplayList] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const correctAnswers = () => {
     let correct = 0;
@@ -160,8 +162,17 @@ const QuizResult = (props) => {
                     ? question.questionLang
                     : question.question}
                 </Text>
+                {question.questionAttachmentUrl ?
+                <Lightbox underlayColor="white" longPressCallback={() => console.log('cess')} 
+                onOpen={() => setIsOpen(true)} onClose={() => setIsOpen(false)}>
+                  <Image
+                    style={isOpen ? styles.containOpen : styles.contain}
+                    resizeMode="contain"
+                    source={{uri: question.questionAttachmentUrl}}
+                  />
+                </Lightbox> : null }
                 <View style={{alignItems: 'center'}}>
-                  {question[languageFlag && question.questionLang ? 'optionsLang' : 'options'].map((option) => {
+                  {question[languageFlag && question.questionLang ? 'optionsLang' : 'options'].map((option, index) => {
                     return (
                       <View
                         key={option.id}
@@ -175,7 +186,7 @@ const QuizResult = (props) => {
                             : 'white',
                         }}>
                         <ElevatedView elevation={2} style={{borderRadius: 10}}>
-                          <Text
+                          <View><Text
                             style={{
                               ...styles.answerText,
                               color: Constants.textColor1,
@@ -200,12 +211,22 @@ const QuizResult = (props) => {
                           ) : (
                             <View />
                           )}
+                          </View>
+                          {question['optionAttachmentUrl' + (index + 1)] ?
+                          <Lightbox underlayColor="white" longPressCallback={() => console.log('cess')} 
+                        onOpen={() => setIsOpen(true)} onClose={() => setIsOpen(false)}>
+                        <Image
+                          style={isOpen ? styles.containAnswerOpen : styles.containAnswer}
+                          resizeMode="contain"
+                          source={{uri: question['optionAttachmentUrl'+(index+1)]}}
+                        />
+                      </Lightbox> : null }
                         </ElevatedView>
                       </View>
                     );
                   })}
                 </View>
-                {question[languageFlag && question.explainationLang ? 'explainationLang' : 'explaination']? (
+                {question[languageFlag && question.explainationLang ? 'explainationLang' : 'explaination'] || question.expAttachmentUrl ? (
                   <View>
                     <Text
                       style={{
@@ -219,6 +240,16 @@ const QuizResult = (props) => {
                 ) : (
                   <View />
                 )}
+                {question.expAttachmentUrl ?
+                  <Lightbox underlayColor="white" longPressCallback={() => console.log('cess')} 
+                    onOpen={() => setIsOpen(true)} onClose={() => setIsOpen(false)}>
+                    <Image
+                      style={isOpen ? styles.containAnswerOpen : styles.containAnswer}
+                      resizeMode="contain"
+                      source={{uri: question.expAttachmentUrl}}
+                    />
+                  </Lightbox>
+                : null}
                 {question.videoUrlId ? (
                   <View flexDirection="row">
                     <Text
@@ -276,6 +307,26 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width * 0.85,
     marginVertical: 15,
     borderRadius: 15,
+  },
+  contain: {
+    // flex: 1,
+    height: 150,
+    width: Dimensions.get('window').width * 0.6,
+    marginHorizontal: Dimensions.get('window').width * 0.2
+  },
+  containOpen: {
+    // flex: 1,
+    height: '100%',
+    width: Dimensions.get('window').width ,
+  },
+  containAnswer: {
+    // flex: 1,
+    height: 100,
+  },
+  containAnswerOpen: {
+    // flex: 1,
+    height: '100%',
+    width: Dimensions.get('window').width ,
   },
 });
 
