@@ -4,6 +4,7 @@ import React, {useState, useEffect, useRef} from 'react';
 import {
   View,
   Text,
+  Alert,
   TextInput,
   ScrollView,
   StyleSheet,
@@ -16,7 +17,6 @@ import Icon from 'react-native-vector-icons/Feather';
 import PButton from '../../../widgets/Button/pButton';
 import Icon2 from 'react-native-vector-icons/AntDesign';
 import CheckBox from '@react-native-community/checkbox';
-import Icon3 from 'react-native-vector-icons/FontAwesome5';
 
 import axios from '../../../services/axios';
 import * as Constants from '../../../constants/constants';
@@ -36,7 +36,7 @@ const VideoList = (props) => {
   const [videoName, setVideoName] = useState('');
   const [editMode, setEditMode] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  
+
   const [visible, setVisible] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [objectId, setObjectId] = useState(0);
@@ -76,6 +76,8 @@ const VideoList = (props) => {
     props.navigation.navigate('VideoPlayback', {
       videoId: index.urlVideoId,
       title: index.value,
+      url: index.attachmentUrl,
+      urlName: index.attachmentName,
       user: user,
       catergoryId: catergoryId,
     });
@@ -119,7 +121,7 @@ const VideoList = (props) => {
         setEditMode(false);
         fetchAllTopics();
       })
-      .catch((err) => {
+      .catch(() => {
         setEditMode(false);
         Alert.alert('No Video Id detected.');
       });
@@ -127,9 +129,9 @@ const VideoList = (props) => {
 
   const updateFlags = (id,flag) => {
     const lists = JSON.parse(JSON.stringify(list));
-    let index = lists.findIndex(l => l.id == id);
-    
-    if(flag && index >= 0){
+    let index = lists.findIndex(l => l.id === id);
+
+    if (flag && index >= 0){
       axios
         .post('/video/postIsPaid', {
           id: id,
@@ -143,7 +145,7 @@ const VideoList = (props) => {
         .catch((err) => {
           console.log(err);
         });
-    }else if( index >= 0){
+    } else if ( index >= 0){
       axios
         .post('/video/postIsActive', {
           id: id,
@@ -159,14 +161,14 @@ const VideoList = (props) => {
         });
     }
   };
-   
-  const postAmount = useRef(_.debounce((id,amount) => updateAmount(id,amount), 2000)).current;
 
-  const updateAmount = (id,amount) => {
+  const postAmount = useRef(_.debounce((id, amt) => updateAmount(id,amt), 2000)).current;
+
+  const updateAmount = (id,amt) => {
     axios
     .post('/video/postAmount', {
       id: id,
-      amount: amount,
+      amount: amt,
       table: 'video',
     })
     .then((response) => {
@@ -174,46 +176,44 @@ const VideoList = (props) => {
     .catch((err) => {
       console.log(err);
     });
-  }
+  };
 
-  const updateAmountList = (id,amount) => {
+  const updateAmountList = (id,amt) => {
       const lists = JSON.parse(JSON.stringify(list));
       let index = lists.findIndex(l => l.id == id);
-      lists[index].amount = parseInt(amount);
+      lists[index].amount = parseInt(amt);
       setList(lists);
-  }
-  
+  };
+
 
   const allowOrNot = (l) => {
-    if(((l.isPaid && l.amount && !l.isBought) ||
-        (l.isParentPaid && l.parentAmount && !l.isParentBought) || 
-        (l.isSuperParentPaid && l.superParentAmount && !l.isSuperParentBought)) && 
+    if (((l.isPaid && l.amount && !l.isBought) ||
+        (l.isParentPaid && l.parentAmount && !l.isParentBought) ||
+        (l.isSuperParentPaid && l.superParentAmount && !l.isSuperParentBought)) &&
         (user && !user.isAdmin || !user))
         {
         return true;
-    }
-    else{
+    } else {
       return false;
     }
-  }
+  };
 
-  const openPaymentModal = (id,amount) => {
-    if(global.user && global.user.id && parseInt(amount)){
+  const openPaymentModal = (id,amt) => {
+    if (global.user && global.user.id && parseInt(amt)){
       setObjectId(id);
-      setAmount(parseInt(amount));
+      setAmount(parseInt(amt));
       setModalVisible(true);
-    } else{
+    } else {
       setVisible(true);
     }
-  }
+  };
 
   const UPICallback = () => {
     const lists = JSON.parse(JSON.stringify(list));
-    let index = lists.findIndex(l => l.id == objectId);
+    let index = lists.findIndex(l => l.id === objectId);
     lists[index].isBought = true;
     setList(lists);
-  }
-
+  };
 
   return (
     <ContainerList
@@ -321,7 +321,7 @@ const VideoList = (props) => {
                     </View>
                       )} 
                   </View>);
-        })) : 
+        })) :
         (<View>
             <Text>No Items for Now.</Text>
           </View>
