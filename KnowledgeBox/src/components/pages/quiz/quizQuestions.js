@@ -28,6 +28,8 @@ const QuizQuestionnaire = (props) => {
   const [questionsList, setQuestionsList] = useState([]);
   const [timeDuration, setTimeDuration ] = useState(quizTime * 60);
   const [timeDelay, setTimeDelay ] = useState(1000);
+  const [layoutHeight, setLayoutHeight] = useState(0);
+
   var _interval = null;
   var textColor = 'black';
   const fetchQuizDetail = (qId) => {
@@ -184,6 +186,7 @@ const QuizQuestionnaire = (props) => {
   const nextQuestion = (index, evt) => {
     if (index < questionsList.length - 1) {
       setKey(index + 1);
+      setLayoutHeight(0);
     } else {
       submitAnswers();
     }
@@ -191,13 +194,14 @@ const QuizQuestionnaire = (props) => {
 
   const prevQuestion = (index, evt) => {
     setKey(index - 1);
+    setLayoutHeight(0);
     setIsSubmit(false);
   };
 
   return (
     <>
       {questionsList.length ? (
-        <ScrollView style={{marginBottom: 30, height: '100%', minHeight: Dimensions.get('window').height}}>
+        <ScrollView style={{height: '100%', minHeight: Dimensions.get('window').height}}>
             <LinearGradient
             colors={['#FFF', '#FFF']}
             style={{
@@ -360,8 +364,20 @@ const QuizQuestionnaire = (props) => {
             })}
           </View>
           <View
+              style={{height: layoutHeight}}
+              onLayout={event => {
+                const layout = event.nativeEvent.layout;
+                // console.log('height:', layout.height);
+                // console.log('y:', layout.y);
+                // console.log('dim:', Dimensions.get('window').height);
+                if(layout.y + 1 < Dimensions.get('window').height){
+                  setLayoutHeight(Dimensions.get('window').height - layout.y - 55)
+                } 
+              }}
+            />
+          <View
             flexDirection={'row'}
-            style={{marginHorizontal: 20, justifyContent: 'space-between'}}>
+            style={{marginHorizontal: 20, justifyContent: 'space-between', marginBottom: 5}}>
             <View
               style={{
                 paddingLeft: 15,

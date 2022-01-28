@@ -12,13 +12,14 @@ import {
   TouchableOpacity,
   RefreshControl,
 } from 'react-native';
+import axios from '../../../services/axios';
+import Icon from 'react-native-vector-icons/Feather';
+import PButton from '../../../widgets/Button/pButton';
+import Icon2 from 'react-native-vector-icons/AntDesign';
 import LinearGradient from 'react-native-linear-gradient';
 import DropDownPicker from 'react-native-dropdown-picker';
 import * as Constants from '../../../constants/constants';
-import PButton from '../../../widgets/Button/pButton';
-import Icon from 'react-native-vector-icons/Feather';
-import Icon2 from 'react-native-vector-icons/AntDesign';
-import axios from '../../../services/axios';
+import * as AsyncStorage from '../../../services/asyncStorage';
 
 const QuizHome = (props) => {
   const [category, setCategory] = useState(0);
@@ -35,7 +36,11 @@ const QuizHome = (props) => {
     onRefresh();
   }, []);
 
-  const onRefresh = () => {
+  const onRefresh = async () => {
+    if(!user){
+      let tempUser = await AsyncStorage.getStorage('user');
+      setUser(tempUser);
+    }
     var topic = [{value: 0, label: 'All'}];
     if (global.selectedTopic) {
       global.selectedTopic.forEach((element) => {
@@ -143,7 +148,7 @@ const QuizHome = (props) => {
 
   return (
     <View>
-      <ScrollView
+      <ScrollView style={{marginBottom: 60}}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>

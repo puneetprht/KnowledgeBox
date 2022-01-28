@@ -255,7 +255,7 @@ const QuizList = (props) => {
       title={title + ' quizes'}
       onPress={() => props.navigation.goBack()}>
       <ScrollView
-        style={{marginBottom: 30}}
+        style={{marginBottom: 60}}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
