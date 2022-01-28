@@ -189,7 +189,7 @@ const VideoTopicList = (props) => {
       onPress={() => props.navigation.goBack()}>
       <KeyboardAvoidingView>
       <ScrollView
-        style={{marginBottom: 30}}
+        style={{marginBottom: 60}}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
@@ -345,6 +345,7 @@ const VideoTopicList = (props) => {
         </View>
       </ScrollView>
       <UPIPayment modalVisible={modalVisible} objectId={objectId} amount={amount}
+      navigation={props.navigation}
       visible={visible} setModalVisible={setModalVisible} setVisible={setVisible}
       callback={UPICallback} callRouteUrl='/video/postPaymentStatus' callRouteTable='subtopic'
       />

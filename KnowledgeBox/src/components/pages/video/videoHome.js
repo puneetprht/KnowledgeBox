@@ -21,6 +21,7 @@ import CheckBox from '@react-native-community/checkbox';
 import LinearGradient from 'react-native-linear-gradient';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Icon3 from 'react-native-vector-icons/FontAwesome5';
+import * as AsyncStorage from '../../../services/asyncStorage';
 
 import axios from '../../../services/axios';
 import PButton from '../../../widgets/Button/pButton';
@@ -48,7 +49,11 @@ const VideoHome = (props) => {
     onRefresh();
   }, []);
 
-  const onRefresh = () => {
+  const onRefresh = async () => {
+    if(!user){
+      let tempUser = await AsyncStorage.getStorage('user');
+      setUser(tempUser);
+    }
     var topic = [{value: 0, label: 'All'}];
     if (global.selectedTopic) {
       global.selectedTopic.forEach((element) => {
@@ -232,7 +237,7 @@ const VideoHome = (props) => {
 
   return (
     <KeyboardAvoidingView>
-      <ScrollView
+      <ScrollView style={{marginBottom: 60}}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
@@ -447,6 +452,7 @@ const VideoHome = (props) => {
         </View>
       </ScrollView>
       <UPIPayment modalVisible={modalVisible} objectId={objectId} amount={amount}
+      navigation={props.navigation}
       visible={visible} setModalVisible={setModalVisible} setVisible={setVisible}
       callback={UPICallback} callRouteUrl='/video/postPaymentStatus' callRouteTable='subject'
       />

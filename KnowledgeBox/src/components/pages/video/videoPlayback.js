@@ -4,6 +4,7 @@ import React, {useState} from 'react';
 import {
   View,
   Text,
+  Image,
   Alert,
   Dimensions,
   TouchableOpacity,
@@ -96,12 +97,25 @@ const downloadAttachment = async () => {
           injectedJavaScript={runFirst}
         />
       </View>
+      {url ?
+      <View>
       <Text style={{fontSize: 18, marginTop: 20, margin: 10}}>Download Class Notes / क्लास नोट्स डाउनलोड करें:</Text>
       <View style={{ width: Dimensions.get('window').width}} flexDirection="column" alignItems="center" justifyContent="center">
         <TouchableOpacity onPress={() => downloadAttachment()}>
-          <Icon name="cloud-download" color={Constants.gradientColor1} size={50} />
+          {/* <Icon name="cloud-download" color={Constants.gradientColor1} size={50} /> */}
+          <Image
+                  source={require('../../../assets/pdfImage.jpg')}
+                  style={{
+                    width: 60,
+                    height: 60,
+                    marginHorizontal: 15,
+                    marginVertical: 5,
+                  }}
+                />
         </TouchableOpacity>
       </View>
+      </View>
+      : null }
       { showInfo ?
       <View>
         <Text style={{fontSize: 18, marginTop: 30, margin: 10}}>If unable to download please check storage permission for Knowledge Box app in settings.</Text>
