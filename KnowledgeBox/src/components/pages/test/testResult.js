@@ -54,7 +54,7 @@ const TestResult = (props) => {
   };
 
   return (
-    <ScrollView style={{marginBottom: 30}}>
+    <ScrollView style={{marginBottom: 60}}>
       <View>
         <View style={{flex: 1, justifyContent: 'center', marginTop: 10}}>
           <Text

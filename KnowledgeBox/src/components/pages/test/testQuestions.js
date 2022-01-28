@@ -38,6 +38,7 @@ const TestQuestionnaire = (props) => {
   const [introDone, setIntroDone] = useState(false);
   const [timeDuration, setTimeDuration] = useState(parseInt(testTime * 60));
   const [timeDelay, setTimeDelay ] = useState(1000); 
+  const [layoutHeight, setLayoutHeight] = useState(0);
   var _interval = null;
   const [questionsList, setQuestionsList] = useState([]);
   var textColor = 'black';
@@ -190,6 +191,7 @@ const TestQuestionnaire = (props) => {
   const nextQuestion = (index, evt) => {
     if (index < questionsList.length - 1) {
       setKey(index + 1);
+      setLayoutHeight(0);
     } else {
       submitAnswers();
     }
@@ -198,6 +200,7 @@ const TestQuestionnaire = (props) => {
 
   const prevQuestion = (index, evt) => {
     setKey(index - 1);
+    setLayoutHeight(0);
     setIsSubmit(false);
     //setLanguage(false);
   };
@@ -256,55 +259,55 @@ const TestQuestionnaire = (props) => {
             > 
               <Text style={{fontSize: 18}}>Marked Questions:</Text>
               <ScrollView>
-              <View style={{
-              flexDirection: 'row',
-              flexWrap: 'wrap',
-              }}>
-              { questionsList.filter(q => q.isMarked).map((question, index) => {
-                return (
-                <TouchableOpacity key={index} onPress={() => setKey(index)}
-                  style={{position: 'relative'}}
-                >
-                  {/* <IconAnt
-                    name={question.isMarked ? 'star' : 'staro'}
-                    size={45}
-                    style={{
-                      color: question.isMarked ? 'orange' : 'black',
-                      marginHorizontal: 12,
-                      marginVertical: 5,
-                      elevation: 1,
-                    }}
-                    elevatedElement= {{
-                      elevation: 3, // works on android
-                    }}
-                  /> */}
-                  <View style={{
-                      backgroundColor: question.isMarked ? 'orange' : 'white',
-                      marginVertical: 3,
-                      marginHorizontal: 3,
-                      borderRadius: 20,
-                      width: 40,
-                      height: 40,
-                      elevation: 1,
-                    }}/>
-                  <Text style={{
-                    position: 'absolute',
-                    fontSize:20,
-                    color: question.isMarked ?  'white' : 'black',
-                    fontWeight: '500',
-                    top: 10,
-                    left: index > 9 ? 14 : 18,
-                    elevation: 2,
-                    }}>
-                      {index+1}
-                    </Text>
-                </TouchableOpacity>
-                );
-              })
-              }
-              { questionsList.filter(q => q.isMarked).length === 0 ?
-              <Text style={{fontSize: 18}}>No Marked Question!</Text> : null }
-              </View>
+                <View style={{
+                flexDirection: 'row',
+                flexWrap: 'wrap',
+                }}>
+                { questionsList.map((question, index) => {
+                  return (
+                  <TouchableOpacity key={index} onPress={() => setKey(index)}
+                    style={{position: 'relative'}}
+                  >
+                    {/* <IconAnt
+                      name={question.isMarked ? 'star' : 'staro'}
+                      size={45}
+                      style={{
+                        color: question.isMarked ? 'orange' : 'black',
+                        marginHorizontal: 12,
+                        marginVertical: 5,
+                        elevation: 1,
+                      }}
+                      elevatedElement= {{
+                        elevation: 3, // works on android
+                      }}
+                    /> */}
+                    <View style={{
+                        backgroundColor: question.isMarked ? 'orange' : 'white',
+                        marginVertical: 3,
+                        marginHorizontal: 3,
+                        borderRadius: 20,
+                        width: 40,
+                        height: 40,
+                        elevation: 1,
+                      }}/>
+                    <Text style={{
+                      position: 'absolute',
+                      fontSize:20,
+                      color: question.isMarked ?  'white' : 'black',
+                      fontWeight: '500',
+                      top: 10,
+                      left: index > 9 ? 14 : 18,
+                      elevation: 2,
+                      }}>
+                        {index+1}
+                      </Text>
+                  </TouchableOpacity>
+                  );
+                })
+                }
+                {/* { questionsList.filter(q => q.isMarked).length === 0 ?
+                <Text style={{fontSize: 18}}>No Marked Question!</Text> : null } */}
+                </View>
               </ScrollView>
             </View>
       </View>);
@@ -321,7 +324,8 @@ const TestQuestionnaire = (props) => {
             style={{justifyContent: 'center', backgroundColor: 'white'}}>
             <ScrollView
               style={{
-                marginBottom: 30,
+                // marginBottom: 5,
+                paddingBottom: 5,
                 marginTop: 20,
                 marginHorizontal: 20,
                 backgroundColor: 'white',
@@ -334,6 +338,56 @@ const TestQuestionnaire = (props) => {
                   Maximum Marks:{' '}
                   {questionsList[questionsList.length - 1].maxMarks}
                 </Text>
+              </View>
+              <View style={{marginVertical: 15}}>
+                <View
+                    // style={{
+                    //   position: 'absolute',
+                    //   alignSelf: 'flex-end',
+                    //   marginTop: 5,
+                    //   paddingLeft: 15,
+                    // }}
+                    flexDirection="row">
+                    <Text
+                      style={{
+                        fontFamily: 'Roboto-Medium',
+                        textAlignVertical:'center',
+                        fontSize: 14,
+                        color: Constants.success,
+                      }}>
+                      Positive Marking:{' '}
+                    </Text>
+                    <Text
+                      style={{
+                        marginLeft: 1,
+                        // fontFamily: 'Roboto-Medium',
+                        fontSize: 15,
+                        textAlignVertical:'center',
+                        color: Constants.success,
+                      }}>
+                      {questionsList[0].weightage}
+                    </Text>
+                    <Text
+                      style={{
+                        marginLeft: 10,
+                        fontFamily: 'Roboto-Medium',
+                        fontSize: 14,
+                        textAlignVertical:'center',
+                        color: Constants.error,
+                      }}>
+                      Negative Marking:{' '}
+                    </Text>
+                    <Text
+                      style={{
+                        marginLeft: 1,
+                        // fontFamily: 'Roboto-Medium',
+                        fontSize: 15,
+                        textAlignVertical:'center',
+                        color: Constants.error,
+                      }}>
+                      {questionsList[0].negativeWeightage}
+                    </Text>
+                  </View>
               </View>
               {testInstructions.split('\n').map((line) => {
                 return (
@@ -365,7 +419,7 @@ const TestQuestionnaire = (props) => {
             </ScrollView>
           </ContainerList>
         ) : (
-          <ScrollView style={{marginBottom: 30}}>
+          <ScrollView>
             <LinearGradient
               colors={['#FFF', '#FFF']}
               style={{
@@ -475,7 +529,7 @@ const TestQuestionnaire = (props) => {
                     }}
                     flexDirection="row">
                     {renderTimer(questionsList[key].time, false)}
-                    <Text
+                    {/* <Text
                       style={{
                         marginLeft: 5,
                         fontFamily: 'Roboto-Medium',
@@ -497,7 +551,7 @@ const TestQuestionnaire = (props) => {
                         color: Constants.success,
                       }}>
                       {questionsList[key].weightage}
-                    </Text>
+                    </Text> */}
                   </View>
                   <View
                     style={{
@@ -507,7 +561,7 @@ const TestQuestionnaire = (props) => {
                       paddingLeft: 15,
                     }}
                     flexDirection="row">
-                    <Text
+                    {/* <Text
                       style={{
                         marginLeft: 10,
                         fontFamily: 'Roboto-Medium',
@@ -528,7 +582,7 @@ const TestQuestionnaire = (props) => {
                         color: Constants.error,
                       }}>
                       {questionsList[key].negativeWeightage}
-                    </Text>
+                    </Text> */}
                     <TouchableOpacity onPress={() => markReview()}>
                       <IconAnt
                         name={questionsList[key].isMarked ? 'star' : 'staro'}
@@ -631,8 +685,20 @@ const TestQuestionnaire = (props) => {
               )}
             </View>
             <View
+              style={{height: layoutHeight}}
+              onLayout={event => {
+                const layout = event.nativeEvent.layout;
+                // console.log('height:', layout.height);
+                // console.log('y:', layout.y);
+                // console.log('dim:', Dimensions.get('window').height);
+                if(layout.y + 1 < Dimensions.get('window').height){
+                  setLayoutHeight(Dimensions.get('window').height - layout.y - 55)
+                } 
+              }}
+            />
+            <View
               flexDirection={'row'}
-              style={{marginHorizontal: 20, justifyContent: 'space-between'}}>
+              style={{marginHorizontal: 20, justifyContent: 'space-between', marginBottom: 5}}>
               <View
                 style={{
                   paddingLeft: 15,

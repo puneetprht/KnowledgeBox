@@ -279,7 +279,7 @@ const UPIPayment = (props) => {
 		        label: 'Sign-in',
 		        onPress: () => {
 		          props.setVisible(false);
-		          props.navigation.replace('Auth', {screen: 'AuthPage'});
+		          props.replace('Auth', {screen: 'AuthPage'});
 		        },
 		      }}
 		      >
