@@ -82,7 +82,7 @@ const Home = (props) => {
       id: 2,
       owner: 'Knowledge Box',
       objectType: 'image',
-      objectUrl: 'https://knowledge2020box.s3.ap-south-1.amazonaws.com/Images/IMG_20210318_112905_600.jpg',      
+      objectUrl: 'https://kb2022.s3-ap-south-1.amazonaws.com/Images/quiz/imag1.jpeg',      
       objectContent: '',
 			timeAgo: '2d'
 		},
@@ -90,14 +90,14 @@ const Home = (props) => {
       owner: 'Knowledge Box',
 			objectType: 'image',
       objectContent: '',
-      objectUrl: 'https://knowledge2020box.s3.ap-south-1.amazonaws.com/Images/IMG_20210320_122744_536.jpg',
+      objectUrl: 'https://kb2022.s3-ap-south-1.amazonaws.com/Images/quiz/iamge2.jpeg',
       id: 3,
 			timeAgo: '3d'
 		},
 		{
       owner: 'Knowledge Box',
 			objectType: 'image',
-      objectUrl: 'https://knowledge2020box.s3.ap-south-1.amazonaws.com/Images/IMG_20210125_104035_856.jpg',
+      objectUrl: 'https://kb2022.s3-ap-south-1.amazonaws.com/Images/quiz/image3.jpeg',
       objectContent: '',
 			id: 4,
 			timeAgo: '4d'
@@ -105,7 +105,7 @@ const Home = (props) => {
     {
       owner: 'Knowledge Box',
 			objectType: 'image',
-      objectUrl: 'https://knowledge2020box.s3.ap-south-1.amazonaws.com/Images/IMG_20210320_080659_470.jpg',
+      objectUrl: 'https://kb2022.s3-ap-south-1.amazonaws.com/Images/quiz/image4.jpeg',
       objectContent: '',
 			id: 5,
 			timeAgo: '6d'
@@ -113,7 +113,7 @@ const Home = (props) => {
     {
       owner: 'Knowledge Box',
 			objectType: 'image',
-      objectUrl: 'https://knowledge2020box.s3.ap-south-1.amazonaws.com/Images/IMG_20210313_093135_307.jpg',
+      objectUrl: 'https://kb2022.s3-ap-south-1.amazonaws.com/Images/quiz/image5.jpeg',
       objectContent: '',
 			id: 6,
 			timeAgo: '7d'
@@ -121,7 +121,7 @@ const Home = (props) => {
     {
       owner: 'Knowledge Box',
 			objectType: 'image',
-      objectUrl: 'https://knowledge2020box.s3.ap-south-1.amazonaws.com/Images/IMG_20210202_224104_089.jpg',
+      objectUrl: 'https://kb2022.s3-ap-south-1.amazonaws.com/Images/quiz/image6.jpeg',
       objectContent: '',
 			id: 7,
 			timeAgo: '10d'
