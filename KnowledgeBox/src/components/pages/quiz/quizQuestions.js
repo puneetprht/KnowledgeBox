@@ -509,7 +509,7 @@ const styles = StyleSheet.create({
     // flex: 1,
     height: 150,
     width: Dimensions.get('window').width * 0.6,
-    marginHorizontal: Dimensions.get('window').width * 0.2
+    //marginHorizontal: Dimensions.get('window').width * 0.2
   },
   containOpen: {
     // flex: 1,
