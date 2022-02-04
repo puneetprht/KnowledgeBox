@@ -20,6 +20,7 @@ import IconAnt from 'react-native-vector-icons/AntDesign';
 import LinearGradient from 'react-native-linear-gradient';
 import * as Constants from '../../../constants/constants';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {Dialog, Paragraph, Button} from 'react-native-paper';
 import ContainerList from '../../../widgets/List/containerList';
 
 const TestQuestionnaire = (props) => {
@@ -41,6 +42,8 @@ const TestQuestionnaire = (props) => {
   const [layoutHeight, setLayoutHeight] = useState(0);
   var _interval = null;
   const [questionsList, setQuestionsList] = useState([]);
+  const [showDialog1, setShowDialog1] = useState(false);
+  const [showDialog2, setShowDialog2] = useState(false);
   var textColor = 'black';
 
   const fetchTestDetail = (testId) => {
@@ -193,7 +196,8 @@ const TestQuestionnaire = (props) => {
       setKey(index + 1);
       setLayoutHeight(0);
     } else {
-      submitAnswers();
+      setShowDialog2(true);
+      //submitAnswers();
     }
     //setLanguage(false);
   };
@@ -258,6 +262,30 @@ const TestQuestionnaire = (props) => {
             }}
             > 
               <Text style={{fontSize: 18}}>Marked Questions:</Text>
+              <View flexDirection='row'>
+                <Text>Attempted:</Text>
+                <View style={{
+                        backgroundColor: Constants.gradientColor1 ,
+                        marginVertical: 3,
+                        marginHorizontal: 3,
+                        borderRadius: 10,
+                        width: 20,
+                        height: 20,
+                        elevation: 1,
+                      }}/>
+                    </View>
+              <View flexDirection='row'>
+                <Text>Marked:</Text>
+                <View style={{
+                        backgroundColor: 'orange' ,
+                        marginVertical: 3,
+                        marginHorizontal: 3,
+                        borderRadius: 10,
+                        width: 20,
+                        height: 20,
+                        elevation: 1,
+                      }}/>
+              </View>
               <ScrollView>
                 <View style={{
                 flexDirection: 'row',
@@ -282,7 +310,7 @@ const TestQuestionnaire = (props) => {
                       }}
                     /> */}
                     <View style={{
-                        backgroundColor: question.isMarked ? 'orange' : 'white',
+                        backgroundColor: question.isMarked ? 'orange' : (question.selectedAnswer.length ? Constants.gradientColor1 : 'white'),
                         marginVertical: 3,
                         marginHorizontal: 3,
                         borderRadius: 20,
@@ -463,7 +491,7 @@ const TestQuestionnaire = (props) => {
                     />
                   </TouchableOpacity>
                   <View style={{position: 'absolute', paddingLeft: 15}}>
-                    <TouchableOpacity onPress={() => props.navigation.goBack()}>
+                    <TouchableOpacity onPress={() => setShowDialog1(true)}>
                       <Icon
                         name="chevron-left"
                         style={{color: '#555'}}
@@ -760,6 +788,35 @@ const TestQuestionnaire = (props) => {
               )}
             </View>
             {renderDrawer()}
+            <Dialog visible={showDialog1} onDismiss={() => setShowDialog1(false)}>
+              <Dialog.Title>Exit Test</Dialog.Title>
+              <Dialog.Content>
+                {/* <Paragraph>Time left: </Paragraph>
+                <Paragraph>Questions Attempted: </Paragraph>
+                <Paragraph>Questions marked:</Paragraph>
+                <Paragraph>Total Questions: </Paragraph> */}
+                <Paragraph>Are you sure you want to exit? All your progress would be lost.</Paragraph>
+              </Dialog.Content>
+              <Dialog.Actions>
+                <Button onPress={() => setShowDialog1(false)}>Cancel</Button>
+                <Button onPress={() => props.navigation.goBack()}>Exit</Button>
+              </Dialog.Actions>
+            </Dialog>
+            {<Dialog visible={showDialog2} onDismiss={() => setShowDialog2(false)}>
+              <Dialog.Title>Submit Test</Dialog.Title>
+              <Dialog.Content>
+                <Paragraph>Time left: {renderTimer(timeDuration)}</Paragraph>
+                <Paragraph>Questions Attempted:  {questionsList.filter(q => q.selectedAnswer.length).length}</Paragraph>
+                <Paragraph>Questions marked: {questionsList.filter(q => q.isMarked).length}</Paragraph>
+                <Paragraph>Total Questions:  {questionsList.length}</Paragraph>
+                <Paragraph>Are you sure you want to submit?</Paragraph>
+              </Dialog.Content>
+              <Dialog.Actions>
+                <Button onPress={() => setShowDialog2(false)}>Cancel</Button>
+                <Button onPress={() => {submitAnswers();
+                                        setShowDialog2(false);}}>Submit</Button>
+              </Dialog.Actions>
+            </Dialog>}
           </ScrollView>
         )
       ) : (
@@ -854,7 +911,7 @@ const styles = StyleSheet.create({
     // flex: 1,
     height: 150,
     width: Dimensions.get('window').width * 0.6,
-    marginHorizontal: Dimensions.get('window').width * 0.2
+    // marginHorizontal: Dimensions.get('window').width * 0.2
   },
   containOpen: {
     // flex: 1,

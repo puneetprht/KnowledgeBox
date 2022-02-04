@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import _ from 'lodash';
 import RNFetchBlob from 'rn-fetch-blob';
-import {decode} from 'base64-arraybuffer';
+// import {decode} from 'base64-arraybuffer';
 import Icon from 'react-native-vector-icons/AntDesign';
 import CheckBox from '@react-native-community/checkbox';
 import IconF from 'react-native-vector-icons/Feather';
