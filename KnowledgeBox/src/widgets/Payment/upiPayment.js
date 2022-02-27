@@ -12,6 +12,7 @@ import {
 import Modal from 'react-native-modal';
 import { Snackbar } from 'react-native-paper';
 import RNUpiPayment from 'react-native-upi-payment';
+import RazorpayCheckout from 'react-native-razorpay';
 
 import axios from '../../services/axios';
 import PButton from '../Button/pButton';
@@ -50,7 +51,8 @@ const UPIPayment = (props) => {
       }
       return () => {
       }
-  }, [props.modalVisible])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.modalVisible]);
 
   const unlockItem = (amount) => {
     if(user && user.id && amount > 0){
@@ -61,13 +63,44 @@ const UPIPayment = (props) => {
   }
 
   const initiatePayment = (amount) => {
-    RNUpiPayment.initializePayment({
-        vpa: PaymentInfo.vpa,  		//your upi address like 12345464896@okhdfcbank
-        payeeName: PaymentInfo.payeeName,   			// payee name 
-        amount: amount,				//amount
-        transactionNote:'KnowledgeBox Course.',		//note of transaction
-        transactionRef: 'aasf-332-aoei-fn'	//some refs to aknowledge the transaction
-    },paymentCallback,paymentCallback);
+    // RNUpiPayment.initializePayment({
+    //     vpa: PaymentInfo.vpa,  		//your upi address like 12345464896@okhdfcbank
+    //     payeeName: PaymentInfo.payeeName,   			// payee name 
+    //     amount: amount,				//amount
+    //     transactionNote:'KnowledgeBox Course.',		//note of transaction
+    //     transactionRef: 'aasf-332-aoei-fn'	//some refs to aknowledge the transaction
+    // },paymentCallback,paymentCallback);
+    if (amount >= 1) {
+      var options = {
+        description: 'Knowledge Box course',
+        image: 'https://i.imgur.com/3g7nmJC.png',
+        currency: 'INR',
+        key: PaymentInfo.razorId, // Your api key
+        amount: amount * 100,
+        name: 'Knowledge Box',
+        prefill: {
+          email: user.email,
+          contact: user.phone,
+          name: user.firstname + ' ' + user.lastname,
+        },
+        // prefill: {
+        //   email: user.email,
+        //   contact: user.phone,
+        //   name: user.firstname + ' ' + user.lastname,
+        // }
+        theme: {color: Constants.textColor1},
+      };
+  
+      RazorpayCheckout.open(options).then((data) => {
+        //console.log("Success: ", data);
+        postPayment("SUCCESS", data.razorpay_payment_id, "All Good Razor.", finalAmount(modalAmount, couponAmount))
+      }).catch((error) => {
+        postPayment("FAILURE", error.code, error.description, finalAmount(modalAmount, couponAmount));
+        //alert(`Error: ${error.code} | ${error.description}`);
+      });
+    } else {
+      postPayment("SUCCESS", 'AutoPay', 'AutoApprove', 0);
+    }
   }
   
   const paymentCallback = (data) => {
@@ -116,7 +149,8 @@ const UPIPayment = (props) => {
       coupon: couponValid || 0,
     })
     .then((response) => {
-        props.callback();
+      console.log("statue: ", objStatus);
+        props.callback(objStatus == "SUCCESS" ? true : false);
         props.setModalVisible(false);
     })
     .catch((err) => {

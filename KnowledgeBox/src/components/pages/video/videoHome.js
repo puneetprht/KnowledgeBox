@@ -228,12 +228,14 @@ const VideoHome = (props) => {
     }
   }
 
-  const UPICallback = () => {
-    const lists = JSON.parse(JSON.stringify(list));
-    let index = lists.findIndex(l => l.id == objectId);
-    lists[index].isBought = true;
-    setList(lists);
-  }
+  const UPICallback = (flag) => {
+    if (flag){
+      const lists = JSON.parse(JSON.stringify(list));
+      let index = lists.findIndex(l => l.id == objectId);
+      lists[index].isBought = flag;
+      setList(lists);
+    }
+  };
 
   return (
     <KeyboardAvoidingView>

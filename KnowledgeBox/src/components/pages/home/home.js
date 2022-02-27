@@ -78,8 +78,64 @@ const Home = (props) => {
       objectContent: 'Latest SSC Test series/Video courses available from 1 April, 2021',
 			timeAgo: '1d'
 		},
-		{
+    {
       id: 2,
+      owner: 'Knowledge Box',
+      objectType: 'image',
+      objectUrl: 'https://kb2022.s3-ap-south-1.amazonaws.com/Images/test/image7.jpeg',      
+      objectContent: '',
+			timeAgo: '2d'
+		},
+    {
+      id: 3,
+      owner: 'Knowledge Box',
+      objectType: 'image',
+      objectUrl: 'https://kb2022.s3-ap-south-1.amazonaws.com/Images/test/image8.jpeg',      
+      objectContent: '',
+			timeAgo: '2d'
+		},
+    {
+      id: 4,
+      owner: 'Knowledge Box',
+      objectType: 'image',
+      objectUrl: 'https://kb2022.s3-ap-south-1.amazonaws.com/Images/test/image9.jpeg',      
+      objectContent: '',
+			timeAgo: '2d'
+		},
+    {
+      id: 5,
+      owner: 'Knowledge Box',
+      objectType: 'image',
+      objectUrl: 'https://kb2022.s3-ap-south-1.amazonaws.com/Images/test/image10.jpeg',      
+      objectContent: '',
+			timeAgo: '2d'
+		},
+    {
+      id: 6,
+      owner: 'Knowledge Box',
+      objectType: 'image',
+      objectUrl: 'https://kb2022.s3-ap-south-1.amazonaws.com/Images/test/image11.jpeg',      
+      objectContent: '',
+			timeAgo: '2d'
+		},
+    {
+      id: 7,
+      owner: 'Knowledge Box',
+      objectType: 'image',
+      objectUrl: 'https://kb2022.s3-ap-south-1.amazonaws.com/Images/test/image12.jpeg',      
+      objectContent: '',
+			timeAgo: '2d'
+		},
+    {
+      id: 8,
+      owner: 'Knowledge Box',
+      objectType: 'image',
+      objectUrl: 'https://kb2022.s3-ap-south-1.amazonaws.com/Images/test/images13.jpeg',      
+      objectContent: '',
+			timeAgo: '2d'
+		},
+    {
+      id: 9,
       owner: 'Knowledge Box',
       objectType: 'image',
       objectUrl: 'https://kb2022.s3-ap-south-1.amazonaws.com/Images/quiz/imag1.jpeg',      
@@ -91,7 +147,7 @@ const Home = (props) => {
 			objectType: 'image',
       objectContent: '',
       objectUrl: 'https://kb2022.s3-ap-south-1.amazonaws.com/Images/quiz/iamge2.jpeg',
-      id: 3,
+      id: 10,
 			timeAgo: '3d'
 		},
 		{
@@ -99,7 +155,7 @@ const Home = (props) => {
 			objectType: 'image',
       objectUrl: 'https://kb2022.s3-ap-south-1.amazonaws.com/Images/quiz/image3.jpeg',
       objectContent: '',
-			id: 4,
+			id: 11,
 			timeAgo: '4d'
     },
     {
@@ -107,7 +163,7 @@ const Home = (props) => {
 			objectType: 'image',
       objectUrl: 'https://kb2022.s3-ap-south-1.amazonaws.com/Images/quiz/image4.jpeg',
       objectContent: '',
-			id: 5,
+			id: 12,
 			timeAgo: '6d'
     },
     {
@@ -115,7 +171,7 @@ const Home = (props) => {
 			objectType: 'image',
       objectUrl: 'https://kb2022.s3-ap-south-1.amazonaws.com/Images/quiz/image5.jpeg',
       objectContent: '',
-			id: 6,
+			id: 13,
 			timeAgo: '7d'
     },
     {
@@ -123,7 +179,7 @@ const Home = (props) => {
 			objectType: 'image',
       objectUrl: 'https://kb2022.s3-ap-south-1.amazonaws.com/Images/quiz/image6.jpeg',
       objectContent: '',
-			id: 7,
+			id: 14,
 			timeAgo: '10d'
 		},
   ]);
