@@ -19,7 +19,7 @@ Video.getAllSubjects = (categories, user, admin, result) => {
 	inner join category c on c.hmy = s.fcategory `;
 	if(user && user.id){
 		SQL += ` left outer join paymentxref xref on xref.objType = 2 and xref.objPointer = s.hmy and 
-				xref.objReference = 'subject' and xref.hmy in (select max(hmy) from paymentxref group by objtype,objpointer,objReference,fuser) `
+				xref.objReference = 'subject' and xref.hmy in (select max(hmy) from paymentxref group by objtype,objpointer,objReference,fuser having fuser = ${user.id} ) `
 	}
 	if(admin){
 		SQL += ` where c.hmy in (select hmy from category) and s.objectType = 2 group by s.hmy `;
@@ -66,7 +66,7 @@ Video.getSubject = (Categoryid, user, result) => {
 	right outer join subject s on stp.fsubject = s.hmy `;
 	if(user && user.id){
 		SQL += ` left outer join paymentxref xref on xref.objType = 2 and xref.objPointer = s.hmy and 
-				xref.objReference = 'subject' and xref.hmy in (select max(hmy) from paymentxref group by objtype,objpointer,objReference,fuser) `
+				xref.objReference = 'subject' and xref.hmy in (select max(hmy) from paymentxref group by objtype,objpointer,objReference,fuser having fuser = ${user.id} ) `
 	}
 	SQL += ` where s.fcategory = ${Categoryid} and s.objectType = 2 group by s.hmy `;
 
@@ -136,13 +136,19 @@ Video.getSubTopicList = (id, user, result) => {
 		WHEN xref.status = 'SUCCESS' THEN 1
 		ELSE 0
 		END as isBought`
+		SQL += ` ,CASE
+		WHEN xrefSuperParent.status = 'SUCCESS' THEN 1
+		ELSE 0
+		END as isParentBought `
 	}
 	SQL += ` from video v
 	right outer join subtopic st on st.hmy = v.fsubtopic
 	inner join subject s on s.hmy = st.fsubject `;
 	if(user && user.id){
 		SQL += ` left outer join paymentxref xref on xref.objType = 2 and xref.objPointer = st.hmy and 
-				xref.objReference = 'subtopic' and xref.hmy in (select max(hmy) from paymentxref group by objtype,objpointer,objReference,fuser) `
+				xref.objReference = 'subtopic' and xref.hmy in (select max(hmy) from paymentxref group by objtype,objpointer,objReference,fuser  having fuser = ${user.id} ) `
+		SQL += ` left outer join paymentxref xrefSuperParent on xrefSuperParent.objType = 2 and xrefSuperParent.objPointer = s.hmy and 
+				xrefSuperParent.objReference = 'subject' and xrefSuperParent.hmy in (select max(hmy) from paymentxref group by objtype,objpointer,objReference,fuser having fuser = ${user.id} ) `
 	}
 	SQL += ` where st.fsubject = ${id}  group by st.hmy `;
 
@@ -193,11 +199,11 @@ Video.getVideoList = (id, user, result) => {
 	inner join subject s on s.hmy = st.fsubject `;
 	if(user && user.id){
 		SQL += ` left outer join paymentxref xref on xref.objType = 2 and xref.objPointer = v.hmy and 
-				xref.objReference = 'video' and xref.hmy in (select max(hmy) from paymentxref group by objtype,objpointer,objReference,fuser) `;
+				xref.objReference = 'video' and xref.hmy in (select max(hmy) from paymentxref group by objtype,objpointer,objReference,fuser  having fuser = ${user.id} ) `;
 		SQL += ` left outer join paymentxref xrefParent on xrefParent.objType = 2 and xrefParent.objPointer = st.hmy and 
-				xrefParent.objReference = 'subtopic' and xrefParent.hmy in (select max(hmy) from paymentxref group by objtype,objpointer,objReference,fuser) `;
+				xrefParent.objReference = 'subtopic' and xrefParent.hmy in (select max(hmy) from paymentxref group by objtype,objpointer,objReference,fuser having fuser = ${user.id} ) `;
 		SQL += ` left outer join paymentxref xrefSuperParent on xrefSuperParent.objType = 2 and xrefSuperParent.objPointer = s.hmy and 
-				xrefSuperParent.objReference = 'subject' and xrefSuperParent.hmy in (select max(hmy) from paymentxref group by objtype,objpointer,objReference,fuser) `;
+				xrefSuperParent.objReference = 'subject' and xrefSuperParent.hmy in (select max(hmy) from paymentxref group by objtype,objpointer,objReference,fuser having fuser = ${user.id} ) `;
 	}
 	SQL += ` where st.hmy = ${id} `;
 
