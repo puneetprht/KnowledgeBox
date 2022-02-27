@@ -7,10 +7,10 @@ const port = 4000;
 const app = express();
 
 //parse requests of content-type: applcation/json
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '5mb'}));
 
 // parse requests of content-type: application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({limit: '5mb', extended: true }));
 
 //convert single quotes for sql insertion.
 app.use((req, res, next) => {
