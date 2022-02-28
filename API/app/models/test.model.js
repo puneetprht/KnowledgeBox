@@ -23,7 +23,7 @@ Test.getAllSubjects = (categories, user, admin, result) => {
 	left outer join subtopic stp on stp.fsubject = s.hmy
 	inner join category c on c.hmy = s.fcategory `;
 	if(user && user.id){
-		SQL += ` left outer join paymentxref xref on xref.objType = 3 and xref.objPointer = s.hmy and 
+		SQL += ` left outer join paymentxref xref on xref.objType = 3 and xref.objPointer = s.hmy and  fuser = ${user.id} and
 				xref.objReference = 'subject' and xref.hmy in (select max(hmy) from paymentxref group by objtype,objpointer,objReference,fuser having fuser = ${user.id} ) `
 	}
 	if(admin){
@@ -66,7 +66,7 @@ Test.getSubject = (Categoryid, user, result) => {
 	SQL += ` from subtopic stp 
 	right outer join subject s on stp.fsubject = s.hmy `;
 	if(user && user.id){
-		SQL += ` left outer join paymentxref xref on xref.objType = 3 and xref.objPointer = s.hmy and 
+		SQL += ` left outer join paymentxref xref on xref.objType = 3 and xref.objPointer = s.hmy and  fuser = ${user.id} and
 				xref.objReference = 'subject' and xref.hmy in (select max(hmy) from paymentxref group by objtype,objpointer,objReference,fuser having fuser = ${user.id} ) `
 	}
 	SQL += ` where s.fcategory = ${Categoryid} and s.objectType = 3 group by s.hmy `;
@@ -146,9 +146,9 @@ Test.getSubTopicList = (id, user, result) => {
 	right outer join subtopic st on st.hmy = q.fsubtopic
 	inner join subject s on s.hmy = st.fsubject `;
 	if(user && user.id){
-		SQL += ` left outer join paymentxref xref on xref.objType = 3 and xref.objPointer = st.hmy and 
+		SQL += ` left outer join paymentxref xref on xref.objType = 3 and xref.objPointer = st.hmy and  xref.fuser = ${user.id} and
 				xref.objReference = 'subtopic' and xref.hmy in (select max(hmy) from paymentxref group by objtype,objpointer,objReference,fuser  having fuser = ${user.id} ) `
-		SQL += ` left outer join paymentxref xrefSuperParent on xrefSuperParent.objType = 2 and xrefSuperParent.objPointer = s.hmy and 
+		SQL += ` left outer join paymentxref xrefSuperParent on xrefSuperParent.objType = 3 and xrefSuperParent.objPointer = s.hmy and  xrefSuperParent.fuser = ${user.id} and
 				xrefSuperParent.objReference = 'subject' and xrefSuperParent.hmy in (select max(hmy) from paymentxref group by objtype,objpointer,objReference,fuser having fuser = ${user.id} ) `;
 	}
 	SQL += ` where st.fsubject = ${id}  group by st.hmy `;
@@ -201,11 +201,11 @@ Test.getTestList = (id, user, result) => {
 	inner join subtopic st on st.hmy = q.fsubtopic
 	inner join subject s on s.hmy = st.fsubject `;
 	if(user && user.id){
-		SQL += ` left outer join paymentxref xref on xref.objType = 2 and xref.objPointer = q.hmy and 
+		SQL += ` left outer join paymentxref xref on xref.objType = 3 and xref.objPointer = q.hmy and  xref.fuser = ${user.id} and
 				xref.objReference = 'test' and xref.hmy in (select max(hmy) from paymentxref group by objtype,objpointer,objReference,fuser having fuser = ${user.id} ) `;
-		SQL += ` left outer join paymentxref xrefParent on xrefParent.objType = 2 and xrefParent.objPointer = st.hmy and 
+		SQL += ` left outer join paymentxref xrefParent on xrefParent.objType = 3 and xrefParent.objPointer = st.hmy and  xrefParent.fuser = ${user.id} and
 				xrefParent.objReference = 'subtopic' and xrefParent.hmy in (select max(hmy) from paymentxref group by objtype,objpointer,objReference,fuser having fuser = ${user.id} ) `;
-		SQL += ` left outer join paymentxref xrefSuperParent on xrefSuperParent.objType = 2 and xrefSuperParent.objPointer = s.hmy and 
+		SQL += ` left outer join paymentxref xrefSuperParent on xrefSuperParent.objType = 3 and xrefSuperParent.objPointer = s.hmy and  xrefSuperParent.fuser = ${user.id} and
 				xrefSuperParent.objReference = 'subject' and xrefSuperParent.hmy in (select max(hmy) from paymentxref group by objtype,objpointer,objReference,fuser having fuser = ${user.id} ) `;
 	}
 	SQL += ` where st.hmy = ${id} `;
@@ -388,7 +388,7 @@ Test.postTestAnswers = (testResult, result) => {
 			}
 			// console.log(data.insertId);
 
-			testResult.answers.forEach((answer) => {
+			/*testResult.answers.forEach((answer) => {
 				sql.query(
 					`insert into testdetailxref (ftestxref,fuser,ftestdetail,schosenoption,isCorrect)
 					 value (${data.insertId},${testResult.userId},${answer.testDetailId},'${answer.selectedAnswer}',${answer.isCorrect})`,
@@ -400,7 +400,7 @@ Test.postTestAnswers = (testResult, result) => {
 						}
 					}
 				);
-			});
+			});*/
 			result(null, null);
 			return;
 		}
@@ -597,11 +597,11 @@ Test.postAmount = (req, result) => {
 Test.postPaymentStatus = (req, result) => {
 	if(req.table){
 		console.log(`insert into paymentxref (objType, objPointer ,objReference ,fuser ,amount , txId ,status ,message, fReferralUser, fCoupon, referralAmount) 
-		values (2, ${parseInt(req.objectId)}, '${String(req.table)}', ${req.userId}, ${req.amount}, '${String(req.txnId)}', 
+		values (3, ${parseInt(req.objectId)}, '${String(req.table)}', ${req.userId}, ${req.amount}, '${String(req.txnId)}', 
 		'${String(req.status)}', '${String(req.message)}', ${parseInt(req.referral)}, ${parseInt(req.coupon)}, ${parseInt(req.referralAmount)})`);
 		sql.query(
 			`insert into paymentxref (objType, objPointer ,objReference ,fuser ,amount , txId ,status ,message, fReferralUser, fCoupon, referralAmount) 
-			values (2, ${parseInt(req.objectId)}, '${String(req.table)}', ${req.userId}, ${req.amount}, '${String(req.txnId)}', 
+			values (3, ${parseInt(req.objectId)}, '${String(req.table)}', ${req.userId}, ${req.amount}, '${String(req.txnId)}', 
 			'${String(req.status)}', '${String(req.message)}', ${parseInt(req.referral)}, ${parseInt(req.coupon)}, ${parseInt(req.referralAmount)})`,
 			(err, data) => {
 				if (err) {

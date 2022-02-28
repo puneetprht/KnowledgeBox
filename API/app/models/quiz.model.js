@@ -287,7 +287,7 @@ Quiz.postQuizAnswers = (quizResult, result) => {
 			}
 			// console.log(data.insertId);
 
-			quizResult.answers.forEach((answer) => {
+			/*quizResult.answers.forEach((answer) => {
 				sql.query(
 					`insert into quizdetailxref (fquizxref,fuser,fquizdetail,schosenoption,isCorrect)
 					 value (${data.insertId},${quizResult.userId},${answer.quizDetailId},'${answer.selectedAnswer}',${answer.isCorrect})`,
@@ -299,7 +299,7 @@ Quiz.postQuizAnswers = (quizResult, result) => {
 						}
 					}
 				);
-			});
+			});*/
 			result(null, null);
 			return;
 		}
