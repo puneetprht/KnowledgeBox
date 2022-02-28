@@ -6,6 +6,7 @@ import {
   Image,
   TextInput,
   StyleSheet,
+  Dimensions,
   ScrollView,
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -31,6 +32,7 @@ const SignUp = (props) => {
   const [formValid, setFormValid] = useState(false);
   const [isSubmit, setIsSubmit] = useState(false);
   const [isEmailExist, setIsEmailExist] = useState(false);
+  const [navBarheight] = useState(Dimensions.get('screen').height - Dimensions.get('window').height);
 
   const registerUser = () => {
     setIsSubmit(true);
@@ -163,9 +165,9 @@ const SignUp = (props) => {
         justifyContent: 'center',
         backgroundColor: 'white',
         height: '100%',
-        paddingBottom: 50,
+        //paddingBottom: 50,
       }}>
-      <ScrollView>
+      <ScrollView style={{marginBottom: navBarheight ? 0 : 60}}>
         <Image
           source={require('../../../assets/icon.png')}
           style={{alignSelf: 'center', marginTop: 10}}
