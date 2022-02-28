@@ -131,8 +131,8 @@ user.registerUser = async (user, result) => {
 						return;
 					}
 
-					console.log('created user: ', { hmy: res.insertId, ...user });
-					result(null, { hmy: res.insertId, ...user, isAdmin: 0 });
+					console.log('created user: ', { hmy: res.insertId, id: res.insertId, ...user });
+					result(null, { hmy: res.insertId, id: res.insertId, ...user, isAdmin: 0 });
 					return;
 				}
 			);
