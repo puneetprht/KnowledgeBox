@@ -36,7 +36,7 @@ const UPIPayment = (props) => {
 
   useEffect(() => {
       if(props.modalVisible){
-        console.log('workingFine ObjectId:', props)
+        console.log('Wallet balance:', user)
         setModalAmount(props.amount);
 
         setCoupon("");
@@ -73,7 +73,7 @@ const UPIPayment = (props) => {
     if (amount >= 1) {
       var options = {
         description: 'Knowledge Box course',
-        image: 'https://i.imgur.com/3g7nmJC.png',
+        image: 'https://kb2022.s3-ap-south-1.amazonaws.com/Images/quiz/maybeLast.png',
         currency: 'INR',
         key: PaymentInfo.razorId, // Your api key
         amount: amount * 100,

@@ -185,6 +185,18 @@ const VideoTopicList = (props) => {
     }
   };
 
+  const allowOrNot = (l) => {
+    if (((l.isPaid && l.amount && !l.isBought) ||
+        (l.isParentPaid && l.parentAmount && !l.isParentBought) ||
+        (l.isSuperParentPaid && l.superParentAmount && !l.isSuperParentBought)) &&
+        (user && !user.isAdmin || !user))
+        {
+        return true;
+    } else {
+      return false;
+    }
+  };
+
   return (
     <ContainerList
       title={title + ' topics'}
@@ -212,7 +224,7 @@ const VideoTopicList = (props) => {
                             {l.count > 1 ? l.count + ' Videos' : l.count + ' Video'}
                             </Text>
                           </TouchableOpacity>
-                          {l.amount && l.isPaid && !l.isBought?(
+                          {allowOrNot(l) ? (
                           <View flexDirection='row' style={{paddingHorizontal: 20,marginTop: 5}}>
                             <View style={{marginRight: 10 }}>
                               <Text style={styles.amount}>

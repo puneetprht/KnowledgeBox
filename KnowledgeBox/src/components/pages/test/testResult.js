@@ -22,25 +22,21 @@ const TestResult = (props) => {
   const {questionsList, languageFlag} = props.route.params;
   const [displaylist, setDisplayList] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [navBarheight] = useState(Dimensions.get('screen').height - Dimensions.get('window').height);
 
   const correctAnswers = () => {
     let correct = 0;
     questionsList.forEach((element) => {
       if (element.selectedAnswer.toString() === element.correctOption) {
-        correct += parseFloat(element.weightage);
+        correct += parseFloat(element.weightage).toFixed(1);
       } else {
-        correct -= parseFloat(element.negativeWeightage);
+        correct -= parseFloat(element.negativeWeightage).toFixed(1);
       }
     });
-    return correct;
+    return parseFloat(correct).toFixed(1);
   };
   const calculateScore = () => {
-    return parseFloat(
-      (
-        (correctAnswers() / questionsList[questionsList.length - 1].maxMarks) *
-        100
-      ).toFixed(2),
-    );
+    return parseFloat((correctAnswers() / questionsList[questionsList.length - 1].maxMarks) * 100).toFixed(2);
   };
   const winnerStar = require('../../../assets/winnerStar.png');
   const winnerTrophy = require('../../../assets/winnerTrophy.png');
@@ -54,7 +50,7 @@ const TestResult = (props) => {
   };
 
   return (
-    <ScrollView style={{marginBottom: 60}}>
+    <ScrollView style={{marginBottom: navBarheight ? 0 : 60}}>
       <View>
         <View style={{flex: 1, justifyContent: 'center', marginTop: 10}}>
           <Text

@@ -188,6 +188,18 @@ const TestTopicList = (props) => {
     }
   };
 
+  const allowOrNot = (l) => {
+    if (((l.isPaid && l.amount && !l.isBought) ||
+        (l.isParentPaid && l.parentAmount && !l.isParentBought) ||
+        (l.isSuperParentPaid && l.superParentAmount && !l.isSuperParentBought)) &&
+        (user && !user.isAdmin || !user))
+        {
+        return true;
+    } else {
+      return false;
+    }
+  };
+
   return (
     <ContainerList
       title={title + ' topics'}
@@ -215,7 +227,7 @@ const TestTopicList = (props) => {
                             {l.count > 1 ? l.count + ' Tests' : l.count + ' Test'}
                           </Text>
                         </TouchableOpacity>
-                        {l.amount && l.isPaid && !l.isBought?(
+                        {allowOrNot(l) ? (
                           <View flexDirection='row' style={{paddingHorizontal: 20,marginTop: 5}}>
                             <View style={{marginRight: 10 }}>
                               <Text style={styles.amount}>

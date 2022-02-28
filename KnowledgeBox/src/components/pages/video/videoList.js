@@ -250,7 +250,7 @@ const VideoList = (props) => {
                               justifyContent: 'center',
                             }}
                           />
-                          {l.amount && l.isPaid && !l.isBought?(
+                          {allowOrNot(l)?(
                                   <View flexDirection='row' style={{paddingHorizontal: 20,marginTop: 5, paddingTop:3}}>
                                     <View style={{marginRight: 10 }}>
                                       <Text style={styles.amount}>

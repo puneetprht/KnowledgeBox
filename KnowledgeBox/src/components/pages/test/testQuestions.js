@@ -44,6 +44,7 @@ const TestQuestionnaire = (props) => {
   const [questionsList, setQuestionsList] = useState([]);
   const [showDialog1, setShowDialog1] = useState(false);
   const [showDialog2, setShowDialog2] = useState(false);
+  const [maxHeight, setMaxHeight] = useState(Dimensions.get('window').height);
   var textColor = 'black';
 
   const fetchTestDetail = (testId) => {
@@ -187,6 +188,10 @@ const TestQuestionnaire = (props) => {
       })
       .catch((err) => {
         setIsSubmit(false);
+        props.navigation.navigate('TestResult', {
+          questionsList: questionsList,
+          languageFlag: languageFlag
+        });
         console.log(err);
       });
   };
@@ -234,7 +239,7 @@ const TestQuestionnaire = (props) => {
             top: 0,
             bottom: 0,
             left: 0,
-            height: Dimensions.get('window').height,
+            height: maxHeight || Dimensions.get('window').height,
           }}
           flexDirection="row"
           alignItems="center"
@@ -286,14 +291,14 @@ const TestQuestionnaire = (props) => {
                         elevation: 1,
                       }}/>
               </View>
-              <ScrollView>
+              <ScrollView nestedScrollEnabled={true}>
                 <View style={{
                 flexDirection: 'row',
                 flexWrap: 'wrap',
                 }}>
                 { questionsList.map((question, index) => {
                   return (
-                  <TouchableOpacity key={index} onPress={() => setKey(index)}
+                  <TouchableOpacity key={index} onPress={() => {setKey(index); setOpenDrawer(false);}}
                     style={{position: 'relative'}}
                   >
                     {/* <IconAnt
@@ -716,6 +721,7 @@ const TestQuestionnaire = (props) => {
               style={{height: layoutHeight}}
               onLayout={event => {
                 const layout = event.nativeEvent.layout;
+                setMaxHeight( layout.y + 1 < Dimensions.get('window').height ? layout.y + 55 : Dimensions.get('window').height);
                 // console.log('height:', layout.height);
                 // console.log('y:', layout.y);
                 // console.log('dim:', Dimensions.get('window').height);
@@ -832,8 +838,8 @@ const renderTimer = (time, showFull = true) => {
   let minutes,
     hours = null;
 
-  minutes = parseInt(time / 60, 10);
-  hours = parseInt(minutes / 60, 10);
+  minutes = parseInt((time / 60) % 60, 10);
+  hours = parseInt(time / 3600, 10);
   let thresh = 10;
   return (
     <Text

@@ -90,6 +90,7 @@ const TestHome = (props) => {
       .get('/test/getSubject', {
         params: {
           id: categoryId,
+          user: user,
         },
       })
       .then((response) => {

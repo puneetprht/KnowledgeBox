@@ -611,7 +611,7 @@ const TestList = (props) => {
                     ) : (
                       <View />
                     )}
-                    {l.amount && l.isPaid && !l.isBought?(
+                    {allowOrNot(l) ? (
                       <View flexDirection='row' style={{paddingHorizontal: 20,marginTop: 5}}>
                         <View style={{marginRight: 10 }}>
                           <Text style={styles.amount}>
