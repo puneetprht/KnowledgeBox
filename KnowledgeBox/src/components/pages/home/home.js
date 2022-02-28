@@ -317,7 +317,7 @@ const Home = (props) => {
                   textAlign: 'center',
                   textAlignVertical: 'center',
                 }}>
-                Live Test coming soon!
+                Welcome to Knowledge Box!
               </Text>
             </View>
           )}

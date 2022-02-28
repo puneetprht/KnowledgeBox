@@ -36,6 +36,7 @@ const TabsScreen = (props) => (
 					}
 					return <Ionicons name={iconName} size={25} color={overridenColor} />;
 				},
+				unmountOnBlur: true,
 			})}
 		/>
 		<Tabs.Screen
