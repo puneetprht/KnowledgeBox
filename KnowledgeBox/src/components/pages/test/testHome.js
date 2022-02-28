@@ -19,7 +19,6 @@ import Icon2 from 'react-native-vector-icons/AntDesign';
 import CheckBox from '@react-native-community/checkbox';
 import LinearGradient from 'react-native-linear-gradient';
 import DropDownPicker from 'react-native-dropdown-picker';
-import Icon3 from 'react-native-vector-icons/FontAwesome5';
 import * as AsyncStorage from '../../../services/asyncStorage';
 
 import axios from '../../../services/axios';
@@ -36,12 +35,14 @@ const TestHome = (props) => {
   const [user, setUser] = useState(global.user || {id: 1, isAdmin: 0});
   const [editMode, setEditMode] = useState(false);
   const [newSubject, setNewSubject] = useState('');
-  const [refreshing, setRefreshing] = useState(false);
-  
+  const [refreshing] = useState(false);
+
   const [visible, setVisible] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [objectId, setObjectId] = useState(0);
   const [amount, setAmount] = useState(0);
+  const [navBarheight] = useState(Dimensions.get('screen').height - Dimensions.get('window').height);
+
 
   useEffect(() => {
     onRefresh();
@@ -158,8 +159,8 @@ const TestHome = (props) => {
   const updateFlags = (id,flag) => {
     const lists = JSON.parse(JSON.stringify(list));
     let index = lists.findIndex(l => l.id == id);
-    
-    if(flag && index >= 0){
+
+    if (flag && index >= 0){
       axios
         .post('/video/postIsPaid', {
           id: id,
@@ -173,7 +174,7 @@ const TestHome = (props) => {
         .catch((err) => {
           console.log(err);
         });
-    }else if( index >= 0){
+    } else if ( index >= 0){
       axios
         .post('/video/postIsActive', {
           id: id,
@@ -189,7 +190,7 @@ const TestHome = (props) => {
         });
     }
   };
-   
+
   const postAmount = useRef(_.debounce((id,amount) => updateAmount(id,amount), 2000)).current;
 
   const updateAmount = (id,amount) => {
@@ -204,24 +205,24 @@ const TestHome = (props) => {
     .catch((err) => {
       console.log(err);
     });
-  }
+  };
 
   const updateAmountList = (id,amount) => {
       const lists = JSON.parse(JSON.stringify(list));
       let index = lists.findIndex(l => l.id == id);
       lists[index].amount = parseInt(amount);
       setList(lists);
-  }
+  };
 
   const openPaymentModal = (id,amount) => {
-    if(global.user && global.user.id && parseInt(amount)){
+    if (global.user && global.user.id && parseInt(amount)){
       setObjectId(id);
       setAmount(parseInt(amount));
       setModalVisible(true);
-    } else{
+    } else {
       setVisible(true);
     }
-  }
+  };
 
   const UPICallback = (flag) => {
     if (flag){
@@ -231,10 +232,10 @@ const TestHome = (props) => {
       setList(lists);
     }
   };
-  
+
   return (
     <KeyboardAvoidingView>
-      <ScrollView style={{marginBottom: 60}}
+      <ScrollView style={{marginBottom: navBarheight ? 0 : 60}}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
@@ -269,7 +270,7 @@ const TestHome = (props) => {
           }}>
           <DropDownPicker
             zindex={10}
-            arrowColor='white'
+            arrowColor="white"
             items={dropdownList}
             defaultValue={category}
             containerStyle={{height: 50, width: '100%'}}
@@ -299,7 +300,7 @@ const TestHome = (props) => {
               list.map((l) => {
                 return (
                   <View key={l.id} style={styles.parentBox}>
-                    {((user && !user.isAdmin || !user) && !l.isActive)? (<View/>):
+                    {((user && !user.isAdmin || !user) && !l.isActive) ? (<View/>) :
                     (<View style={styles.parentBox}>
                       <View style={styles.boxSimple}>
                         <View style={styles.boxLeft}>
@@ -313,15 +314,15 @@ const TestHome = (props) => {
                                 : l.count + ' Topic'}
                             </Text>
                           </TouchableOpacity>
-                          {l.amount && l.isPaid && !l.isBought?(
-                          <View flexDirection='row' style={{paddingHorizontal: 20,marginTop: 5}}>
+                          {l.amount && l.isPaid && !l.isBought ? (
+                          <View flexDirection="row" style={{paddingHorizontal: 20,marginTop: 5}}>
                             <View style={{marginRight: 10 }}>
                               <Text style={styles.amount}>
                               {'\u20B9'}{l.amount}
                             </Text>
                             </View>
                             <TouchableOpacity onPress={() => openPaymentModal(l.id, l.amount)}>
-                              <View  flexDirection='row'>
+                              <View  flexDirection="row">
                               <Text style={styles.amount,{color:Constants.textColor1, marginRight: 2, textAlignVertical: 'center'}}>
                                 Unlock
                               </Text>
@@ -331,7 +332,7 @@ const TestHome = (props) => {
                               size={15}/>
                               </View>
                             </TouchableOpacity>
-                          </View>):
+                          </View>) :
                           (<View/>)}
                         </View>
                         {user && user.isAdmin ? (
@@ -353,18 +354,18 @@ const TestHome = (props) => {
                         )}
                       </View>
                       {user && user.isAdmin ? (
-                      <View style={styles.boxComplex}> 
-                        <View flexDirection='row' alignItems='center'>
+                      <View style={styles.boxComplex}>
+                        <View flexDirection="row" alignItems="center">
                           <CheckBox
                           value={Boolean(l.isActive)}
-                            onValueChange={()=>{updateFlags(l.id,false)}}
+                            onValueChange={()=>{updateFlags(l.id,false);}}
                           />
                           <Text>Active</Text>
                         </View>
-                        <View flexDirection='row' alignItems='center'>
+                        <View flexDirection="row" alignItems="center">
                           <CheckBox
                             value ={Boolean(l.isPaid)}
-                            onValueChange={()=>{updateFlags(l.id,true)}}
+                            onValueChange={()=>{updateFlags(l.id,true);}}
                           />
                           <Text>Paid</Text>
                           <TextInput
@@ -372,7 +373,7 @@ const TestHome = (props) => {
                           placeholder="Price"
                           onChangeText={val => {updateAmountList(l.id, val); postAmount(l.id,val);}}
                           value = {String(l.amount || 0)}
-                          keyboardType='number-pad'
+                          keyboardType="number-pad"
                           style={{
                             borderWidth: 1,
                             borderRadius:5,
@@ -451,7 +452,7 @@ const TestHome = (props) => {
       <UPIPayment modalVisible={modalVisible} objectId={objectId} amount={amount}
       replace={props.navigation.replace}
       visible={visible} setModalVisible={setModalVisible} setVisible={setVisible}
-      callback={UPICallback} callRouteUrl='/test/postPaymentStatus' callRouteTable='subject'
+      callback={UPICallback} callRouteUrl="/test/postPaymentStatus" callRouteTable="subject"
       />
     </KeyboardAvoidingView>
   );
@@ -469,7 +470,7 @@ const styles = StyleSheet.create({
     //elevation: 3,
     marginTop: 10,
   },
-  parentBox:{ width: '100%',},
+  parentBox:{ width: '100%'},
   boxComplex: {
     flexDirection: 'row',
     justifyContent: 'space-around',

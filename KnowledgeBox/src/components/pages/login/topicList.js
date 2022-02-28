@@ -27,6 +27,7 @@ const TopicList = (props) => {
   const [addMode, setAddMode] = useState(false);
   const [newCategory, setNewCategory] = useState('');
   const [inRequest, setInRequest] = useState(false);
+  const [navBarheight] = useState(Dimensions.get('screen').height - Dimensions.get('window').height);
 
   const fetchAllTopics = () => {
     axios
@@ -116,7 +117,7 @@ const TopicList = (props) => {
           ? props.navigation.replace('Tabs', {screen: 'HOME'})
           : props.navigation.replace('Auth', {screen: 'AuthPage'})
       }>
-      <ScrollView style={{marginBottom: 50}}>
+      <ScrollView style={{marginBottom: navBarheight ? 24 : 60}}>
         <View style={styles.container}>
           {Topics.map((Topic) => {
             return (
@@ -266,6 +267,7 @@ const TopicList = (props) => {
             width: '75%',
             flexDirection: 'row',
             justifyContent: 'center',
+            marginBottom: 5,
             backgroundColor:
               selectedTopic.length === 0 ? '#5aa0ff' : Constants.textColor1,
           }}

@@ -44,6 +44,7 @@ const VideoHome = (props) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [objectId, setObjectId] = useState(0);
   const [amount, setAmount] = useState(0);
+  const [navBarheight, setNavBarheight] = useState(Dimensions.get('screen').height - Dimensions.get('window').height);
 
   useEffect(() => {
     onRefresh();
@@ -239,7 +240,7 @@ const VideoHome = (props) => {
 
   return (
     <KeyboardAvoidingView>
-      <ScrollView style={{marginBottom: 60}}
+      <ScrollView style={{marginBottom: navBarheight ? 0 : 60}}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>

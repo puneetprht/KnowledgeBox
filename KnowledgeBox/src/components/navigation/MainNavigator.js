@@ -19,7 +19,7 @@ const Tabs = createBottomTabNavigator();
 const TabsScreen = (props) => (
 	<Tabs.Navigator
 		options={({ route }) => ({
-			tabBarVisible: getTabBarVisibility(route)
+			tabBarVisible: getTabBarVisibility(route),
 		})}
 	>
 		<Tabs.Screen
@@ -35,7 +35,7 @@ const TabsScreen = (props) => (
 						iconName = 'home-outline';
 					}
 					return <Ionicons name={iconName} size={25} color={overridenColor} />;
-				}
+				},
 			})}
 		/>
 		<Tabs.Screen
@@ -52,7 +52,8 @@ const TabsScreen = (props) => (
 						iconName = 'document-text-outline';
 					}
 					return <Ionicons name={iconName} size={25} color={overridenColor} />;
-				}
+				},
+				unmountOnBlur: true,
 			})}
 		/>
 		<Tabs.Screen
@@ -69,7 +70,8 @@ const TabsScreen = (props) => (
 						iconName = 'video-vintage';
 					}
 					return <MaterialCommunityIcons name={iconName} size={25} color={overridenColor} />;
-				}
+				},
+				unmountOnBlur: true,
 			})}
 		/>
 		<Tabs.Screen
@@ -85,7 +87,8 @@ const TabsScreen = (props) => (
 						iconName = 'clipboard-list-outline';
 					}
 					return <MaterialCommunityIcons name={iconName} size={25} color={overridenColor} />;
-				}
+				},
+				unmountOnBlur: true,
 			})}
 		/>
 	</Tabs.Navigator>
@@ -94,7 +97,7 @@ const TabsScreen = (props) => (
 const getTabBarVisibility = (route) => {
 	//const routeName = route.state ? route.state.routes[route.state.index].name : '';
 	 const routeName = getFocusedRouteNameFromRoute(route);
-	 
+
 	if (routeName === 'QuizQuestionnaire' || routeName === 'VideoPlayback' || routeName === 'TestQuestionnaire' || routeName === 'QuizAdmin'
 	|| routeName === 'QuizResult' || routeName === 'TestAdmin' || routeName === 'TestResult') {
 		return false;

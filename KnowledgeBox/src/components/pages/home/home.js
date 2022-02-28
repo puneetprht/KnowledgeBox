@@ -76,71 +76,71 @@ const Home = (props) => {
 			objectType: 'text',
 			objectUrl: '',
       objectContent: 'Latest SSC Test series/Video courses available from 1 April, 2021',
-			timeAgo: '1d'
+			timeAgo: '1d',
 		},
     {
       id: 2,
       owner: 'Knowledge Box',
       objectType: 'image',
-      objectUrl: 'https://kb2022.s3-ap-south-1.amazonaws.com/Images/test/image7.jpeg',      
+      objectUrl: 'https://kb2022.s3-ap-south-1.amazonaws.com/Images/test/image7.jpeg',
       objectContent: '',
-			timeAgo: '2d'
+			timeAgo: '2d',
 		},
     {
       id: 3,
       owner: 'Knowledge Box',
       objectType: 'image',
-      objectUrl: 'https://kb2022.s3-ap-south-1.amazonaws.com/Images/test/image8.jpeg',      
+      objectUrl: 'https://kb2022.s3-ap-south-1.amazonaws.com/Images/test/image8.jpeg',
       objectContent: '',
-			timeAgo: '2d'
+			timeAgo: '2d',
 		},
     {
       id: 4,
       owner: 'Knowledge Box',
       objectType: 'image',
-      objectUrl: 'https://kb2022.s3-ap-south-1.amazonaws.com/Images/test/image9.jpeg',      
+      objectUrl: 'https://kb2022.s3-ap-south-1.amazonaws.com/Images/test/image9.jpeg',
       objectContent: '',
-			timeAgo: '2d'
+			timeAgo: '2d',
 		},
     {
       id: 5,
       owner: 'Knowledge Box',
       objectType: 'image',
-      objectUrl: 'https://kb2022.s3-ap-south-1.amazonaws.com/Images/test/image10.jpeg',      
+      objectUrl: 'https://kb2022.s3-ap-south-1.amazonaws.com/Images/test/image10.jpeg',
       objectContent: '',
-			timeAgo: '2d'
+			timeAgo: '2d',
 		},
     {
       id: 6,
       owner: 'Knowledge Box',
       objectType: 'image',
-      objectUrl: 'https://kb2022.s3-ap-south-1.amazonaws.com/Images/test/image11.jpeg',      
+      objectUrl: 'https://kb2022.s3-ap-south-1.amazonaws.com/Images/test/image11.jpeg',
       objectContent: '',
-			timeAgo: '2d'
+			timeAgo: '2d',
 		},
     {
       id: 7,
       owner: 'Knowledge Box',
       objectType: 'image',
-      objectUrl: 'https://kb2022.s3-ap-south-1.amazonaws.com/Images/test/image12.jpeg',      
+      objectUrl: 'https://kb2022.s3-ap-south-1.amazonaws.com/Images/test/image12.jpeg',
       objectContent: '',
-			timeAgo: '2d'
+			timeAgo: '2d',
 		},
     {
       id: 8,
       owner: 'Knowledge Box',
       objectType: 'image',
-      objectUrl: 'https://kb2022.s3-ap-south-1.amazonaws.com/Images/test/images13.jpeg',      
+      objectUrl: 'https://kb2022.s3-ap-south-1.amazonaws.com/Images/test/images13.jpeg',
       objectContent: '',
-			timeAgo: '2d'
+			timeAgo: '2d',
 		},
     {
       id: 9,
       owner: 'Knowledge Box',
       objectType: 'image',
-      objectUrl: 'https://kb2022.s3-ap-south-1.amazonaws.com/Images/quiz/imag1.jpeg',      
+      objectUrl: 'https://kb2022.s3-ap-south-1.amazonaws.com/Images/quiz/imag1.jpeg',
       objectContent: '',
-			timeAgo: '2d'
+			timeAgo: '2d',
 		},
 		{
       owner: 'Knowledge Box',
@@ -148,7 +148,7 @@ const Home = (props) => {
       objectContent: '',
       objectUrl: 'https://kb2022.s3-ap-south-1.amazonaws.com/Images/quiz/iamge2.jpeg',
       id: 10,
-			timeAgo: '3d'
+			timeAgo: '3d',
 		},
 		{
       owner: 'Knowledge Box',
@@ -156,7 +156,7 @@ const Home = (props) => {
       objectUrl: 'https://kb2022.s3-ap-south-1.amazonaws.com/Images/quiz/image3.jpeg',
       objectContent: '',
 			id: 11,
-			timeAgo: '4d'
+			timeAgo: '4d',
     },
     {
       owner: 'Knowledge Box',
@@ -164,7 +164,7 @@ const Home = (props) => {
       objectUrl: 'https://kb2022.s3-ap-south-1.amazonaws.com/Images/quiz/image4.jpeg',
       objectContent: '',
 			id: 12,
-			timeAgo: '6d'
+			timeAgo: '6d',
     },
     {
       owner: 'Knowledge Box',
@@ -172,7 +172,7 @@ const Home = (props) => {
       objectUrl: 'https://kb2022.s3-ap-south-1.amazonaws.com/Images/quiz/image5.jpeg',
       objectContent: '',
 			id: 13,
-			timeAgo: '7d'
+			timeAgo: '7d',
     },
     {
       owner: 'Knowledge Box',
@@ -180,7 +180,7 @@ const Home = (props) => {
       objectUrl: 'https://kb2022.s3-ap-south-1.amazonaws.com/Images/quiz/image6.jpeg',
       objectContent: '',
 			id: 14,
-			timeAgo: '10d'
+			timeAgo: '10d',
 		},
   ]);
 
@@ -212,12 +212,12 @@ const Home = (props) => {
       <ScrollView style={{backgroundColor: '#ffffff', minHeight: '100%'}}>
         <View
           style={{
-            height: Dimensions.get("window").height/2,
+            height: Dimensions.get('window').height / 2,
             //alignItems: 'center',
             //paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0
           }}>
           <Image
-            style={{height: Dimensions.get("window").height/2, width: '100%'}}
+            style={{height: Dimensions.get('window').height / 2, width: '100%'}}
             //ImageResizeMode="stretch"
             source={require('../../../assets/homeHiRes.png')}
           />
@@ -268,8 +268,8 @@ const Home = (props) => {
                 fontSize: 24,
                 color: 'white',
               }}>
-                Learning is {"\n"} 
-                Fun with {"\n"}
+                Learning is {'\n'}
+                Fun with {'\n'}
               KnowledgeBox
             </Text>
           </View>
@@ -381,20 +381,20 @@ const Home = (props) => {
                     </View>
 
                     <View>
-                      {object.objectType=='text' 
+                      {object.objectType == 'text'
                       ? (<Text style={styles.textObject}>{object.objectContent}</Text>)
                       : (<View style={{width: '100%'}}>
-                          <Image 
+                          <Image
                           source={{uri: object.objectUrl}}
-                          alignSelf='center'
-                          ImageResizeMode='contain'
+                          alignSelf="center"
+                          ImageResizeMode="contain"
                           style={{
                             marginVertical: 10,
                             width: '100%',
                             height: Dimensions.get('window').width - 54,
                             //maxHeight: 400,
                           }}
-                          ></Image>
+                           />
                       </View>)}
                     </View>
                     {/* <View style={{margin: 20}}>
@@ -519,9 +519,9 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     alignContent: 'flex-start',
     justifyContent: 'flex-start',
-    marginTop: Dimensions.get('window').height/2 * 0.3,
-    marginLeft: Dimensions.get('window').height/2 * 0.1,
-  }
+    marginTop: Dimensions.get('window').height / 2 * 0.3,
+    marginLeft: Dimensions.get('window').height / 2 * 0.1,
+  },
 });
 
 export default Home;

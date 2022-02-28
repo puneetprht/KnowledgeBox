@@ -30,10 +30,12 @@ const QuizHome = (props) => {
   const [user, setUser] = useState(global.user);
   const [editMode, setEditMode] = useState(false);
   const [newSubject, setNewSubject] = useState('');
-  const [refreshing, setRefreshing] = useState(false);
+  const [refreshing] = useState(false);
+  const [navBarheight] = useState(Dimensions.get('screen').height - Dimensions.get('window').height);
 
   useEffect(() => {
     onRefresh();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onRefresh = async () => {
@@ -148,7 +150,7 @@ const QuizHome = (props) => {
 
   return (
     <View>
-      <ScrollView style={{marginBottom: 60}}
+      <ScrollView style={{marginBottom: navBarheight ? 0 : 60}}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
