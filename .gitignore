@@ -2,3 +2,6 @@ API/debug.log
 API/app/controllers/debug.log
 API/app/models/debug.log
 setup/knowKey.pem
+API/config/db.config.js
+API/config/email.config.js
+API/sendgrid.env
