@@ -1,5 +1,5 @@
 const sql = require('./db.js');
-const email = require('../service/emailService');
+// const email = require('../service/emailService');
 
 // constructor
 const user = function(user) {
@@ -398,7 +398,7 @@ user.sendVerificationEmail = async (id, result) => {
 		subject: 'User email verification!',
 		html: htmlBody
 	};
-	await email.sendEmail(msg, result);
+	// await email.sendEmail(msg, result);
 };
 
 user.verifyCoupon = (code, result) => {
