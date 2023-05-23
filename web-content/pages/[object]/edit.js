@@ -12,7 +12,7 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLanguage, faCheckDouble, faArrowLeft, faPlus, faTrashAlt, faTimes, faImages} from '@fortawesome/free-solid-svg-icons';
 
-import {aws} from '../../src/constants/aws';
+// import {aws} from '../../src/constants/aws';
 import styles from '../../styles/Edit.module.css';
 
 export default function ObjectEdit({user}) {

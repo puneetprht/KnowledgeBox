@@ -11,7 +11,7 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLanguage, faCheckDouble, faCheck, faPlus, faTrashAlt, faTimes, faEdit} from '@fortawesome/free-solid-svg-icons';
 
-import {aws} from '../../src/constants/aws';
+// import {aws} from '../../src/constants/aws';
 import styles from '../../styles/Category.module.css';
 
 function Feed(props) {

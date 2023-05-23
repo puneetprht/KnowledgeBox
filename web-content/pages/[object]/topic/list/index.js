@@ -13,7 +13,7 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTimes, faEdit, faPlus, faTrashAlt, faDownload } from '@fortawesome/free-solid-svg-icons';
 
-import {aws} from '../../../../src/constants/aws';
+// import {aws} from '../../../../src/constants/aws';
 import styles from '../../../../styles/List.module.css';
 
 export default function List({user}) {
