@@ -82,16 +82,16 @@ export default function Home(props) {
   const switchCentralModule = () => {
     if(!centralItem){
       return (<Feed user={user} toast={displayToasterMessage}/>);
-    } else if(centralItem == 'category'){
-      return (<Category user={user} toast={displayToasterMessage}/>);
-    } else if(centralItem == 'profile'){
-      return (<Profile user={user} id={selectedId} back={setCentralItem} toast={displayToasterMessage}/>);
+    // } else if(centralItem == 'category'){
+    //   return (<Category user={user} toast={displayToasterMessage}/>);
+    // } else if(centralItem == 'profile'){
+    //   return (<Profile user={user} id={selectedId} back={setCentralItem} toast={displayToasterMessage}/>);
     } else if(centralItem == 'users'){
       return (<Users user={user} setUserId={setSelectedId} redirect={setCentralItem} toast={displayToasterMessage}/>);
-    } else if(centralItem == 'payment'){
-      return (<Payments user={user} toast={displayToasterMessage}/>);
-    } else if(centralItem == 'refer'){
-      return (<Refer user={user} toast={displayToasterMessage}/>);
+    // } else if(centralItem == 'payment'){
+    //   return (<Payments user={user} toast={displayToasterMessage}/>);
+    // } else if(centralItem == 'refer'){
+    //   return (<Refer user={user} toast={displayToasterMessage}/>);
     } else {
       return (<Feed user={user} toast={displayToasterMessage}/>);
     }
