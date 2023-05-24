@@ -101,12 +101,12 @@ export default function Home(props) {
     <div className={styles.wrapper}>
       <main className={styles.container}>
         <div className={styles.leftModule}>
-          <p className={centralItem == 'feed'? styles.leftContentBold: styles.leftContent} onClick={() => setCentralItem('feed')}>Home Feed</p>
+          {/* <p className={centralItem == 'feed'? styles.leftContentBold: styles.leftContent} onClick={() => setCentralItem('feed')}>Home Feed</p> */}
           <p className={centralItem == 'category'? styles.leftContentBold: styles.leftContent} onClick={() => setCentralItem('category')}>Categories</p>
-          <p className={centralItem == 'profile'? styles.leftContentBold: styles.leftContent} onClick={() => setCentralItem('profile')}>My Profile</p>
+          {/* <p className={centralItem == 'profile'? styles.leftContentBold: styles.leftContent} onClick={() => setCentralItem('profile')}>My Profile</p> */}
           <p className={centralItem == 'users'? styles.leftContentBold: styles.leftContent} onClick={() => setCentralItem('users')}>Users</p>
-          <p className={centralItem == 'payment'? styles.leftContentBold: styles.leftContent} onClick={() => setCentralItem('payment')}>Payments</p>
-          <p className={centralItem == 'refer'? styles.leftContentBold: styles.leftContent} onClick={() => setCentralItem('refer')}>Referral & Coupon Code</p>
+          {/* <p className={centralItem == 'payment'? styles.leftContentBold: styles.leftContent} onClick={() => setCentralItem('payment')}>Payments</p> */}
+          {/* <p className={centralItem == 'refer'? styles.leftContentBold: styles.leftContent} onClick={() => setCentralItem('refer')}>Referral & Coupon Code</p> */}
         </div>
         <div className={styles.centerModule}>
           {
