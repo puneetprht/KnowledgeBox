@@ -81,58 +81,58 @@ export default function ObjectEdit({user}) {
   const [isUpload, setIsUpload] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const S3config ={
-    bucketName: aws.Bucket,
-    dirName: 'Images/' + object,
-    region: aws.Region,
-    accessKeyId: aws.Access_Key_ID,
-    secretAccessKey: aws.Secret_Access_Key
-}
+//   const S3config ={
+//     bucketName: aws.Bucket,
+//     dirName: 'Images/' + object,
+//     region: aws.Region,
+//     accessKeyId: aws.Access_Key_ID,
+//     secretAccessKey: aws.Secret_Access_Key
+// }
 
-const S3Client = new S3(S3config);
+// const S3Client = new S3(S3config);
 
-  //API Calls
-  useEffect(() => {
-    getObject();
-  }, [objectId]);
+//   //API Calls
+//   useEffect(() => {
+//     getObject();
+//   }, [objectId]);
 
-  const getObject = () => {
-    if (objectId) {
-      axios
-        .get('/' + object + '/get' + object + 'Detail', {
-          params: {
-            id: objectId,
-          },
-        })
-        .then((response) => {         
-          if (response.data) {
-            response.data.forEach(element => {
-              element.correctOption = element.correctOption.split(',').map(Number);
-            });
-            setQuestionsList(response.data);
-          }
-          setSaved(true);
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-        axios
-        .get('/' + object + '/get' + object, {
-          params: {
-            id: objectId,
-          },
-        })
-        .then((response) => {
-          //console.log(response.data);
-          setInstructions(response.data.instructions);
-          setObjectTitle(response.data.value);
-          setTimeDuration(response.data.time);
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    } 
-  }
+//   const getObject = () => {
+//     if (objectId) {
+//       axios
+//         .get('/' + object + '/get' + object + 'Detail', {
+//           params: {
+//             id: objectId,
+//           },
+//         })
+//         .then((response) => {         
+//           if (response.data) {
+//             response.data.forEach(element => {
+//               element.correctOption = element.correctOption.split(',').map(Number);
+//             });
+//             setQuestionsList(response.data);
+//           }
+//           setSaved(true);
+//         })
+//         .catch((err) => {
+//           console.error(err);
+//         });
+//         axios
+//         .get('/' + object + '/get' + object, {
+//           params: {
+//             id: objectId,
+//           },
+//         })
+//         .then((response) => {
+//           //console.log(response.data);
+//           setInstructions(response.data.instructions);
+//           setObjectTitle(response.data.value);
+//           setTimeDuration(response.data.time);
+//         })
+//         .catch((err) => {
+//           console.error(err);
+//         });
+//     } 
+//   }
 
   const submitObject = (event) => {
     event.preventDefault();
@@ -419,7 +419,7 @@ const S3Client = new S3(S3config);
 
   const imagePicker = (event, index) => {
     event.preventDefault(); 
-    
+    return
     //setIsUpload(item.id);
     //console.log(item);
     console.log('Index: ', selectedIndex);

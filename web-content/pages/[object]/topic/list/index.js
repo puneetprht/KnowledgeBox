@@ -33,15 +33,15 @@ export default function List({user}) {
   const [newVideoUrl, setNewVideoUrl] = useState('');
   const [isUpload, setIsUpload] = useState(0);
 
-  const S3config ={
-      bucketName: aws.Bucket,
-      dirName: 'PDFs/Video',
-      region: aws.Region,
-      accessKeyId: aws.Access_Key_ID2,
-      secretAccessKey: aws.Secret_Access_Key2
-  }
+  // const S3config ={
+  //     bucketName: aws.Bucket,
+  //     dirName: 'PDFs/Video',
+  //     region: aws.Region,
+  //     accessKeyId: aws.Access_Key_ID2,
+  //     secretAccessKey: aws.Secret_Access_Key2
+  // }
 
-  const S3Client = new S3(S3config);
+  // const S3Client = new S3(S3config);
   
   useEffect(() => {
     fetchAllTopics();
@@ -250,6 +250,7 @@ export default function List({user}) {
   /* AWS functions */
   const uploadPdf = (event, item) => {
     setIsUpload(item.id);
+    return
     //console.log(event.target.files[0]);
     let fileName = event.target.files[0].name.split('.')[0];
     S3Client.uploadFile(event.target.files[0], fileName)
